@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>aftermath</name>
+    </assembly>
+    <members>
+        <member name="T:aftermath.IntVector">
+            <summary>
+            A two component vector of integers.
+            </summary>
+        </member>
+        <member name="F:aftermath.IntVector.Zero">
+            <summary>
+            A vector with zero for all components.
+            </summary>
+        </member>
+        <member name="F:aftermath.IntVector.UnitX">
+            <summary>
+            A normalized vector along the positive X axis.
+            </summary>
+        </member>
+        <member name="F:aftermath.IntVector.UnitY">
+            <summary>
+            A normalized vector along the positive Y axis.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_UnaryPlus(aftermath.IntVector)">
+            <summary>
+            The identity operator.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Addition(aftermath.IntVector,aftermath.IntVector)">
+            <summary>
+            Component-wise addition of a vector to another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_UnaryNegation(aftermath.IntVector)">
+            <summary>
+            Finds the negation of a vector.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Subtraction(aftermath.IntVector,aftermath.IntVector)">
+            <summary>
+            Component-wise subtraction of a vector from another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Multiply(aftermath.IntVector,aftermath.IntVector)">
+            <summary>
+            Component-wise multiplication of a vector by another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Multiply(aftermath.IntVector,System.Int32)">
+            <summary>
+            Multiplies a vector by a scalar.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Multiply(aftermath.IntVector,System.Single)">
+            <summary>
+            Multiplies a vector by a scalar.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Multiply(System.Int32,aftermath.IntVector)">
+            <summary>
+            Multiplies a vector by a scalar.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Multiply(System.Single,aftermath.IntVector)">
+            <summary>
+            Multiplies a vector by a scalar.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Division(aftermath.IntVector,aftermath.IntVector)">
+            <summary>
+            Component-wise division of a vector by another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Division(Vector2,aftermath.IntVector)">
+            <summary>
+            Component-wise division of a vector by another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Division(aftermath.IntVector,Vector2)">
+            <summary>
+            Component-wise division of a vector by another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.op_Division(aftermath.IntVector,System.Int32)">
+            <summary>
+            Division of this vector by a scalar.
+            </summary>
+        </member>
+        <member name="F:aftermath.IntVector.x">
+            <summary>
+            Horizontal component.
+            </summary>
+        </member>
+        <member name="F:aftermath.IntVector.y">
+            <summary>
+            Vertical component.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.Length">
+            <summary>
+            Floating point magnitude of the vector.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.ManhattanLength">
+            <summary>
+            Magnitude of the vector in Taxicab geometry.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.LengthSquared">
+            <summary>
+            Sum of each component squared.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.Normalized">
+            <summary>
+            Gets a normalized vector in the same direction as this one.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.Left">
+            <summary>
+            Gets a vector equal to this one rotated counter-clockwise by 90 degrees.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.Right">
+            <summary>
+            Gets a vector equal to this one rotated clockwise 90 degrees.
+            </summary>
+        </member>
+        <member name="P:aftermath.IntVector.Back">
+            <summary>
+            Gets a vector equal to this one rotated 180 degrees.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Constructs a vector from the given X and Y components.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.Dot(aftermath.IntVector)">
+            <summary>
+            Finds the scalar product of this vector and another.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.Equals(aftermath.IntVector)">
+            <summary>
+            Tests for equality with another vector.
+            </summary>
+        </member>
+        <member name="M:aftermath.IntVector.ToString">
+            <summary>
+            Gets a string representing this vector in (X, Y) format.
+            </summary>
+        </member>
+        <member name="M:aftermath.MyGame.BuildCamera(Sandbox.CameraSetup)">
+            <summary>
+            Put the camera at the pawn's eye
+            </summary>
+        </member>
+        <member name="F:aftermath.AStarEdge`1.Dest">
+            <summary>
+            The node this connection leads to.
+            </summary>
+        </member>
+        <member name="F:aftermath.AStarEdge`1.Cost">
+            <summary>
+            The cost of using this connection.
+            </summary>
+        </member>
+        <member name="M:aftermath.Utils.Edge``1(``0,System.Single)">
+            <summary>
+            Convenience method to produce a graph connection for use when calling AStar().
+            </summary>
+            <typeparam name="T">Graph node type.</typeparam>
+            <param name="dest">Destination node of the connection.</param>
+            <param name="cost">Cost of taking the connection.</param>
+        </member>
+        <member name="M:aftermath.Utils.AStar``1(``0,``0,System.Collections.Generic.List{``0},System.Func{``0,System.Collections.Generic.IEnumerable{aftermath.AStarEdge{``0}}},System.Func{``0,``0,System.Single})">
+            <summary>
+            An implementation of the AStar path finding algorithm.
+            </summary>
+            <typeparam name="T">Graph node type.</typeparam>
+            <param name="origin">Node to start path finding from.</param>
+            <param name="target">The goal node to reach.</param>
+            <param name="adjFunc">Function returning the neighbouring connections for a node.</param>
+            <param name="heuristicFunc">Function returning the estimated cost of travelling between two nodes.</param>
+            <returns>A sequence of nodes representing a path if one is found, otherise an empty array.</returns>
+        </member>
+    </members>
+</doc>

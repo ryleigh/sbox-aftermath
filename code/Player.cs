@@ -105,68 +105,92 @@ namespace aftermath
 		{
 			base.BuildInput( builder );
 
-			if ( Input.Pressed( InputButton.Attack1 ) )
-				FrustumSelect.Init( Input.Cursor, EyeRot );
+			// if ( Input.Pressed( InputButton.Attack1 ) )
+			// 	FrustumSelect.Init( Input.Cursor, EyeRot );
+			//
+			// if ( Input.Down( InputButton.Attack1 ) )
+			// 	FrustumSelect.Update( Input.Cursor );
+			//
+			// if ( !Input.Down( InputButton.Attack1 ) )
+			// 	FrustumSelect.IsDragging = false;
+			//
+			// if ( Input.Pressed( InputButton.Attack1 ) )
+			// {
+			// 	FrustumSelect.Init( Input.Cursor, EyeRot );
+			// }
+			//
+			// if ( Input.Down( InputButton.Attack1 ) )
+			// {
+			// 	FrustumSelect.Update( Input.Cursor );
+			//
+			// 	if ( FrustumSelect.IsDragging )
+			// 	{
+			// 		foreach ( var entity in Selected )
+			// 		{
+			// 			if ( entity is Person person )
+			// 				person.Deselect();
+			// 		}
+			//
+			// 		Selected.Clear();
+			//
+			// 		var f = FrustumSelect.GetFrustum();
+			//
+			// 		foreach ( var ent in Entity.All )
+			// 		{
+			// 			if ( !ent.Tags.Has( "selectable" ) ) continue;
+			// 			if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
+			//
+			// 			if ( ent is Person person )
+			// 			{
+			// 				if ( !person.IsLocalPlayers ) continue;
+			// 				person.Select();
+			// 			}
+			//
+			// 			Selected.Add( ent );
+			// 		}
+			// 	}
+			// }
+			//
+			// if ( !Input.Down( InputButton.Attack1 ) )
+			// 	FrustumSelect.IsDragging = false;
 
-			if ( Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.Update( Input.Cursor );
+			// Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
+			// Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
+			// Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
+			//
+			// if ( Input.Pressed( InputButton.Attack2 ) )
+			// {
+			// 	foreach ( var entity in Selected )
+			// 	{
+			// 		if ( entity is Survivor survivor )
+			// 		{
+			// 			Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+			// 		}
+			// 	}
+			// }
+		}
 
-			if ( !Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.IsDragging = false;
-
-			if ( Input.Pressed( InputButton.Attack1 ) )
+		public void DeselectAll()
+		{
+			foreach ( Entity entity in Selected )
 			{
-				FrustumSelect.Init( Input.Cursor, EyeRot );
-			}
-
-			if ( Input.Down( InputButton.Attack1 ) )
-			{
-				FrustumSelect.Update( Input.Cursor );
-
-				if ( FrustumSelect.IsDragging )
+				if ( entity is Person person )
 				{
-					foreach ( var entity in Selected )
-					{
-						if ( entity is Person person )
-							person.Deselect();
-					}
-
-					Selected.Clear();
-
-					var f = FrustumSelect.GetFrustum();
-
-					foreach ( var ent in Entity.All )
-					{
-						if ( !ent.Tags.Has( "selectable" ) ) continue;
-						if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
-
-						if ( ent is Person person )
-						{
-							if ( !person.IsLocalPlayers ) continue;
-							person.Select();
-						}
-
-						Selected.Add( ent );
-					}
+					person.Deselect();
 				}
 			}
 
-			if ( !Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.IsDragging = false;
+			Selected.Clear();
+		}
 
-			Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
-			Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
-			Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
+		public void Select( ISelectable selectable, bool isAdditive )
+		{
+			if( !isAdditive ) DeselectAll();
 
-			if ( Input.Pressed( InputButton.Attack2 ) )
+			if ( selectable is Person {IsLocalPlayers: true} person)
 			{
-				foreach ( var entity in Selected )
-				{
-					if ( entity is Survivor survivor )
-					{
-						Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
-					}
-				}
+				person.Select();
+				Selected.Add( person );
 			}
 		}
 

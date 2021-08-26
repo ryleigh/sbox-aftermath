@@ -363,9 +363,9 @@ namespace aftermath
 			}
 		}
 
-		public static void DrawText()
+		public static Trace TraceRayDirection( Vector3 from, Vector3 direction )
 		{
-
+			return Trace.Ray( from, from + direction.Normal * 100000f );
 		}
 
 		private class NodeInfo<T>
@@ -617,7 +617,6 @@ namespace aftermath
 				float dist = 99999f;
 				DebugOverlay.Text( entity.Position, offset, text, color, duration, dist );
 			}
-			
 		}
 	}
 }

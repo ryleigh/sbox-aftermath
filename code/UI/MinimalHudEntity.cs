@@ -12,6 +12,7 @@ namespace aftermath
 			RootPanel.SetTemplate( "/UI/minimalhud.html" );
 
 			RootPanel.AddChild<PlayerInfoHud>();
+			RootPanel.AddChild<CursorController>();
 		}
 	}
 }

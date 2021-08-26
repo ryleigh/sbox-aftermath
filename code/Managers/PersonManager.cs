@@ -26,8 +26,10 @@ namespace aftermath
 				person = new Survivor();
 			else if ( personType == PersonType.Zombie )
 				person = new Zombie();
+			else if ( personType == PersonType.Soldier)
+				person = new Soldier();
 
-			if(person == null)
+			if (person == null)
 				return;
 
 			person.Assign( player );

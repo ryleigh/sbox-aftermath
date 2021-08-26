@@ -89,20 +89,10 @@ namespace aftermath
 				DebugOverlay.ScreenText( 5, $"Rounds.Current (Server): {Rounds.Current}" );
 				DebugOverlay.ScreenText( 8, $"Selected (Server): {Selected.Count}" );
 
-				if ( Input.Released( InputButton.Slot1 ) )
-				{
-					AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Survivor );
-				}
-				
-				if ( Input.Released( InputButton.Slot2 ) )
-				{
-					AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up );
-				}
-
-				if ( Input.Released( InputButton.Slot3 ) )
-				{
-					AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Zombie);
-				}
+				if ( Input.Released( InputButton.Slot1 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Survivor ); }
+				if ( Input.Released( InputButton.Slot2 ) ) { AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up ); }
+				if ( Input.Released( InputButton.Slot3 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Zombie); }
+				if ( Input.Released( InputButton.Slot4 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Soldier); }
 
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );

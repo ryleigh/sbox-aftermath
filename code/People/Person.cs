@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Sandbox;
+using Sandbox.Rcon;
 using Entity = Sandbox.Entity;
 
 namespace aftermath
@@ -10,13 +12,16 @@ namespace aftermath
 
 	public partial class Person : AnimEntity, ISelectable
 	{
+		[Net] public string DebugText { get; set; }
+
 		void DrawDebugText()
 		{
 			Color color = Player?.TeamColor?? Color.Black;
 			float duration = 0f;
 			float dist = 99999f;
 
-			DebugOverlay.Text( Position, 2, $"IsLocalPlayers: {IsLocalPlayers}, Local.Pawn: {Local.Pawn }\nIsServer: {IsServer}, IsSelected: {IsSelected}\nplayerNum: {PlayerNum}, networkIdent: {NetworkIdent}", color, duration, dist );
+			// DebugOverlay.Text( Position, 2, $"IsLocalPlayers: {IsLocalPlayers}, Local.Pawn: {Local.Pawn }\nIsServer: {IsServer}, IsSelected: {IsSelected}\nplayerNum: {PlayerNum}, networkIdent: {NetworkIdent}", color, duration, dist );
+			DebugOverlay.Text( Position, 2, DebugText, color, duration, dist );
 		}
 
 		private struct AnimationValues
@@ -65,10 +70,15 @@ namespace aftermath
 		public bool IsSelected { get; private set; }
 
 		[Net] public bool IsDead { get; private set; }
+		[Net] public bool IsSpawning { get; protected set; }
 
 		[Net] public Vector2 Position2D { get; private set; }
 		private bool _shouldDrawPath;
 		private List<Vector2> _path;
+
+		public virtual List<Person> GetValidTargets() { return new List<Person>(); }
+
+		public float CloseRangeDetectionDistance { get; protected set; }
 
 		public void SetPosition2D( Vector2 pos )
 		{
@@ -94,6 +104,8 @@ namespace aftermath
 			RotationController = new Person_RotationController { Person = this };
 			Aiming = new Person_Aiming { Person = this };
 
+			CommandHandler.FinishedAllCommands += OnFinishAllCommands;
+
 			RotationController.RotationSpeed = 2f;
 
 			CollisionGroup = CollisionGroup.Player;
@@ -108,6 +120,12 @@ namespace aftermath
 			Log.Info( $"Person - Assign: {player}, color: {player?.TeamColor}" );
 			Player = player;
 			PlayerNum = player?.PlayerNum ?? 0;
+
+			Movement.Init();
+			Pathfinding.Init();
+			CommandHandler.Init();
+			RotationController.Init();
+			Aiming.Init();
 		}
 		
 		[Event.Tick.Server]
@@ -120,6 +138,12 @@ namespace aftermath
 			CommandHandler.Update( dt );
 			RotationController.Update( dt );
 			Aiming.Update( dt );
+
+			DebugText = $"Commands: {CommandHandler.CommandList.Count}";
+			foreach ( var command in CommandHandler.CommandList )
+			{
+				DebugText += $"\n{command.ToString()}";
+			}
 		}
 
 		[Event.Tick.Client]
@@ -130,10 +154,10 @@ namespace aftermath
 			if ( IsSelected && IsLocalPlayers )
 			{
 				Utils.DrawCircle( Position2D, 7f + MathF.Sin( Time.Now * 2f ) * 6f, 25f, 12, Player.TeamColor, Time.Now * -4f );
-
-				if ( _shouldDrawPath)
-					RenderPath();
 			}
+
+			if ( _shouldDrawPath )
+				RenderPath();
 
 			DrawDebugText();
 		}
@@ -199,6 +223,16 @@ namespace aftermath
 
 			for ( int i = 0; i < _path.Count - 1; i++ )
 				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor );
+		}
+
+		protected virtual void OnFinishAllCommands( Person_CommandHandler commandHandler )
+		{
+			
+		}
+
+		public virtual void FoundTarget( Person target )
+		{
+
 		}
 	}
 }

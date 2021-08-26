@@ -46,6 +46,11 @@ namespace aftermath
 			// Log.Warning( $"Person_Movement ctor **************** IsServer: {Host.IsServer}," );
 		}
 
+		public override void Init()
+		{
+			CurrentGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( Person.Position2D );
+		}
+
 		public void Update( float dt )
 		{
 			// Log.Warning( $"Person_Movement Update 00000000000000000 IsServer: {Host.IsServer}, Person: {Person}" );
@@ -64,7 +69,7 @@ namespace aftermath
 			Vector2 newPos = Person.Position2D + (Velocity + ForceVelocity) * dt;
 
 			// check for wall collision (and for out-of-bounds)
-			float BUFFER = Person.CollisionBounds.Size.x * 0.5f;
+			float BUFFER = Person.CollisionBounds.Size.x * 0.25f;
 			float SQUARE_SIZE = grid.SquareSize;
 
 			GridPosition gridPos = grid.GetGridPosFor2DPos( Person.Position2D );
@@ -74,32 +79,22 @@ namespace aftermath
 			float down = center.y - SQUARE_SIZE * 0.5f + BUFFER;
 			float up = center.y + SQUARE_SIZE * 0.5f - BUFFER;
 
-			if ( newPos.x < Person.Position2D.x )
-			{
-				if ( newPos.x < left && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Left ) ) )
-				{
+			if ( newPos.x < Person.Position2D.x ) {
+				if ( newPos.x < left && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Left ) ) ) {
 					newPos = new Vector2( left, newPos.y );
 				}
-			}
-			else if ( newPos.x > Person.Position2D.x )
-			{
-				if ( newPos.x > right && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Right ) ) )
-				{
+			} else if ( newPos.x > Person.Position2D.x ) {
+				if ( newPos.x > right && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Right ) ) ) {
 					newPos = new Vector2( right, newPos.y );
 				}
 			}
 
-			if ( newPos.y < Person.Position2D.y )
-			{
-				if ( newPos.y < down && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Down ) ) )
-				{
+			if ( newPos.y < Person.Position2D.y ) {
+				if ( newPos.y < down && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Down ) ) ) {
 					newPos = new Vector2( newPos.x, down );
 				}
-			}
-			else if ( newPos.y > Person.Position2D.y )
-			{
-				if ( newPos.y > up && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Up ) ) )
-				{
+			} else if ( newPos.y > Person.Position2D.y ) {
+				if ( newPos.y > up && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Up ) ) ) {
 					newPos = new Vector2( newPos.x, up );
 				}
 			}
@@ -169,8 +164,7 @@ namespace aftermath
 
 		public float GetCurrentMoveSpeed()
 		{
-			// float min = 0f;
-			// float max = Person.CommandHandler.CurrentCommandType == PersonCommandType.FollowTarget ? FollowTargetMoveSpeed : MoveSpeed;
+			float speed = Person.CommandHandler.CurrentCommandType == PersonCommandType.FollowTarget ? FollowTargetMoveSpeed : MoveSpeed;
 
 			// float speed = Utils.Map( Math.Abs( Person.BodyAnimHandler.AnimSin ), 0f, 1f, min, max, EasingType.Linear );
 
@@ -179,7 +173,7 @@ namespace aftermath
 
 			// return speed * Person.MoveSpeedFactor;
 
-			return 70f;
+			return speed;
 		}
 
 		void CheckCurrentGridPos()

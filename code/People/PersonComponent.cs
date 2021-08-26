@@ -10,5 +10,6 @@ namespace aftermath
 	public class PersonComponent
 	{
 		public Person Person { get; set; }
+		public virtual void Init() {}
 	}
 }

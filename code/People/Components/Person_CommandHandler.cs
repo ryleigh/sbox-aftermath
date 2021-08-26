@@ -19,7 +19,7 @@ namespace aftermath
 
 	public partial class Person_CommandHandler : PersonComponent, ICommandHandler
 	{
-		public List<PersonCommand> CommandList = new List<PersonCommand>();
+		public List<PersonCommand> CommandList = new();
 		public PersonCommand CurrentCommand => CommandList.Count > 0 ? CommandList[0] : null;
 		public PersonCommandType CurrentCommandType => CommandList.Count > 0 ? CommandList[0].Type : PersonCommandType.None;
 
@@ -37,8 +37,7 @@ namespace aftermath
 			if ( Person.IsDead )
 				return;
 
-			if ( CurrentCommand != null )
-				CurrentCommand.Update( dt );
+			CurrentCommand?.Update( dt );
 		}
 
 		public void AddCommand( PersonCommand command )
@@ -77,8 +76,7 @@ namespace aftermath
 
 		public void ClearCommands()
 		{
-			if ( CurrentCommand != null )
-				CurrentCommand.Interrupt();
+			CurrentCommand?.Interrupt();
 
 			CommandList.Clear();
 		}
@@ -147,9 +145,6 @@ namespace aftermath
 				}
 				else
 				{
-					//                    if(Person.IsSelected)
-					//                        Debug.Log("Finished all commands!");
-
 					FinishedAllCommands?.Invoke( this );
 				}
 			}

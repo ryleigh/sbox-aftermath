@@ -14,7 +14,7 @@ namespace aftermath
 		public GridPosition TreatAsWalkable { get; private set; }
 		public List<Vector2> Path;
 
-		public override string ToString() { return "MoveToPosCommand: " + TargetPos; }
+		public override string ToString() { return $"MoveTo: {TargetPos}"; }
 
 		private float _refreshPathTimer;
 		public float RefreshDelayMin { get; set; } = 1f;

@@ -72,7 +72,6 @@ namespace aftermath
 		[Net] public bool IsDead { get; private set; }
 		[Net] public bool IsSpawning { get; protected set; }
 
-		[Net] public Vector2 Position2D { get; private set; }
 		private bool _shouldDrawPath;
 		private List<Vector2> _path;
 
@@ -80,12 +79,14 @@ namespace aftermath
 
 		public float CloseRangeDetectionDistance { get; protected set; }
 
+		[Net] public Vector2 Position2D { get; private set; }
+
 		public void SetPosition2D( Vector2 pos )
 		{
 			if ( IsServer )
 			{
 				Position2D = pos;
-				Position = new Vector3( pos.x, pos.y, 0f );
+				Position = new Vector3( pos.x, pos.y, Position.z );
 			}
 		}
 

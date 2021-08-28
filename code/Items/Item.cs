@@ -16,6 +16,8 @@ namespace aftermath
 
 		void DrawDebugText()
 		{
+			if ( string.IsNullOrEmpty(DebugText) ) return;
+
 			Color color = Color.White;
 			float duration = 0f;
 			float dist = 99999f;
@@ -34,13 +36,11 @@ namespace aftermath
 			}
 		}
 
-		[Net]
-		public bool PhysicsActive { get; set; }
+		[Net] public bool PhysicsActive { get; set; }
 
 		public Vector2 Velocity2D { get; set; }
 
-		[Net]
-		public bool IsInAir { get; protected set; }
+		[Net] public bool IsInAir { get; protected set; }
 
 		protected float _deceleration;
 		protected float _groundedDeceleration;
@@ -59,17 +59,10 @@ namespace aftermath
 
 		public bool IsBeingPickedUp => PersonPickingUp != null || StructurePickingUp != null;
 
-		[Net]
-		public Person PersonPickingUp { get; set; }
-
-		[Net]
-		public Structure StructurePickingUp { get; set; }
-
-		[Net]
-		public bool IsBeingHovered { get; protected set; }
-
-		[Net]
-		public int NumPeopleMovingToPickUp { get; set; }
+		[Net] public Person PersonPickingUp { get; set; }
+		[Net] public Structure StructurePickingUp { get; set; }
+		[Net] public bool IsBeingHovered { get; protected set; }
+		[Net] public int NumPeopleMovingToPickUp { get; set; }
 
 		public event ItemDelegate HitGroundCallback;
 
@@ -234,7 +227,7 @@ namespace aftermath
 				}
 				else
 				{
-					Position = new Vector3( Position.x, Position.y, 0f );
+					Position = new Vector3( Position.x, Position.y, currentHeight );
 					Rotation = global::Rotation.From( currentRot, Rotation.Yaw(), Rotation.Roll() );
 				}
 			}

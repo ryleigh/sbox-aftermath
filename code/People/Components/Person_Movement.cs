@@ -51,7 +51,7 @@ namespace aftermath
 			CurrentGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( Person.Position2D );
 		}
 
-		public void Update( float dt )
+		public override void Update( float dt )
 		{
 			// Log.Warning( $"Person_Movement Update 00000000000000000 IsServer: {Host.IsServer}, Person: {Person}" );
 

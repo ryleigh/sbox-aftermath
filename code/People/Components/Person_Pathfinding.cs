@@ -23,7 +23,7 @@ namespace aftermath
 
 		}
 
-		public void Update( float dt )
+		public override void Update( float dt )
 		{
 			TimeSinceLastPathfind += dt;
 		}

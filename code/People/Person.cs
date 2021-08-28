@@ -16,6 +16,8 @@ namespace aftermath
 
 		void DrawDebugText()
 		{
+			if ( string.IsNullOrEmpty( DebugText ) ) return;
+
 			Color color = Player?.TeamColor?? Color.Black;
 			float duration = 0f;
 			float dist = 99999f;
@@ -52,6 +54,7 @@ namespace aftermath
 		public Person_CommandHandler CommandHandler { get; private set; }
 		public Person_RotationController RotationController { get; private set; }
 		public Person_Aiming Aiming { get; private set; }
+		public Person_GunHandler GunHandler { get; private set; }
 
 		[Net] public Player Player { get; private set; }
 		[Net] public int PlayerNum { get; private set; }
@@ -104,6 +107,7 @@ namespace aftermath
 			CommandHandler = new Person_CommandHandler { Person = this };
 			RotationController = new Person_RotationController { Person = this };
 			Aiming = new Person_Aiming { Person = this };
+			GunHandler = new Person_GunHandler { Person = this };
 
 			CommandHandler.FinishedAllCommands += OnFinishAllCommands;
 
@@ -114,6 +118,25 @@ namespace aftermath
 			EnableHitboxes = true;
 
 			Scale = 1.25f;
+
+			Gun gun = new Gun();
+			GunHandler.EquipGun( gun );
+
+			// item.SetParent( this, true );
+
+			// var attachment = GetAttachment( "weapon", true );
+			// if ( attachment.HasValue )
+			// {
+			// 	Log.Info( $"attachment: {attachment}" );
+			// 	item.SetParent( this );
+			// 	item.Position = attachment.Value.Position;
+			// }
+			// else
+			// {
+			// 	Log.Info( $"NO ATTACHMENT VALUE!: {attachment}" );
+			// 	// item.Position = Position;
+			// 	item.SetParent( this, true );
+			// }
 		}
 
 		public virtual void Assign( Player player )
@@ -127,6 +150,7 @@ namespace aftermath
 			CommandHandler.Init();
 			RotationController.Init();
 			Aiming.Init();
+			GunHandler.Init();
 		}
 		
 		[Event.Tick.Server]
@@ -195,6 +219,13 @@ namespace aftermath
 
 			var person = Entity.FindByIndex( id ) as Person;
 			person?.MoveTo( pos );
+		}
+
+		[ServerCmd]
+		public static void DropGun( int id )
+		{
+			var person = Entity.FindByIndex( id ) as Person;
+			person?.GunHandler?.DropGun( Vector2.Right, 20f, 8 );
 		}
 
 		public virtual bool ShouldRepelFromAllies()

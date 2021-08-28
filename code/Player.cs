@@ -96,19 +96,17 @@ namespace aftermath
 
 				if ( Input.Released( InputButton.Slot5 ) )
 				{
-					Log.Info( $"Person - spawn item at pos: {mouseWorldPos}" );
+					// Log.Info( $"Person - spawn item at pos: {mouseWorldPos}" );
 
 					Item item = new Item
 					{
-						// Position = mouseWorldPos,
+						Position = mouseWorldPos,
 					};
 
 					item.SetPosition2D( new Vector2( mouseWorldPos.x, mouseWorldPos.y ) );
 
-
-
 					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ), 0f ), 50f, 1f, 8 );
-					item.PlaceItem( item.Position + new Vector3( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ), 0f ), 50f, 1f, 8 );
+					item.PlaceItem( item.Position + new Vector3( Rand.Float( -50f, 50f ), Rand.Float( -50f, 50f ), 0f ), Rand.Float( 50f, 100f ), Rand.Float( 0.5f, 1f ), 8);
 				}
 
 				if ( Input.Down( InputButton.Flashlight ) )
@@ -182,6 +180,17 @@ namespace aftermath
 					if ( entity is Survivor survivor )
 					{
 						Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+					}
+				}
+			}
+
+			if ( Input.Pressed( InputButton.Slot6) )
+			{
+				foreach ( var entity in Selected )
+				{
+					if ( entity is Survivor survivor )
+					{
+						Person.DropGun( survivor.NetworkIdent );
 					}
 				}
 			}

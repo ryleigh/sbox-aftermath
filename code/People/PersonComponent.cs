@@ -11,5 +11,6 @@ namespace aftermath
 	{
 		public Person Person { get; set; }
 		public virtual void Init() {}
+		public virtual void Update( float dt ) {}
 	}
 }

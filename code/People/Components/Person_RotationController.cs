@@ -18,7 +18,7 @@ namespace aftermath
 			// Log.Info( $"Person_RotationController ctor, IsServer: {Host.IsServer}," );
 		}
 
-		public void Update( float dt )
+		public override void Update( float dt )
 		{
 			if ( Math.Abs( CurrentRotation - TargetRotation ) < 1.0f )
 				CurrentRotation = TargetRotation;

@@ -194,6 +194,27 @@ namespace aftermath
 					}
 				}
 			}
+
+			var trace = Utils.TraceRayDirection( builder.Cursor.Origin, builder.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
+			bool showTooltip = false;
+
+			if ( trace.Entity is Person p)
+			{
+				ItemTooltip.Instance.Update( p );
+				ItemTooltip.Instance.Hover( p );
+				ItemTooltip.Instance.Show();
+				showTooltip = true;
+			} 
+			else if ( trace.Entity is Item item )
+			{
+				ItemTooltip.Instance.Update( item );
+				ItemTooltip.Instance.Hover( item );
+				ItemTooltip.Instance.Show();
+				showTooltip = true;
+			}
+
+			if(!showTooltip)
+				ItemTooltip.Instance.Hide();
 		}
 
 		public void DeselectAll()

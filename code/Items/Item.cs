@@ -71,6 +71,8 @@ namespace aftermath
 		private readonly float BLINK_START_TIME = 3f;
 		protected bool _shouldBlink = true;
 
+		[Net] public string DisplayName { get; protected set; }
+
 		public Item()
 		{
 			Transmit = TransmitType.Always;
@@ -81,11 +83,19 @@ namespace aftermath
 			SetModel( "weapons/rust_pistol/rust_pistol.vmdl" );
 			Scale = 1.83f;
 
+			// CollisionGroup = CollisionGroup.Player;
+			// SetupPhysicsFromModel( PhysicsMotionType.Dynamic );
+			// SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 64f, 26f ) ); // 8 radius default
+			SetupPhysicsFromModel( PhysicsMotionType.Static );
+			EnableHitboxes = true;
+
 			_deceleration = 0.05f;
 			_groundedDeceleration = 0.2f;
 			PhysicsActive = true;
 
 			_lifetime = float.MaxValue;
+
+			DisplayName = "Item";
 		}
 
 		[Event.Tick.Server]

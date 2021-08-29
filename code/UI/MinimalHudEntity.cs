@@ -5,6 +5,8 @@ namespace aftermath
 {
 	public partial class MinimalHudEntity : HudEntity<RootPanel>
 	{
+		public static ItemTooltip Tooltip => ItemTooltip.Instance;
+
 		public MinimalHudEntity()
 		{
 			if ( !IsClient ) return;
@@ -13,6 +15,7 @@ namespace aftermath
 
 			RootPanel.AddChild<PlayerInfoHud>();
 			// RootPanel.AddChild<CursorController>();
+			RootPanel.AddChild<ItemTooltip>();
 		}
 	}
 }

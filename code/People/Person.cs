@@ -114,13 +114,14 @@ namespace aftermath
 			RotationController.RotationSpeed = 2f;
 
 			CollisionGroup = CollisionGroup.Player;
-			SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 64f, 26f ) ); // 8 radius default
+			SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 48f, 10f ) ); // 8 radius default
 			EnableHitboxes = true;
 
 			Scale = 1.25f;
 
 			Gun gun = new Gun();
-			GunHandler.EquipGun( gun );
+			GunHandler.StartEquippingGun( gun );
+			GunHandler.FinishEquippingGun( gun );
 
 			// item.SetParent( this, true );
 
@@ -219,6 +220,19 @@ namespace aftermath
 
 			var person = Entity.FindByIndex( id ) as Person;
 			person?.MoveTo( pos );
+		}
+
+		[ServerCmd]
+		public static void MoveToPickUpItem( int itemId, int personId )
+		{
+			if ( Entity.FindByIndex( itemId ) is not Item item ) return;
+			if ( Entity.FindByIndex( personId ) is not Person person ) return;
+
+			MoveToPosCommand moveCommand = new( item.Position2D );
+			MoveToPickUpItemCommand moveToPickUpCommand = new( item );
+			ParallelCommand parallelCommand = new(new List<PersonCommand>() {moveCommand, moveToPickUpCommand});
+
+			person.CommandHandler.SetCommand( parallelCommand );
 		}
 
 		[ServerCmd]

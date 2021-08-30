@@ -112,6 +112,112 @@ namespace aftermath
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );
 			}
+			else
+			{
+				// CLIENT
+				if ( Input.Pressed( InputButton.Attack1 ) )
+					FrustumSelect.Init( Input.Cursor, EyeRot );
+
+				if ( Input.Down( InputButton.Attack1 ) )
+					FrustumSelect.Update( Input.Cursor );
+
+				if ( !Input.Down( InputButton.Attack1 ) )
+					FrustumSelect.IsDragging = false;
+
+				if ( Input.Pressed( InputButton.Attack1 ) )
+				{
+					FrustumSelect.Init( Input.Cursor, EyeRot );
+				}
+
+				if ( Input.Down( InputButton.Attack1 ) )
+				{
+					FrustumSelect.Update( Input.Cursor );
+
+					if ( FrustumSelect.IsDragging )
+					{
+						foreach ( var entity in Selected )
+						{
+							if ( entity is Person person )
+								person.Deselect();
+						}
+
+						Selected.Clear();
+
+						var f = FrustumSelect.GetFrustum();
+
+						foreach ( var ent in Entity.All )
+						{
+							if ( !ent.Tags.Has( "selectable" ) ) continue;
+							if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
+
+							if ( ent is Person person )
+							{
+								if ( !person.IsLocalPlayers ) continue;
+								person.Select();
+							}
+
+							Selected.Add( ent );
+						}
+					}
+				}
+
+				if ( !Input.Down( InputButton.Attack1 ) )
+					FrustumSelect.IsDragging = false;
+
+				if ( Input.Pressed( InputButton.Attack2 ) )
+				{
+					foreach ( var entity in Selected )
+					{
+						if ( entity is Survivor survivor )
+						{
+							Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+						}
+					}
+				}
+
+				if ( Input.Pressed( InputButton.Slot6 ) )
+				{
+					foreach ( var entity in Selected )
+					{
+						if ( entity is Survivor survivor )
+						{
+							Person.DropGun( survivor.NetworkIdent );
+						}
+					}
+				}
+
+				var trace = Utils.TraceRayDirection( Input.Cursor.Origin, Input.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
+				bool showTooltip = false;
+
+				if ( trace.Entity is Person p )
+				{
+					ItemTooltip.Instance.Update( p );
+					ItemTooltip.Instance.Hover( p );
+					ItemTooltip.Instance.Show();
+					showTooltip = true;
+				}
+				else if ( trace.Entity is Item item )
+				{
+					ItemTooltip.Instance.Update( item );
+					ItemTooltip.Instance.Hover( item );
+					ItemTooltip.Instance.Show();
+					showTooltip = true;
+
+					if ( Input.Pressed( InputButton.Attack2 ) )
+					{
+						foreach ( var entity in Selected )
+						{
+							if ( entity is Survivor survivor )
+							{
+								Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+							}
+						}
+					}
+				}
+
+				if ( !showTooltip )
+					ItemTooltip.Instance.Hide();
+			}
 		}
 
 		// CLIENT
@@ -120,101 +226,6 @@ namespace aftermath
 		{
 			base.BuildInput( builder );
 
-			if ( Input.Pressed( InputButton.Attack1 ) )
-				FrustumSelect.Init( Input.Cursor, EyeRot );
-
-			if ( Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.Update( Input.Cursor );
-
-			if ( !Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.IsDragging = false;
-
-			if ( Input.Pressed( InputButton.Attack1 ) )
-			{
-				FrustumSelect.Init( Input.Cursor, EyeRot );
-			}
-
-			if ( Input.Down( InputButton.Attack1 ) )
-			{
-				FrustumSelect.Update( Input.Cursor );
-
-				if ( FrustumSelect.IsDragging )
-				{
-					foreach ( var entity in Selected )
-					{
-						if ( entity is Person person )
-							person.Deselect();
-					}
-
-					Selected.Clear();
-
-					var f = FrustumSelect.GetFrustum();
-
-					foreach ( var ent in Entity.All )
-					{
-						if ( !ent.Tags.Has( "selectable" ) ) continue;
-						if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
-
-						if ( ent is Person person )
-						{
-							if ( !person.IsLocalPlayers ) continue;
-							person.Select();
-						}
-
-						Selected.Add( ent );
-					}
-				}
-			}
-
-			if ( !Input.Down( InputButton.Attack1 ) )
-				FrustumSelect.IsDragging = false;
-
-			Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
-			Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
-			Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
-
-			if ( Input.Pressed( InputButton.Attack2 ) )
-			{
-				foreach ( var entity in Selected )
-				{
-					if ( entity is Survivor survivor )
-					{
-						Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
-					}
-				}
-			}
-
-			if ( Input.Pressed( InputButton.Slot6) )
-			{
-				foreach ( var entity in Selected )
-				{
-					if ( entity is Survivor survivor )
-					{
-						Person.DropGun( survivor.NetworkIdent );
-					}
-				}
-			}
-
-			var trace = Utils.TraceRayDirection( builder.Cursor.Origin, builder.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
-			bool showTooltip = false;
-
-			if ( trace.Entity is Person p)
-			{
-				ItemTooltip.Instance.Update( p );
-				ItemTooltip.Instance.Hover( p );
-				ItemTooltip.Instance.Show();
-				showTooltip = true;
-			} 
-			else if ( trace.Entity is Item item )
-			{
-				ItemTooltip.Instance.Update( item );
-				ItemTooltip.Instance.Hover( item );
-				ItemTooltip.Instance.Show();
-				showTooltip = true;
-			}
-
-			if(!showTooltip)
-				ItemTooltip.Instance.Hide();
 		}
 
 		public void DeselectAll()

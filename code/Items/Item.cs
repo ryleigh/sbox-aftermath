@@ -71,8 +71,6 @@ namespace aftermath
 		private readonly float BLINK_START_TIME = 3f;
 		protected bool _shouldBlink = true;
 
-		[Net] public string DisplayName { get; protected set; }
-
 		public Item()
 		{
 			Transmit = TransmitType.Always;
@@ -94,8 +92,6 @@ namespace aftermath
 			PhysicsActive = true;
 
 			_lifetime = float.MaxValue;
-
-			DisplayName = "Item";
 		}
 
 		[Event.Tick.Server]
@@ -112,6 +108,8 @@ namespace aftermath
 			if ( AllowedToDespawn() )
 				HandleLifetime( dt );
 			// else
+
+			// DebugText = $"PersonPickingUp: {PersonPickingUp}";
 		}
 
 		[Event.Tick.Client]
@@ -282,6 +280,12 @@ namespace aftermath
 		}
 
 		public virtual void PersonFinishedPickingUp( Person person )
+		{
+			if ( PersonPickingUp == person )
+				PersonPickingUp = null;
+		}
+
+		public virtual void PersonInterruptedPickingUp( Person person )
 		{
 			if ( PersonPickingUp == person )
 				PersonPickingUp = null;

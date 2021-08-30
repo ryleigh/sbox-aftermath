@@ -52,7 +52,7 @@ namespace aftermath
 
         public void Update( Item item )
         {
-	        Name.Text = item.DisplayName;
+	        Name.Text = item.GetHoverInfo();
 	        Desc.Text = item.Position2D.ToString();
         }
 

@@ -17,11 +17,27 @@ namespace aftermath
 
 		}
 
-		public void EquipGun( Gun gun )
+		public void StartEquippingGun( Gun gun )
 		{
+			if(Gun != null)
+				DropGun( Vector2.Right, 40f, 8 );
+
 			Gun = gun;
-			Gun.PhysicsActive = false;
-			Gun.SetParent( Person, true );
+
+			gun.PersonHolding = Person;
+			gun.PhysicsActive = false;
+			gun.SetIsHovered( false );
+		}
+
+		public void FinishEquippingGun( Gun gun )
+		{
+			gun.SetParent( Person, true );
+		}
+
+		public void InterruptEquippingGun( Gun gun )
+		{
+			gun.PersonHolding = null;
+			gun.PhysicsActive = true;
 		}
 
 		public void DropGun( Vector2 dir, float force, int numFlips )

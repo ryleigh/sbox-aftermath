@@ -13,7 +13,7 @@ namespace aftermath
 	{
 		private Person_RotationController RotationController => Person.RotationController;
 
-		public Vector2 SightDirection => Utils.GetVector2FromAngle( Utils.Deg2Rad( Person.Rotation.Yaw() ) );
+		public Vector2 SightDirection => Utils.GetVector2FromAngleDegrees( Person.RotationController.CurrentRotation );
 		public float TargetSightDegrees { get; protected set; }
 
 		public float SightRadius { get; set; }

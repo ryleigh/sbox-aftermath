@@ -29,9 +29,15 @@ namespace aftermath
 		public Person PersonHolding { get; set; }
 		public Structure StructureHolding { get; set; }
 
+		public Gun()
+		{
+			GunName = "Gun";
+		}
+
 		public override void Spawn()
 		{
 			base.Spawn();
+			
 		}
 
 		protected override void Tick()
@@ -68,6 +74,29 @@ namespace aftermath
 			StructurePickingUp = null;
 			SetParent( null );
 			PhysicsActive = true;
+		}
+
+		public override void PersonStartedPickingUp( Person person )
+		{
+			base.PersonStartedPickingUp( person );
+			person.GunHandler.StartEquippingGun( this );
+		}
+
+		public override void PersonFinishedPickingUp( Person person )
+		{
+			base.PersonFinishedPickingUp( person );
+			person.GunHandler.FinishEquippingGun( this );
+		}
+
+		public override void PersonInterruptedPickingUp( Person person )
+		{
+			base.PersonInterruptedPickingUp( person );
+			person.GunHandler.InterruptEquippingGun( this );
+		}
+
+		public override string GetHoverInfo()
+		{
+			return GunName;
 		}
 	}
 }

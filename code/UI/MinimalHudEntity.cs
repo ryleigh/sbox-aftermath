@@ -16,6 +16,8 @@ namespace aftermath
 			RootPanel.AddChild<PlayerInfoHud>();
 			// RootPanel.AddChild<CursorController>();
 			RootPanel.AddChild<ItemTooltip>();
+			RootPanel.AddChild<SelectionInfoPanel>();
+			// RootPanel.AddChild<BasicMenu>();
 		}
 	}
 }

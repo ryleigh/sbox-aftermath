@@ -14,18 +14,32 @@ namespace aftermath
 		[Net] public PersonManager PersonManager { get; private set; }
 		[Net] public StructureManager StructureManager { get; private set; }
 
+		public MinimalHudEntity Hud;
+
 		public AftermathGame()
 		{
 			Instance = this;
 
 			if ( IsServer )
 			{
-				_ = new MinimalHudEntity();
-
 				GridManager = new GridManager();
 				PersonManager = new PersonManager();
 				StructureManager = new StructureManager();
 			}
+
+			if ( IsClient )
+			{
+				Hud = new MinimalHudEntity();
+			}
+		}
+
+		[Event.Hotload]
+		public void HotloadUpdate()
+		{
+			if ( !IsClient ) return;
+
+			Hud?.Delete();
+			Hud = new MinimalHudEntity();
 		}
 		
 		public override void Spawn()

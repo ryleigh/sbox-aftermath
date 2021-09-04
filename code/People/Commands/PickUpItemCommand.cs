@@ -70,7 +70,7 @@ namespace aftermath
 			// DebugOverlay.Line(Person.Position.WithZ( 0.1f ), Person.Position.WithZ( 0.1f ) + (Vector3)Person.Aiming.SightDirection * 100f, Color.Blue);
 			// DebugOverlay.Line( Person.Position.WithZ( 0.1f ), Person.Position.WithZ( 0.1f ) + (Vector3)( Item.Position2D - Person.Position2D).Normal * 100f, Color.Cyan);
 
-			if ( dot > 0.9f )
+			if ( dot > 0.75f )
 			{
 				StartAnimation();
 				return true;

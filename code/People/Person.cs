@@ -48,6 +48,8 @@ namespace aftermath
 		}
 
 		[Net] public PersonType PersonType { get; protected set; }
+		[Net] public bool IsMale { get; private set; }
+		[Net] public string PersonName { get; protected set; }
 
 		public Person_Movement Movement { get; private set; }
 		public Person_Pathfinding Pathfinding { get; private set; }
@@ -58,6 +60,8 @@ namespace aftermath
 
 		[Net] public Player Player { get; private set; }
 		[Net] public int PlayerNum { get; private set; }
+
+		[Net] public Gun EquippedGun { get; set; }
 
 		[Net] public bool IsAIControlled { get; protected set; }
 
@@ -111,17 +115,22 @@ namespace aftermath
 
 			CommandHandler.FinishedAllCommands += OnFinishAllCommands;
 
-			RotationController.RotationSpeed = 2f;
+			RotationController.RotationSpeed = 3f;
 
 			CollisionGroup = CollisionGroup.Player;
-			SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 48f, 10f ) ); // 8 radius default
+			SetupPhysicsFromCapsule( PhysicsMotionType.Static, Capsule.FromHeightAndRadius( 64f, 10f ) ); // 8 radius default
 			EnableHitboxes = true;
+
+			// UseAnimGraph = false;
 
 			Scale = 1.25f;
 
 			Gun gun = new Gun();
 			GunHandler.StartEquippingGun( gun );
 			GunHandler.FinishEquippingGun( gun );
+
+			IsMale = Rand.Float( 0f, 1f ) < (PersonType == PersonType.Soldier ? 0.8f : 0.5f);
+			SetName( IsMale ? NameGenerator.GetRandomMaleName() : NameGenerator.GetRandomFemaleName() );
 
 			// item.SetParent( this, true );
 
@@ -153,7 +162,12 @@ namespace aftermath
 			Aiming.Init();
 			GunHandler.Init();
 		}
-		
+
+		protected void SetName( string name )
+		{
+			PersonName = name;
+		}
+
 		[Event.Tick.Server]
 		protected virtual void Tick()
 		{

@@ -23,6 +23,7 @@ namespace aftermath
 				DropGun( Vector2.Right, 40f, 8 );
 
 			Gun = gun;
+			Person.EquippedGun = gun;
 
 			gun.PersonHolding = Person;
 			gun.PhysicsActive = false;
@@ -55,6 +56,8 @@ namespace aftermath
 				Gun removedGun = Gun;
 				Gun.Unequip();
 				Gun = null;
+				Person.EquippedGun = null;
+
 				return removedGun;
 			}
 

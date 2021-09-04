@@ -71,27 +71,29 @@ namespace aftermath
 		private readonly float BLINK_START_TIME = 3f;
 		protected bool _shouldBlink = true;
 
+		public string ModelPath { get; protected set; } = "models/citizen_props/roadcone01.vmdl";
+
 		public Item()
 		{
 			Transmit = TransmitType.Always;
-		}
-
-		public override void Spawn()
-		{
-			SetModel( "weapons/rust_pistol/rust_pistol.vmdl" );
-			Scale = 1.83f;
-
-			// CollisionGroup = CollisionGroup.Player;
-			// SetupPhysicsFromModel( PhysicsMotionType.Dynamic );
-			// SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 64f, 26f ) ); // 8 radius default
-			SetupPhysicsFromModel( PhysicsMotionType.Static );
-			EnableHitboxes = true;
 
 			_deceleration = 0.05f;
 			_groundedDeceleration = 0.2f;
 			PhysicsActive = true;
 
 			_lifetime = float.MaxValue;
+		}
+
+		public override void Spawn()
+		{
+			// SetModel( "models/citizen_props/balloonregular01.vmdl" );
+			SetModel( ModelPath );
+
+			// CollisionGroup = CollisionGroup.Player;
+			// SetupPhysicsFromModel( PhysicsMotionType.Dynamic );
+			// SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 64f, 26f ) ); // 8 radius default
+			SetupPhysicsFromModel( PhysicsMotionType.Static );
+			EnableHitboxes = true;
 		}
 
 		[Event.Tick.Server]

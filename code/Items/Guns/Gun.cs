@@ -32,12 +32,14 @@ namespace aftermath
 		public Gun()
 		{
 			GunName = "Gun";
+			
 		}
 
 		public override void Spawn()
 		{
+			ModelPath = "weapons/rust_pistol/rust_pistol.vmdl";
+
 			base.Spawn();
-			
 		}
 
 		protected override void Tick()

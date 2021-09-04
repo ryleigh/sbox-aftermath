@@ -1,0 +1,78 @@
+﻿selectionInfoPanel {
+    opacity: 0;
+
+    &.open {
+        opacity: 1;
+    }
+
+    .nameText {
+        margin-left: 10px;
+        margin-right: 5px;
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    .itemButton {
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-family: MaterialIcons;
+        font-size: 25px;
+        padding: 0 20px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(60, 60, 60);
+        }
+
+        &.active {
+            background-color: rgb(75, 75, 75);
+        }
+
+        &.active:hover {
+            background-color: rgb(75, 75, 75);
+        }
+    }
+
+    .background {
+        position: absolute;
+        left: 50px;
+        bottom: 50px;
+        padding: 5px;
+        background-color: #323232;
+        box-shadow: 0 0 5px black;
+        pointer-events: auto;
+        height: 40px;
+    }
+
+    .healthIconBack {
+        margin-right: 5px;
+        align-items: center;
+    }
+
+    .healthIcon {
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-family: MaterialIcons;
+        font-size: 25px;
+        padding: 0 20px;
+    }
+
+    .healthBarBack {
+        width: 250px;
+        background-color: #212121;
+    }
+
+    .healthBar {
+        background-color: #6666ff;
+    }
+
+    .healthText {
+        margin-left: 10px;
+        margin-right: 5px;
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-weight: bold;
+    }
+}

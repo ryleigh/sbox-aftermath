@@ -38,7 +38,7 @@ namespace aftermath
 			ForceDeceleration = 0.125f;
 			_repelTimer = Rand.Float( REPEL_TICK_MIN, REPEL_TICK_MAX );
 
-			AllyRepelDistance = 50f;
+			AllyRepelDistance = 40f;
 			AllyRepelStrength = 200f;
 			EnemyRepelDistance = 50f;
 			EnemyRepelStrength = 200f;

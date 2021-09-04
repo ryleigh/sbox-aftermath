@@ -218,7 +218,7 @@ namespace aftermath
 					}
 				}
 
-				if ( !showTooltip )
+				if ( !showTooltip && !ItemTooltip.Instance.IsOnHud )
 					ItemTooltip.Instance.Hide();
 			}
 		}

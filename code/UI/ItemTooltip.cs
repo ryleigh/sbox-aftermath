@@ -17,8 +17,9 @@ namespace aftermath
         public Label Desc { get; private set; }
         public bool IsShowing { get; private set; }
         public object Target { get; private set; }
+        public bool IsOnHud { get; private set; }
 
-        public ItemTooltip()
+		public ItemTooltip()
         {
 	        StyleSheet.Load( "/UI/ItemTooltip.scss" );
 
@@ -36,6 +37,7 @@ namespace aftermath
         public void Hide()
         {
 	        IsShowing = false;
+	        IsOnHud = false;
         }
 
         public void Hover( Entity entity )
@@ -44,9 +46,16 @@ namespace aftermath
 	        UpdatePosition();
         }
 
-        public void Update( Person person )
+        public void Hover( Panel panel )
         {
-	        Name.Text = person.EntityName;
+	        Target = panel;
+	        IsOnHud = true;
+	        UpdatePosition();
+        }
+
+		public void Update( Person person )
+        {
+	        Name.Text = person.PersonName;
 	        Desc.Text = person.Position2D.ToString();
         }
 
@@ -68,7 +77,15 @@ namespace aftermath
 
         private void UpdatePosition()
         {
-	        if ( Target is Entity entity && entity.IsValid() )
+	        if ( Target is Panel panel )
+	        {
+		        var targetBox = panel.Box.Rect * ScaleFromScreen;
+
+		        Style.Left = Length.Pixels( targetBox.Center.x );
+		        Style.Top = Length.Pixels( targetBox.top - 32 );
+		        Style.Dirty();
+	        }
+			else if ( Target is Entity entity && entity.IsValid() )
 	        {
 		        var position = entity.Position.ToScreen() * new Vector3( Screen.Width, Screen.Height ) * ScaleFromScreen;
 

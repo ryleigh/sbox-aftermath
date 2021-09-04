@@ -31,7 +31,9 @@ namespace aftermath
 			PersonBackgroundPanel = HudBackgroundPanel.Add.Panel( "personBackground" );
 
 			Panel buttonBackground = PersonBackgroundPanel.Add.Panel( "itemButtonBackground" );
-			ItemButton = buttonBackground.Add.Button( "", "itemButton" );
+			// ItemButton = buttonBackground.Add.Button( "", "itemButton" );
+			ItemButton = buttonBackground.AddChild<ItemButton>( );
+			ItemButton.SetClass( "itemButton", true );
 			ItemButton.AddEventListener( "onclick", () => {
 				DropItem();
 			} );
@@ -87,6 +89,33 @@ namespace aftermath
 					Person.DropGun( person.NetworkIdent );
 				}
 			}
+		}
+	}
+
+	public class ItemButton : Button
+	{
+		protected override void OnMouseOver( MousePanelEvent e )
+		{
+			Log.Info( $"OVER!!! {Time.Now}" );
+			if ( Local.Pawn is not Player player ) return;
+			if ( player.Selected.Count == 1 )
+			{
+				if ( player.Selected[0] is Person person )
+				{
+					if ( person.EquippedGun != null )
+					{
+						ItemTooltip.Instance.Update( person.EquippedGun );
+						ItemTooltip.Instance.Hover( this );
+						ItemTooltip.Instance.Show();
+					}
+				}
+			}
+		}
+
+		protected override void OnMouseOut( MousePanelEvent e )
+		{
+			Log.Info( $"OUT! {Time.Now}" );
+			ItemTooltip.Instance.Hide();
 		}
 	}
 }

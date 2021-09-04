@@ -11,30 +11,39 @@ namespace aftermath
 {
 	public partial class SelectionInfoPanel : Panel
 	{
+		private Panel ScrapBackgroundPanel;
+
 		private Label NameLabel;
 		private Button ItemButton;
+		private Panel HudBackgroundPanel;
+		private Panel PersonBackgroundPanel;
 
-		private Label XpLabel;
+		private Label ScrapLabel;
+		private Label ScrapIcon;
 		private Panel XpBar;
 
 		public SelectionInfoPanel()
 		{
 			StyleSheet.Load( "UI/SelectionInfoPanel.scss" );
 
-			Panel background = Add.Panel( "background" );
+			HudBackgroundPanel = Add.Panel( "hudBackground" );
 
-			NameLabel = background.Add.Label( "", "nameText" );
+			PersonBackgroundPanel = HudBackgroundPanel.Add.Panel( "personBackground" );
 
-			Panel healthIconBack = background.Add.Panel( "healthIconBack" );
-			ItemButton = healthIconBack.Add.Button( "", "itemButton" );
+			Panel buttonBackground = PersonBackgroundPanel.Add.Panel( "itemButtonBackground" );
+			ItemButton = buttonBackground.Add.Button( "", "itemButton" );
 			ItemButton.AddEventListener( "onclick", () => {
 				DropItem();
 			} );
 
+			NameLabel = PersonBackgroundPanel.Add.Label( "", "nameText" );
+
+			ScrapLabel = HudBackgroundPanel.Add.Label( "0", "scrapText" );
+			ScrapIcon = HudBackgroundPanel.Add.Label( "clear_all", "scrapIcon" );
+
 			// Panel healthBarBack = background.Add.Panel( "healthBarBack" );
 			//
 			// XpBar = healthBarBack.Add.Panel( "healthBar" );
-			// XpLabel = background.Add.Label( "0", "healthText" );
 		}
 
 		public override void Tick()
@@ -42,6 +51,8 @@ namespace aftermath
 			base.Tick();
 
 			if (Local.Pawn is not Player player) return;
+
+			ScrapLabel.Text = player.ScrapAmount.ToString();
 
 			// XpLabel.Text = player.Position.ToString();
 
@@ -54,13 +65,15 @@ namespace aftermath
 				{
 					NameLabel.Text = person.PersonName;
 					ItemButton.Text = person.EquippedGun != null ? "get_app" : "";
+					ItemButton.SetClass( "open", person.EquippedGun != null );
+
 				}
 
-				SetClass( "open", true );
+				PersonBackgroundPanel.SetClass( "open", true );
 			}
 			else
 			{
-				SetClass( "open", false );
+				PersonBackgroundPanel.SetClass( "open", false );
 			}
 		}
 

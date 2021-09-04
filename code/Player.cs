@@ -15,6 +15,7 @@ namespace aftermath
 
 		[Net] public Color TeamColor { get; set; }
 		[Net] public int PlayerNum { get; set; }
+		[Net] public int ScrapAmount { get; set; }
 
 		public override void Spawn()
 		{
@@ -108,6 +109,8 @@ namespace aftermath
 					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ), 0f ), 50f, 1f, 8 );
 					item.PlaceItem( item.Position + new Vector3( Rand.Float( -50f, 50f ), Rand.Float( -50f, 50f ), 0f ), Rand.Float( 50f, 100f ), Rand.Float( 0.5f, 1f ), 8);
 				}
+
+				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 1; }
 
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );

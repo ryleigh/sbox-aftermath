@@ -1,17 +1,24 @@
 ﻿selectionInfoPanel {
-    opacity: 0;
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
 
-    &.open {
-        opacity: 1;
+    .hudBackground {
+        padding: 5px;
+        background-color: #323232;
+        box-shadow: 0 0 5px black;
+        height: 40px;
     }
 
     .nameText {
-        margin-left: 10px;
-        margin-right: 5px;
+        margin-right: 10px;
+        padding-left: 8px;
+        padding-right: 8px;
         color: #6666ff;
         text-shadow: 0 0 1px black;
         font-weight: bold;
         font-size: 25px;
+        //background-color: #ffffff11;
     }
 
     .itemButton {
@@ -19,8 +26,14 @@
         text-shadow: 0 0 1px black;
         font-family: MaterialIcons;
         font-size: 25px;
-        padding: 0 20px;
+        padding: 0 5px;
         cursor: pointer;
+        //background-color: #ffffff11;
+        display: none;
+
+        &.open {
+            display: inline;
+        }
 
         &:hover {
             background-color: rgb(60, 60, 60);
@@ -35,44 +48,38 @@
         }
     }
 
-    .background {
-        position: absolute;
-        left: 50px;
-        bottom: 50px;
-        padding: 5px;
-        background-color: #323232;
-        box-shadow: 0 0 5px black;
-        pointer-events: auto;
-        height: 40px;
+    .personBackground {
+        padding-left: 0px;
+        display: none;
+        //background-color: #ffffff11;
+
+        &.open {
+            display: inline;
+            pointer-events: auto;
+            padding-left: 4px;
+        }
     }
 
-    .healthIconBack {
+    .itemButtonBackground {
         margin-right: 5px;
         align-items: center;
     }
 
-    .healthIcon {
-        color: #6666ff;
-        text-shadow: 0 0 1px black;
-        font-family: MaterialIcons;
-        font-size: 25px;
-        padding: 0 20px;
-    }
-
-    .healthBarBack {
-        width: 250px;
-        background-color: #212121;
-    }
-
-    .healthBar {
-        background-color: #6666ff;
-    }
-
-    .healthText {
-        margin-left: 10px;
-        margin-right: 5px;
+    .scrapText {
         color: #6666ff;
         text-shadow: 0 0 1px black;
         font-weight: bold;
+        font-size: 25px;
+        padding-left: 4px;
+        //padding: 0 0 0 10px;
+    }
+
+    .scrapIcon {
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-family: MaterialIcons;
+        font-size: 28px;
+        padding-right: 4px;
+        //padding: 0 10px 0 4px;
     }
 }

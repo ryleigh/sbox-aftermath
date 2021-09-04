@@ -105,13 +105,19 @@ namespace aftermath
 			{
 				HandleHorizontalPhysics( dt );
 				HandleVerticalPhysics( dt );
+
+				if ( !IsInAir && Velocity2D.Length < 0.1f )
+				{
+					Velocity2D = Vector2.Zero;
+					PhysicsActive = false;
+				}
 			}
 
 			if ( AllowedToDespawn() )
 				HandleLifetime( dt );
 			// else
 
-			// DebugText = $"PersonPickingUp: {PersonPickingUp}";
+			// DebugText = $"Phys: {PhysicsActive}";
 		}
 
 		[Event.Tick.Client]
@@ -250,7 +256,7 @@ namespace aftermath
 			_useHorizontalTargetPos = true;
 		}
 
-		public void PlaceItem( Vector3 targetPos, float peakHeight, float airTimeTotal, int numFlips )
+		public virtual void PlaceItem( Vector3 targetPos, float peakHeight, float airTimeTotal, int numFlips )
 		{
 			UseHorizontalTargetPos( Utils.GetVector2( targetPos ) );
 
@@ -264,6 +270,25 @@ namespace aftermath
 			_targetRotation = numFlips * 180f;
 
 			PhysicsActive = true;
+			IsInAir = true;
+
+			AssignLifetime();
+		}
+
+		public virtual void Drop( Vector2 dir, float force, float peakHeightOffset, int numFlips )
+		{
+			SetPosition2D( new Vector2( Position.x, Position.y ) );
+			Velocity2D = dir * force;
+
+			_startingHeight = Position.z;
+			_peakHeight = _startingHeight + peakHeightOffset;
+			_groundHeight = 1f;
+			_airTimeTotal = _peakHeight * 0.01f;
+			_airTimer = 0f;
+
+			_startingRotation = Rotation.Yaw();
+			_targetRotation = numFlips * 180f;
+
 			IsInAir = true;
 
 			AssignLifetime();

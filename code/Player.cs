@@ -107,7 +107,8 @@ namespace aftermath
 					item.SetPosition2D( new Vector2( mouseWorldPos.x, mouseWorldPos.y ) );
 
 					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ), 0f ), 50f, 1f, 8 );
-					item.PlaceItem( item.Position + new Vector3( Rand.Float( -50f, 50f ), Rand.Float( -50f, 50f ), 0f ), Rand.Float( 50f, 100f ), Rand.Float( 0.5f, 1f ), 8);
+					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -50f, 50f ), Rand.Float( -50f, 50f ), 0f ), Rand.Float( 50f, 100f ), Rand.Float( 0.5f, 1f ), 8);
+					item.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 8 );
 				}
 
 				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 1; }

@@ -20,7 +20,7 @@ namespace aftermath
 		public void StartEquippingGun( Gun gun )
 		{
 			if(Gun != null)
-				DropGun( Vector2.Right, 40f, 8 );
+				DropGun( Vector2.Right, 40f, Rand.Float( 1f, 3f ), 8 );
 
 			Gun = gun;
 			Person.EquippedGun = gun;
@@ -41,12 +41,12 @@ namespace aftermath
 			gun.PhysicsActive = true;
 		}
 
-		public void DropGun( Vector2 dir, float force, int numFlips )
+		public void DropGun( Vector2 dir, float force, float peakHeightOffset, int numFlips )
 		{
 			if ( Gun == null ) return;
 
 			Gun gun = UnequipGun();
-			gun?.Drop( dir, force, numFlips );
+			gun?.Drop( dir, force, peakHeightOffset, numFlips );
 		} 
 
 		public Gun UnequipGun()

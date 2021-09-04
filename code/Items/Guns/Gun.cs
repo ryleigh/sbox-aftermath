@@ -49,25 +49,6 @@ namespace aftermath
 			base.Tick();
 		}
 
-		public void Drop( Vector2 dir, float force, int numFlips )
-		{
-			SetPosition2D( new Vector2( Position.x, Position.y ) );
-			Velocity2D = dir * force;
-
-			_startingHeight = Position.z;
-			_peakHeight = _startingHeight + Rand.Float( 1f, 3f );
-			_groundHeight = 1f;
-			_airTimeTotal = _peakHeight * 0.01f;
-			_airTimer = 0f;
-
-			_startingRotation = Rotation.Yaw();
-			_targetRotation = numFlips * 180f;
-
-			IsInAir = true;
-
-			AssignLifetime();
-		}
-
 		public void Unequip()
 		{
 			PersonHolding = null;

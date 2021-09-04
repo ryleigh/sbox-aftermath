@@ -253,7 +253,7 @@ namespace aftermath
 		public static void DropGun( int id )
 		{
 			var person = Entity.FindByIndex( id ) as Person;
-			person?.GunHandler?.DropGun( Vector2.Right, 40f, 8 );
+			person?.GunHandler?.DropGun( Vector2.Right, 40f, Rand.Float( 1f, 3f ), 8 );
 		}
 
 		public virtual bool ShouldRepelFromAllies()

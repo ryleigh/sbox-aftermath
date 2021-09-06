@@ -20,7 +20,7 @@ namespace aftermath
 		{
 			PersonType = PersonType.Soldier;
 
-			CloseRangeDetectionDistance = 10f;
+			CloseRangeDetectionDistance = 75f;
 			_gridWanderDistance = 13;
 		}
 
@@ -35,6 +35,13 @@ namespace aftermath
 
 			RenderColor = new Color( Rand.Float( 0.7f, 0.8f ), Rand.Float( 0.7f, 0.8f ), Rand.Float( 0.1f, 0.15f ) );
 			Wander();
+		}
+
+		public override void FoundTarget( Person target )
+		{
+			base.FoundTarget( target );
+
+			// CommandHandler.SetCommand( new FollowTargetCommand( target ) );
 		}
 	}
 }

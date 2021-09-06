@@ -606,7 +606,7 @@ namespace aftermath
 			}
 		}
 
-		public static void DrawText( this Entity entity, string text, int offset, float duration = 0f)
+		public static void DrawText( this Entity entity, string text, int offset, float duration = 0f, float scatter = 0f)
 		{
 			// Client client = entity.GetClientOwner();
 			// Color color = client == null ? Color.Black : AftermathGame.Instance.PlayerManager.GetPlayerData( client.NetworkIdent ).Color;
@@ -614,8 +614,9 @@ namespace aftermath
 			{
 				Player player = person.Player;
 				Color color = player == null ? Color.Black : person.Player.TeamColor;
-				float dist = 99999f;
-				DebugOverlay.Text( entity.Position, offset, text, color, duration, dist );
+				float dist = float.MaxValue;
+				Vector3 posOffset = new Vector3( Rand.Float( -scatter, scatter ), Rand.Float( -scatter, scatter ), Rand.Float( -scatter, scatter ) );
+				DebugOverlay.Text( entity.Position + posOffset, offset, text, color, duration, dist );
 			}
 		}
 	}

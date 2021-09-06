@@ -20,7 +20,7 @@ namespace aftermath
 		{
 			PersonType = PersonType.Zombie;
 
-			CloseRangeDetectionDistance = 8f;
+			CloseRangeDetectionDistance = 50f;
 			_gridWanderDistance = 5;
 		}
 
@@ -35,6 +35,13 @@ namespace aftermath
 
 			RenderColor = new Color( Rand.Float( 0.2f, 0.25f ), Rand.Float( 0.5f, 0.7f ), Rand.Float( 0.2f, 0.25f ) );
 			Wander();
+		}
+
+		public override void FoundTarget( Person target )
+		{
+			base.FoundTarget( target );
+
+			CommandHandler.SetCommand( new WaitCommand( 5f ) );
 		}
 	}
 }

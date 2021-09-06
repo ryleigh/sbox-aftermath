@@ -33,13 +33,31 @@ namespace aftermath
 
 		public Person_Aiming( )
 		{
-
+			SightRadius = Rand.Float( 350f, 400f );
+			SightAngle = Rand.Float( 115f, 130f );
 		}
 
 		public override void Update( float dt )
 		{
 			if ( Person.IsDead )
 				return;
+
+			if ( Person.IsSelected )
+			{
+				DrawSightCone();
+
+				Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+					? new Color( 1f, 0.5f, 0.5f, 0.9f )
+					: new Color( 0.6f, 0.6f, 1f, 0.66f );
+				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.CloseRangeDetectionDistance, 12, color, Time.Now * -2f );
+
+
+				color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+					? new Color( 1f, 0f, 0f, 1f )
+					: new Color( 1f, 1f, 1f, 0.1f );
+				DebugOverlay.Line( Person.Position.WithZ( 1f ), Person.Position.WithZ( 1f ) + (Vector3)SightDirection * SightRadius, color );
+			}
+				
 
 			HandleAiming( dt );
 		}
@@ -117,8 +135,7 @@ namespace aftermath
 					Person.Position2D.y + SightRadius * MathF.Sin( toAngle )
 				);
 
-				Vector2 intersectionPoint;
-				if ( IsPosBlocked( toPoint ) || !HasDirectPath( Person.Position2D, toPoint, out intersectionPoint ) )
+				if ( IsPosBlocked( toPoint ) || !HasDirectPath( Person.Position2D, toPoint, out _ ) )
 					sightConePoints.Add( Vector2.Zero );
 				else
 					sightConePoints.Add( toPoint );
@@ -135,9 +152,9 @@ namespace aftermath
 			sightConePoints.Add( rightCollision ? rightStart + (rightIntersectionPoint - rightStart) * COLLISION_LENGTH : rightEnd );
 			sightConePoints.Add( rightStart );
 
-			Color color = (Person.CommandHandler.CurrentCommandType == PersonCommandType.AimAtTarget || Person.CommandHandler.CurrentCommandType == PersonCommandType.Shoot)
-				? new Color( 0.6f, 0.2f, 0.2f, 0.9f )
-				: new Color( 0.5f, 0.5f, 1f, 0.66f );
+			Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+				? new Color( 1f, 0.5f, 0.5f, 0.9f )
+				: new Color( 0.6f, 0.6f, 1f, 0.66f );
 
 			for ( int i = 0; i < sightConePoints.Count; i++ )
 			{
@@ -149,7 +166,7 @@ namespace aftermath
 					if ( from.Equals( Vector2.Zero ) || to.Equals( Vector2.Zero ) )
 						continue;
 
-					DebugOverlay.Line( new Vector3( from.x, from.y, 0.01f ), new Vector3( to.x, to.y, 0.01f ), Color.White );
+					DebugOverlay.Line( new Vector3( from.x, from.y, 1f ), new Vector3( to.x, to.y, 1f ), color );
 				}
 			}
 		}

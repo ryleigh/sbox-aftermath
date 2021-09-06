@@ -20,7 +20,7 @@ namespace aftermath
 		{
 			PersonType = PersonType.Survivor;
 
-			CloseRangeDetectionDistance = 10f;
+			CloseRangeDetectionDistance = 75f;
 		}
 
 		public override void Assign( Player player )
@@ -30,6 +30,18 @@ namespace aftermath
 
 			Movement.MoveSpeed = 70f;
 			Movement.FollowTargetMoveSpeed = 80f;
+		}
+
+		protected override void OnFinishAllCommands( Person_CommandHandler commandHandler )
+		{
+			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
+		}
+
+		public override void FoundTarget( Person target )
+		{
+			base.FoundTarget( target );
+
+			CommandHandler.SetCommand( new AimAtTargetCommand( target ) );
 		}
 	}
 }

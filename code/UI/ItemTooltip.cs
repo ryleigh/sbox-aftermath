@@ -56,13 +56,13 @@ namespace aftermath
 		public void Update( Person person )
         {
 	        Name.Text = person.PersonName;
-	        Desc.Text = person.Position2D.ToString();
+	        // Desc.Text = person.Position2D.ToString();
         }
 
         public void Update( Item item )
         {
 	        Name.Text = item.GetHoverInfo();
-	        Desc.Text = item.Position2D.ToString();
+	        // Desc.Text = item.Position2D.ToString();
         }
 
         public override void Tick()

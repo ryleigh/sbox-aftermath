@@ -11,6 +11,16 @@ namespace aftermath
 		public Gun Gun { get; private set; }
 		public bool HasGun => Gun != null;
 
+		public const float DROP_FORCE_MIN = 1.2f;
+		public const float DROP_FORCE_MAX = 1.6f;
+		public const int DROP_NUM_FLIPS_MIN = 1;
+		public const int DROP_NUM_FLIPS_MAX = 3;
+
+		public const float TOSS_FORCE_MIN = 1.5f;
+		public const float TOSS_FORCE_MAX = 2f;
+		public const int TOSS_NUM_FLIPS_MIN = 1;
+		public const int TOSS_NUM_FLIPS_MAX = 3;
+
 		public override void Update( float dt )
 		{
 			if ( Person.IsDead ) return;
@@ -62,6 +72,34 @@ namespace aftermath
 			}
 
 			return null;
+		}
+
+		public void OutOfAmmo()
+		{
+			if ( !Reload() )
+			{
+				if ( Person.PersonType == PersonType.Survivor )
+				{
+					// floater
+					// sfx
+
+					Person.CommandHandler.SetCommand( new WaitCommand( Rand.Float( 3f, 6f ) ) );
+				}
+				else
+				{
+					DropGun(
+						new Vector2( Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ) ).Normal,
+						Rand.Float( DROP_FORCE_MIN, DROP_FORCE_MAX ),
+						3f,
+						Rand.Int( DROP_NUM_FLIPS_MIN, DROP_NUM_FLIPS_MAX )
+					);
+				}
+			}
+		}
+
+		public bool Reload()
+		{
+			return false;
 		}
 	}
 }

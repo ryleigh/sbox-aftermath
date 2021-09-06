@@ -190,6 +190,18 @@ namespace aftermath
 					}
 				}
 
+				if ( Input.Pressed( InputButton.Slot8 ) )
+				{
+					foreach ( var entity in Selected )
+					{
+						if ( entity is Survivor survivor )
+						{
+							Person.Attack( survivor.NetworkIdent );
+							// Person.DropGun( survivor.NetworkIdent );
+						}
+					}
+				}
+
 				var trace = Utils.TraceRayDirection( Input.Cursor.Origin, Input.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
 				bool showTooltip = false;
 

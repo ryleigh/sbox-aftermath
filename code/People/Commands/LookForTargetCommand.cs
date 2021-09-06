@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +57,10 @@ namespace aftermath
 
 				// check if we're close enough to disregard line of sight
 				float distSqr = (target.Position2D - Person.Position2D).LengthSquared;
+
+				// DebugOverlay.Line( Person.Position, target.Position, Color.Blue, 0.2f );
+				// DebugOverlay.Text( Person.Position + (target.Position - Person.Position) * 0.5f, 0, (target.Position2D - Person.Position2D).Length.ToString(), Color.White, 0.2f, float.MaxValue);
+
 				if ( distSqr < CloseRangeDetectionDistance * CloseRangeDetectionDistance )
 				{
 					// make sure they aren't obscured by a wall

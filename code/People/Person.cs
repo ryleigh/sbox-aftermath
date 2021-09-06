@@ -62,8 +62,13 @@ namespace aftermath
 		[Net] public int PlayerNum { get; private set; }
 
 		[Net] public Gun EquippedGun { get; set; }
+		public Vector3 HeadPos => Position + new Vector3( 0f, 0f, 10f );
 
 		[Net] public bool IsAIControlled { get; protected set; }
+
+		public float GunAimSpeedFactor => 1f;
+		public float GunShootDelayFactor => 1f;
+		public float GunShootTimeFactor => 1f;
 
 		public bool IsLocalPlayers
 		{
@@ -125,7 +130,7 @@ namespace aftermath
 
 			Scale = 1.25f;
 
-			Gun gun = new Gun();
+			Gun gun = new Pistol();
 			GunHandler.StartEquippingGun( gun );
 			GunHandler.FinishEquippingGun( gun );
 
@@ -202,14 +207,30 @@ namespace aftermath
 			DrawDebugText();
 		}
 
+		// CLIENT
 		public virtual void Select()
 		{
 			IsSelected = true;
+			Person.SetSelected( true, NetworkIdent );
 		}
 
 		public virtual void Deselect()
 		{
 			IsSelected = false;
+			Person.SetSelected( false, NetworkIdent );
+		}
+
+		[ServerCmd]
+		public static void SetSelected( bool selected, int id )
+		{
+			var person = Entity.FindByIndex( id ) as Person;
+			person?.SetSelected( selected );
+		}
+
+		// SERVER
+		public void SetSelected( bool selected )
+		{
+			IsSelected = selected;
 		}
 
 		public void MoveTo( Vector3 targetPos )
@@ -256,6 +277,17 @@ namespace aftermath
 			person?.GunHandler?.DropGun( Vector2.Right, 40f, Rand.Float( 1f, 3f ), 8 );
 		}
 
+		[ServerCmd]
+		public static void Attack( int id )
+		{
+			var person = Entity.FindByIndex( id ) as Person;
+			person?.SetAnimBool( "b_attack", true );
+			person?.SetAnimFloat( "aimat_weight", 0.5f );
+			person?.SetAnimFloat( "holdtype_attack", 2f );
+
+			Log.Info( $"person: {person}" );
+		}
+
 		public virtual bool ShouldRepelFromAllies()
 		{
 			return !AftermathGame.Instance.GridManager.IsEdgeGridPos( Movement.CurrentGridPos );
@@ -292,7 +324,7 @@ namespace aftermath
 
 		public virtual void FoundTarget( Person target )
 		{
-
+			// DebugOverlay.Line( Position, target.Position, Color.Red, 1f );
 		}
 	}
 }

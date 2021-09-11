@@ -57,6 +57,7 @@ namespace aftermath
 		public Person_RotationController RotationController { get; private set; }
 		public Person_Aiming Aiming { get; private set; }
 		public Person_GunHandler GunHandler { get; private set; }
+		public Person_AmmoHandler AmmoHandler { get; private set; }
 
 		[Net] public Player Player { get; private set; }
 		[Net] public int PlayerNum { get; private set; }
@@ -117,6 +118,7 @@ namespace aftermath
 			RotationController = new Person_RotationController { Person = this };
 			Aiming = new Person_Aiming { Person = this };
 			GunHandler = new Person_GunHandler { Person = this };
+			AmmoHandler = new Person_AmmoHandler { Person = this };
 
 			CommandHandler.FinishedAllCommands += OnFinishAllCommands;
 

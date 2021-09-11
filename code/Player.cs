@@ -115,6 +115,8 @@ namespace aftermath
 
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );
+
+				if ( Input.Released( InputButton.Slot9 ) ) { AftermathGame.Instance.SpawnFloater( new Vector3( 0f, 0f, 0f), "TEST!!!!!!!!!!!!!", Color.White ); }
 			}
 			else
 			{

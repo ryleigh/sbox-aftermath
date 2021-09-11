@@ -53,6 +53,22 @@ namespace aftermath
 		public float MinRange { get; protected set; }
 		public float MaxRange { get; protected set; }
 
+		public AmmoType AmmoType { get; set; }
+		public int AmmoAmount { get; set; }
+		public int MaxAmmoAmount { get; protected set; }
+		public bool HasAmmo => AmmoAmount > 0;
+		public bool HasFullAmmo => AmmoAmount == MaxAmmoAmount;
+		public float ReloadTimePerAmmo { get; protected set; }
+		private float _reloadTimer;
+		public bool IsReloading => _reloadTimer > 0f;
+
+		private int _currentNumExtraShots;
+		public int NumExtraShotsMin { get; protected set; }
+		public int NumExtraShotsMax { get; protected set; }
+		private float _extraShotDelay;
+		public float MinExtraShotDelay { get; protected set; }
+		public float MaxExtraShotDelay { get; protected set; }
+
 		public float MovementSpeedModifier { get; protected set; }
 
 		public override void Spawn()
@@ -79,7 +95,17 @@ namespace aftermath
 
 		public bool Shoot()
 		{
-			Log.Info( $"Shoot!!!! ------------------------------------------------------ {PersonHolding}" );
+			Log.Info( "SHOOT!!!!!!!!!!!!!!!" );
+			this.DrawText( $"AmmoAmount: {AmmoAmount}", 8, 0.5f, 0.1f );
+			if ( AmmoAmount <= 0 )
+			{
+				this.DrawText( "OUT OF AMMO!", 3, 0.5f, 0.1f );
+				return true;
+			}
+
+
+
+
 			// DebugOverlay.Line( BarrelPos, Rotation.Forward * 1000f, Color.Magenta, 3f );
 			DebugOverlay.Line( BarrelPos, BarrelPos + (Vector3)( PersonHolding?.Aiming.SightDirection ?? Rotation.Forward) * 250f, Color.Yellow, 0.1f );
 

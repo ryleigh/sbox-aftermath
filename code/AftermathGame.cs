@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Sandbox;
@@ -15,6 +16,8 @@ namespace aftermath
 		[Net] public StructureManager StructureManager { get; private set; }
 
 		public MinimalHudEntity Hud;
+
+		private readonly List<FloaterText> _floaterTexts = new();
 
 		public AftermathGame()
 		{
@@ -45,6 +48,7 @@ namespace aftermath
 		public override void Spawn()
 		{
 			base.Spawn();
+
 
 		}
 
@@ -114,6 +118,18 @@ namespace aftermath
 			{
 				StructureManager.Update( Time.Delta );
 			}
+
+			if ( IsClient )
+			{
+				for ( int i = _floaterTexts.Count - 1; i >= 0; i-- )
+				{
+					var floater = _floaterTexts[i];
+					floater.Update( Time.Delta );
+
+					if(floater.ShouldRemove)
+						_floaterTexts.Remove( floater );
+				}
+			}
 		}
 
 		public async Task StartSecondTimer()
@@ -150,6 +166,12 @@ namespace aftermath
 			{
 				Rounds.Change( new LobbyRound() );
 			}
+		}
+
+		[ClientRpc]
+		public void SpawnFloater( Vector3 pos, string text, Color color )
+		{
+			_floaterTexts.Add( new FloaterText( pos, text, color ) );
 		}
 	}
 }

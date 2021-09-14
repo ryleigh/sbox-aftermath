@@ -26,18 +26,18 @@ namespace aftermath
 		private int _ammoDropAmount;
 		private AmmoType _droppedAmmoType;
 
-		public static string GetDisplayName( AmmoType ammoType )
+		public static string GetDisplayName( AmmoType ammoType, bool plural )
 		{
 			string displayName = "";
 
 			if ( ammoType == AmmoType.Bullet )
-				return "Bullets";
+				return plural ? "Bullets" : "Bullet";
 			else if ( ammoType == AmmoType.Shell )
-				return "Shells";
+				return plural ? "Shells" : "Shell";
 			else if ( ammoType == AmmoType.HPBullet )
-				return "High-Powered Bullets";
+				return plural ? "High-Powered Bullets" : "High-Powered Bullet";
 			else if ( ammoType == AmmoType.Grenade )
-				return "Grenades";
+				return plural ? "Grenades" : "Grenade";
 
 			return displayName;
 		}

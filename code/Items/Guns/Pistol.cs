@@ -38,6 +38,11 @@ namespace aftermath
 			MinRange = 280f;
 			MaxRange = 330f;
 
+			AmmoType = AmmoType.Bullet;
+			MaxAmmoAmount = 16;
+			AmmoAmount = Rand.Int( 5, 12 );
+			ReloadTimePerAmmo = 0.33f;
+
 			MovementSpeedModifier = 0.95f;
 		}
 

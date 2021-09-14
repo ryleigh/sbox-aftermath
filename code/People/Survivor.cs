@@ -30,6 +30,8 @@ namespace aftermath
 
 			Movement.MoveSpeed = 70f;
 			Movement.FollowTargetMoveSpeed = 80f;
+
+			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
 		}
 
 		protected override void OnFinishAllCommands( Person_CommandHandler commandHandler )

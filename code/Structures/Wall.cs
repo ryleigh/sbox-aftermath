@@ -10,6 +10,12 @@ namespace aftermath
 		{
 			BlocksMovement = true;
 			BlocksSight = true;
+			BlocksGunshots = true;
+
+			Height = 72f;
+
+			MaxHp = 50f;
+			Hp = MaxHp;
 		}
 
 		public override void Spawn()

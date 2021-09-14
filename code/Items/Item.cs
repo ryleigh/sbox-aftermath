@@ -18,9 +18,9 @@ namespace aftermath
 		{
 			if ( string.IsNullOrEmpty(DebugText) ) return;
 
-			Color color = Color.White;
+			Color color = new Color( 0.66f, 0.66f, 0.66f, 0.66f );
 			float duration = 0f;
-			float dist = 99999f;
+			float dist = float.MaxValue;
 
 			DebugOverlay.Text( Position, 2, DebugText, color, duration, dist );
 		}

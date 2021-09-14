@@ -159,7 +159,7 @@ namespace aftermath
 			// if ( Person.IsExclusivelySelected )
 			// 	Person.SelectingTool.MovementIndicator.HideMovementIndicator();
 
-			Log.Info( "MoveToPos - Finish" );
+			// Log.Info( "MoveToPos - Finish" );
 
 			// client rpc
 			Person.StopDrawingPath();
@@ -171,7 +171,7 @@ namespace aftermath
 		{
 			base.Interrupt();
 
-			Log.Info( "MoveToPos - Interrupt" );
+			// Log.Info( "MoveToPos - Interrupt" );
 
 			if (Host.IsServer)
 				Person.Velocity = Vector3.Zero;

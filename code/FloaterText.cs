@@ -35,7 +35,7 @@ namespace aftermath
 
 		public void Update( float dt )
 		{
-			DebugOverlay.Text( Position, Text, Color.WithAlpha( Opacity ), 0f, float.MaxValue);
+			DebugOverlay.Text( Position, Text, Color.WithAlpha( Color.a * Opacity ), 0f, float.MaxValue);
 
 			if ( Position.z < 0f )
 			{

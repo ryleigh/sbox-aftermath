@@ -53,16 +53,23 @@ namespace aftermath
 		{
 			foreach ( KeyValuePair<int, Structure> pair in _structures )
 			{
-				// if ( pair.Value.IsUpdateable )
-				// {
-				// 	pair.Value.Update( dt );
-				// }
+				Structure structure = pair.Value;
+
+				if ( structure.IsUpdateable && !structure.IsDestroyed)
+				{
+					structure.Update( dt );
+				}
+
+				Color color = Color.Lerp( new Color( 1f, 1f, 1f, 0.1f ), new Color( 1f, 0.1f, 0.1f, 0.7f ), Utils.Map( structure.Hp, structure.MaxHp, 0f, 0f, 1f, EasingType.SineIn ) );
+				DebugOverlay.Text( structure.Position, 0, $"{structure.Hp}/{structure.MaxHp}", color, 0f, float.MaxValue);
 			}
 
 			foreach ( int index in _toRemove )
 			{
 				if ( _structures.ContainsKey( index ) )
 				{
+					Structure structure = _structures[index];
+					structure.Delete();
 					_structures.Remove( index );
 				}
 			}
@@ -125,7 +132,6 @@ namespace aftermath
 				return;
 			}
 
-			_structures.Remove(index);
 			_toRemove.Add( index );
 
 			if ( IsEdge( gridPos ) ) _emptyEdgeIndexes.Add( index );

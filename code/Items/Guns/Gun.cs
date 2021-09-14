@@ -74,11 +74,19 @@ namespace aftermath
 		public override void Spawn()
 		{
 			base.Spawn();
+
 		}
 
 		protected override void Tick()
 		{
 			float dt = Time.Delta;
+
+			DebugText = $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1)}";
+
+			if ( IsReloading && PersonHolding != null )
+				HandleReloading( dt );
+
+			HandleExtraShots( dt );
 
 			base.Tick();
 		}
@@ -95,21 +103,80 @@ namespace aftermath
 
 		public bool Shoot()
 		{
-			Log.Info( "SHOOT!!!!!!!!!!!!!!!" );
-			this.DrawText( $"AmmoAmount: {AmmoAmount}", 8, 0.5f, 0.1f );
+			// this.DrawText( $"AmmoAmount: {AmmoAmount}", 8, 0.5f, 0.1f );
 			if ( AmmoAmount <= 0 )
 			{
-				this.DrawText( "OUT OF AMMO!", 3, 0.5f, 0.1f );
+				AftermathGame.Instance.SpawnFloater( Position, $"{GunName} OUT OF AMMO!", new Color( 1f, 0.5f, 0.5f ) );
 				return true;
 			}
 
+			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f ) );
 
-
+			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
+			Gunshot shot = new Gunshot();
+			shot.Init( pos: BarrelPos + dir * 20f, dir: dir, length: Rand.Float( 130f, 150f ), speed: Rand.Float( 1800f, 1900f ), damage: 10f, bulletForce: 5f, penetrationChance: 0f, PersonHolding, StructureHolding, AmmoType );
 
 			// DebugOverlay.Line( BarrelPos, Rotation.Forward * 1000f, Color.Magenta, 3f );
-			DebugOverlay.Line( BarrelPos, BarrelPos + (Vector3)( PersonHolding?.Aiming.SightDirection ?? Rotation.Forward) * 250f, Color.Yellow, 0.1f );
+			// DebugOverlay.Line( BarrelPos, BarrelPos + dir * 250f, Color.Yellow, 0.1f );
+
+			// AmmoAmount--;
+			GenerateExtraShots();
+
+			ShootProjectiles();
+
+			ApplyShootForce();
 
 			return true;
+		}
+
+		protected virtual void ShootProjectiles()
+		{
+
+		}
+
+		protected virtual void ApplyShootForce()
+		{
+
+		}
+
+		private void GenerateExtraShots()
+		{
+			if ( _currentNumExtraShots == 0 && AmmoAmount > 0 )
+			{
+				_currentNumExtraShots = Rand.Int( NumExtraShotsMin, NumExtraShotsMax );
+				_extraShotDelay = Rand.Float( MinExtraShotDelay, MaxExtraShotDelay );
+			}
+		}
+
+		private void HandleExtraShots(float dt)
+		{
+			if ( _currentNumExtraShots > 0 )
+			{
+				_extraShotDelay -= dt;
+				if ( _extraShotDelay <= 0f )
+				{
+					Shoot();
+
+					if ( AmmoAmount <= 0 )
+					{
+						_currentNumExtraShots = 0;
+					}
+					else
+					{
+						_currentNumExtraShots--;
+						_extraShotDelay = Rand.Float( MinExtraShotDelay, MaxExtraShotDelay );
+					}
+				}
+			}
+		}
+
+		private void HandleReloading( float dt )
+		{
+			_reloadTimer -= dt * PersonHolding.ReloadSpeedFactor;
+			if ( _reloadTimer <= 0f )
+			{
+				ReloadSingleAmmo();
+			}
 		}
 
 		public override void PersonStartedPickingUp( Person person )
@@ -128,6 +195,34 @@ namespace aftermath
 		{
 			base.PersonInterruptedPickingUp( person );
 			person.GunHandler.InterruptEquippingGun( this );
+		}
+
+		public void ReloadSingleAmmo()
+		{
+			if( AmmoAmount == MaxAmmoAmount ) return;
+
+			AmmoAmount = Math.Min( AmmoAmount + 1, MaxAmmoAmount );
+		}
+
+		public void StartReloading()
+		{
+			// if already reloading, restart the anim but add the ammo
+			if ( IsReloading )
+			{
+				ReloadSingleAmmo();
+			}
+
+			_reloadTimer = ReloadTimePerAmmo;
+		}
+
+		public void StopReloading()
+		{
+			if ( IsReloading )
+			{
+				ReloadSingleAmmo();
+			}
+
+			_reloadTimer = 0f;
 		}
 
 		public override string GetHoverInfo()

@@ -69,7 +69,7 @@ namespace aftermath
 			int WIDTH = gridManager.GridWidth;
 			int DEPTH = gridManager.GridDepth;
 
-			Log.Info( $"AIPerson - Wander: W: {WIDTH}, D: {DEPTH}, dist: {_gridWanderDistance}");
+			// Log.Info( $"AIPerson - Wander: W: {WIDTH}, D: {DEPTH}, dist: {_gridWanderDistance}");
 
 			int NUM_TRIES = 7;
 			for ( int tries = 0; tries < NUM_TRIES; tries++ )
@@ -89,7 +89,7 @@ namespace aftermath
 				else if ( gridPos.Y > DEPTH - 1 )
 					gridPos = new GridPosition( gridPos.X, DEPTH - 1 - (gridPos.Y - DEPTH - 1) );
 
-				Log.Info( $"{tries}: curr: {Movement.CurrentGridPos } -> {gridPos}" );
+				// Log.Info( $"{tries}: curr: {Movement.CurrentGridPos } -> {gridPos}" );
 
 				if ( !gridPos.Equals( Movement.CurrentGridPos ) && gridManager.IsWalkable( gridPos ) )
 				{
@@ -103,7 +103,7 @@ namespace aftermath
 
 		public void MoveAndLook( Vector2 pos )
 		{
-			Log.Info( $"AIPerson - MoveAndLook: {pos} {AftermathGame.Instance.GridManager.GetGridPosFor2DPos( pos )}" );
+			// Log.Info( $"AIPerson - MoveAndLook: {pos} {AftermathGame.Instance.GridManager.GetGridPosFor2DPos( pos )}" );
 			MoveToPosCommand moveCommand = new MoveToPosCommand( pos );
 			LookForTargetCommand lookCommand = new LookForTargetCommand( CloseRangeDetectionDistance );
 			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() {moveCommand, lookCommand} )

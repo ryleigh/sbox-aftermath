@@ -23,7 +23,7 @@ namespace aftermath
 			float dist = 99999f;
 
 			// DebugOverlay.Text( Position, 2, $"IsLocalPlayers: {IsLocalPlayers}, Local.Pawn: {Local.Pawn }\nIsServer: {IsServer}, IsSelected: {IsSelected}\nplayerNum: {PlayerNum}, networkIdent: {NetworkIdent}", color, duration, dist );
-			DebugOverlay.Text( Position, 2, DebugText, color, duration, dist );
+			DebugOverlay.Text( Position, 2, DebugText, color.WithAlpha( 0.5f ), duration, dist );
 		}
 
 		private struct AnimationValues
@@ -70,6 +70,7 @@ namespace aftermath
 		public float GunAimSpeedFactor => 1f;
 		public float GunShootDelayFactor => 1f;
 		public float GunShootTimeFactor => 1f;
+		public float ReloadSpeedFactor => 1f;
 
 		public bool IsLocalPlayers
 		{
@@ -326,6 +327,7 @@ namespace aftermath
 
 		public virtual void FoundTarget( Person target )
 		{
+			AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.7f ) );
 			// DebugOverlay.Line( Position, target.Position, Color.Red, 1f );
 		}
 	}

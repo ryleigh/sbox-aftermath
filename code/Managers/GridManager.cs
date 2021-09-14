@@ -6,7 +6,7 @@ using Sandbox;
 namespace aftermath
 {
 	public enum Direction { None, Up, Right, Down, Left }
-	public enum RaycastMode { None, Movement, Sight }
+	public enum RaycastMode { None, Movement, Sight, Gunshot }
 
 	public partial class GridManager : Entity
 	{
@@ -162,23 +162,22 @@ namespace aftermath
 			if ( !currGridPos.IsValid || !IsGridPosInBounds( currGridPos ) )
 				return false;
 			
-			// Starting tile cell bounds
-			float startBoundsX, startBoundsY;
 			// Maximum time the ray has traveled so far (not distance!)
 			float tMaxX, tMaxY;
 			// The time that the ray needs to travel to cross a single tile (not distance!)
 			float tDeltaX = 0f;
 			float tDeltaY = 0f;
-			// Step direction, either 1 or -1
-			int stepX, stepY;
-			
+
 			float sqrDist = (b - a).LengthSquared;
 			Vector2 dir = (b - a).Normal;
-			
-			stepX = (dir.x > 0f) ? 1 : -1;
-			stepY = (dir.y > 0f) ? 1 : -1;
-			startBoundsX = Get2DPosForGridPos( currGridPos ).x + (SquareSize / 2f) * stepX;
-			startBoundsY = Get2DPosForGridPos( currGridPos ).y + (SquareSize / 2f) * stepY;
+
+			// Step direction, either 1 or -1
+			var stepX = (dir.x > 0f) ? 1 : -1;
+			var stepY = (dir.y > 0f) ? 1 : -1;
+
+			// Starting tile cell bounds
+			var startBoundsX = Get2DPosForGridPos( currGridPos ).x + (SquareSize / 2f) * stepX;
+			var startBoundsY = Get2DPosForGridPos( currGridPos ).y + (SquareSize / 2f) * stepY;
 			
 			if ( Math.Abs( dir.x ) > 0f )
 			{
@@ -207,8 +206,9 @@ namespace aftermath
 			{
 				//                int index = GetIndexForGridPos(currGridPos);
 			
-				if ( (mode == RaycastMode.Movement && IsMovementBlockingStructure( currGridPos )) ||
-				   (mode == RaycastMode.Sight && IsSightBlockingStructure( currGridPos )) )
+				if ((mode == RaycastMode.Movement && IsMovementBlockingStructure( currGridPos )) ||
+					(mode == RaycastMode.Sight && IsSightBlockingStructure( currGridPos )) ||
+					(mode == RaycastMode.Gunshot && IsGunshotBlockingStructure( currGridPos )) )
 				{
 					o_gridPos = currGridPos;
 					return true;
@@ -277,13 +277,19 @@ namespace aftermath
 		public bool IsMovementBlockingStructure( GridPosition gridPos )
 		{
 			Structure structure = AftermathGame.Instance.StructureManager.GetStructure( GetIndexForGridPos( gridPos ) );
-			return structure != null && structure.BlocksMovement;
+			return structure is {BlocksMovement: true};
 		}
 
 		public bool IsSightBlockingStructure( GridPosition gridPos )
 		{
 			Structure structure = AftermathGame.Instance.StructureManager.GetStructure( GetIndexForGridPos( gridPos ) );
-			return structure != null && structure.BlocksSight;
+			return structure is {BlocksSight: true};
+		}
+
+		public bool IsGunshotBlockingStructure( GridPosition gridPos )
+		{
+			Structure structure = AftermathGame.Instance.StructureManager.GetStructure( GetIndexForGridPos( gridPos ) );
+			return structure is { BlocksGunshots: true };
 		}
 
 		public bool DoesGridPosContainPerson( GridPosition gridPos )

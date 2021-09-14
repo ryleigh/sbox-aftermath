@@ -73,7 +73,7 @@ namespace aftermath
 
 		public override void Finish()
 		{
-			Log.Info( "ParallelCommand - Finish" );
+			// Log.Info( "ParallelCommand - Finish" );
 
 			foreach ( var command in SubCommands )
 			{
@@ -86,7 +86,7 @@ namespace aftermath
 
 		public override void Interrupt()
 		{
-			Log.Info( "ParallelCommand - Interrupt" );
+			// Log.Info( "ParallelCommand - Interrupt" );
 
 			foreach ( var command in SubCommands )
 			{

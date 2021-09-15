@@ -55,5 +55,10 @@ namespace aftermath
 			
 
 		}
+
+		public void DropAllAmmo()
+		{
+
+		}
 	}
 }

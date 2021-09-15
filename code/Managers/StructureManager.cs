@@ -61,7 +61,7 @@ namespace aftermath
 				}
 
 				Color color = Color.Lerp( new Color( 1f, 1f, 1f, 0.1f ), new Color( 1f, 0.1f, 0.1f, 0.7f ), Utils.Map( structure.Hp, structure.MaxHp, 0f, 0f, 1f, EasingType.SineIn ) );
-				DebugOverlay.Text( structure.Position, 0, $"{structure.Hp}/{structure.MaxHp}", color, 0f, float.MaxValue);
+				DebugOverlay.Text( structure.Position, 0, $"{structure.Hp.FloorToInt()}/{structure.MaxHp}", color, 0f, float.MaxValue);
 			}
 
 			foreach ( int index in _toRemove )

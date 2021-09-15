@@ -14,10 +14,10 @@ namespace aftermath
 			GunName = "Pistol";
 			GunType = GunType.Pistol;
 
-			MinShotSpeed = 8f;
-			MaxShotSpeed = 10f;
-			MinShotLength = 80f;
-			MaxShotLength = 100f;
+			MinShotSpeed = 1800f;
+			MaxShotSpeed = 2000f;
+			MinShotLength = 90f;
+			MaxShotLength = 110f;
 			MinDamage = 9;
 			MaxDamage = 13;
 			PenetrationChance = 0f;

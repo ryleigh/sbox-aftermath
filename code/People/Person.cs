@@ -8,6 +8,8 @@ using Entity = Sandbox.Entity;
 
 namespace aftermath
 {
+	public delegate void PersonDelegate( Person person );
+
 	public enum PersonType { None, Survivor, Zombie, Soldier }
 
 	public partial class Person : AnimEntity, ISelectable
@@ -70,6 +72,8 @@ namespace aftermath
 		public float GunAimSpeedFactor => 1f;
 		public float GunShootDelayFactor => 1f;
 		public float GunShootTimeFactor => 1f;
+		public float GunSpreadFactor => 1f;
+		public float GunShootForceFactor => 1f;
 		public float ReloadSpeedFactor => 1f;
 
 		public bool IsLocalPlayers
@@ -92,6 +96,9 @@ namespace aftermath
 		public virtual List<Person> GetValidTargets() { return new List<Person>(); }
 
 		public float CloseRangeDetectionDistance { get; protected set; }
+
+		public float Hp { get; protected set; }
+		public event PersonDelegate DiedCallback;
 
 		[Net] public Vector2 Position2D { get; private set; }
 
@@ -192,6 +199,8 @@ namespace aftermath
 			{
 				DebugText += $"\n{command.ToString()}";
 			}
+
+			DebugText += $"\nHP:{Hp}";
 		}
 
 		[Event.Tick.Client]
@@ -329,6 +338,42 @@ namespace aftermath
 		{
 			AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.7f ) );
 			// DebugOverlay.Line( Position, target.Position, Color.Red, 1f );
+		}
+
+		public void HitByGunshot( Gunshot gunshot, Vector3 hitPos, bool penetrate )
+		{
+			Hp -= gunshot.Damage;
+
+			Movement.AddForceVelocity( Utils.GetVector2( gunshot.Direction ) * gunshot.BulletForce );
+
+			if ( Hp <= 0f )
+			{
+				Die( gunshot.Direction, gunshot.ShootingPerson );
+			}
+		}
+
+		public virtual void Die( Vector3 force, Person killer )
+		{
+			if(IsDead) return;
+
+			IsDead = true;
+
+			CommandHandler.ClearCommands();
+
+			if ( GunHandler.HasGun )
+			{
+				GunHandler.DropGun(
+					new Vector2( Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ) ).Normal,
+					Rand.Float( Person_GunHandler.TOSS_FORCE_MIN, Person_GunHandler.TOSS_FORCE_MAX ),
+					Rand.Float( 5f, 10f ),
+					Rand.Int( Person_GunHandler.TOSS_NUM_FLIPS_MIN, Person_GunHandler.TOSS_NUM_FLIPS_MAX )
+				);
+			}
+
+			AmmoHandler.DropAllAmmo();
+
+			DiedCallback?.Invoke( this );
+			AftermathGame.Instance.PersonManager.PersonDied( this );
 		}
 	}
 }

@@ -23,6 +23,13 @@ namespace aftermath
 			CloseRangeDetectionDistance = 75f;
 		}
 
+		public override void Spawn()
+		{
+			base.Spawn();
+
+			Hp = 10f;
+		}
+
 		public override void Assign( Player player )
 		{
 			base.Assign( player );

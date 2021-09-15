@@ -40,5 +40,10 @@ namespace aftermath
 
 			Log.Warning( $"PersonManager - SpawnPersonServer - person: {person}, player: {player}, NetworkIdent: {player.GetClientOwner().NetworkIdent}, IsServer: {IsServer}" );
 		}
+
+		public void PersonDied( Person person )
+		{
+			person.Delete();
+		}
 	}
 }

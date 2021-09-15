@@ -96,7 +96,7 @@ namespace aftermath
 			float rangeSqr = MathF.Pow( Rand.Float( gun.MinRange, gun.MaxRange ), 2f );
 			if ( rangeSqr < (Target.Position2D - Person.Position2D).LengthSquared )
 			{
-				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"TOO FAR!", new Color( 1f, 0.6f, 0.5f, 0.5f ) );
+				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"TOO FAR!", new Color( 1f, 0.6f, 0.5f, 0.25f ) );
 				return;
 			}
 

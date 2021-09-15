@@ -24,6 +24,13 @@ namespace aftermath
 			_gridWanderDistance = 13;
 		}
 
+		public override void Spawn()
+		{
+			base.Spawn();
+
+			Hp = 10f;
+		}
+
 		public override void Assign( Player player )
 		{
 			base.Assign( player );

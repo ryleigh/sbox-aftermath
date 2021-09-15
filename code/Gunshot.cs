@@ -220,7 +220,7 @@ namespace aftermath
 		{
 			bool penetrate = Rand.Float( 0f, 1f ) < PenetrationChance;
 
-			hitPerson.Delete();
+			hitPerson.HitByGunshot( this, hitPos, penetrate );
 
 			return !penetrate;
 		}

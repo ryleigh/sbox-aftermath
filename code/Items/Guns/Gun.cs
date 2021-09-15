@@ -110,12 +110,6 @@ namespace aftermath
 				return true;
 			}
 
-			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f ) );
-
-			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
-			Gunshot shot = new Gunshot();
-			shot.Init( pos: BarrelPos + dir * 20f, dir: dir, length: Rand.Float( 130f, 150f ), speed: Rand.Float( 1800f, 1900f ), damage: 10f, bulletForce: 5f, penetrationChance: 0f, PersonHolding, StructureHolding, AmmoType );
-
 			// DebugOverlay.Line( BarrelPos, Rotation.Forward * 1000f, Color.Magenta, 3f );
 			// DebugOverlay.Line( BarrelPos, BarrelPos + dir * 250f, Color.Yellow, 0.1f );
 
@@ -131,12 +125,37 @@ namespace aftermath
 
 		protected virtual void ShootProjectiles()
 		{
+			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f ) );
 
+			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
+			Rotation rot = global::Rotation.From( new Angles( dir.x, dir.y, dir.z ) );
+			Vector3 from = BarrelPos + dir * 20f;
+
+			for ( int i = 0; i < Rand.Int( NumProjectilesMin, NumProjectilesMax ); i++ )
+			{
+				float spreadFactor = PersonHolding?.GunSpreadFactor ?? 1f;
+				Vector3 shootDir = new Vector3( rot.Pitch() + Utils.Deg2Rad( Rand.Float( -SpreadX, SpreadX ) * spreadFactor ), rot.Yaw(), rot.Roll() );
+
+				Gunshot shot = new Gunshot();
+				shot.Init( 
+					pos: from, 
+					dir: shootDir, 
+					length: Rand.Float( MinShotLength, MaxShotLength), 
+					speed: Rand.Float( MinShotSpeed, MaxShotSpeed), 
+					damage: Rand.Float( MinDamage, MaxDamage ),
+					bulletForce: Rand.Float( BulletForceMin, BulletForceMax ),
+					penetrationChance: PenetrationChance, 
+					PersonHolding, 
+					StructureHolding, 
+					AmmoType 
+				);
+			}
 		}
 
 		protected virtual void ApplyShootForce()
 		{
-
+			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
+			PersonHolding?.Movement.AddForceVelocity( -Utils.GetVector2( dir ) * Rand.Float( ShootForceMin, ShootForceMax ) * PersonHolding.GunShootForceFactor );
 		}
 
 		private void GenerateExtraShots()

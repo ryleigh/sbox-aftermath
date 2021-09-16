@@ -28,6 +28,10 @@ namespace aftermath
 			base.Spawn();
 
 			Hp = 10f;
+
+			RotationSpeed = 5f;
+			MeleeRotationSpeed = 2.5f;
+			RotationController.RotationSpeed = RotationSpeed;
 		}
 
 		public override void Assign( Player player )
@@ -51,6 +55,11 @@ namespace aftermath
 			base.FoundTarget( target );
 
 			CommandHandler.SetCommand( new AimAtTargetCommand( target ) );
+		}
+
+		public override void LostTarget( Person target, Vector2 lastSeenPos )
+		{
+			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
 		}
 	}
 }

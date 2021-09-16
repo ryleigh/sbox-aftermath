@@ -8,6 +8,11 @@ namespace aftermath
 {
 	public partial class Zombie : AIPerson
 	{
+		private int _numWanders;
+		private const float BASE_WANDER_TO_SURVIVOR_CHANCE = 0.23f;
+		private const float FINAL_WANDER_TO_SURVIVOR_CHANCE = 0.80f;
+		private const int FINAL_NUM_WANDERS = 15;
+
 		public override List<Person> GetValidTargets()
 		{
 			return Entity.All.OfType<Person>()
@@ -20,7 +25,7 @@ namespace aftermath
 		{
 			PersonType = PersonType.Zombie;
 
-			CloseRangeDetectionDistance = 50f;
+			CloseRangeDetectionDistance = 65f;
 			_gridWanderDistance = 5;
 		}
 
@@ -29,6 +34,14 @@ namespace aftermath
 			base.Spawn();
 
 			Hp = 10f;
+
+			RotationSpeed = 5f;
+			MeleeRotationSpeed = 1.5f;
+			MeleeAttackDelayTime = Rand.Float( 0.4f, 0.8f );
+			MeleeAttackAttackTime = Rand.Float( 0.08f, 0.12f );
+			MeleeAttackPauseTime = Rand.Float( 0.1f, 0.18f );
+			MeleeAttackRecoverTime = Rand.Float( 0.12f, 0.16f );
+			RotationController.RotationSpeed = RotationSpeed;
 		}
 
 		public override void Assign( Player player )
@@ -48,7 +61,72 @@ namespace aftermath
 		{
 			base.FoundTarget( target );
 
-			CommandHandler.SetCommand( new WaitCommand( 5f ) );
+			CommandHandler.SetCommand( new FollowTargetCommand( target ) );
+		}
+
+		public override void LostTarget( Person target, Vector2 lastSeenPos )
+		{
+			AftermathGame.Instance.SpawnFloater( Position, $"LostTarget {target.PersonName}!", new Color( 1f, 0f, 0.8f, 1f ) );
+
+			MoveAndLook( lastSeenPos );
+		}
+
+		public override void Wander()
+		{
+			float wanderToSurvivorChance = Utils.Map( (float)_numWanders, 0f, (float)FINAL_NUM_WANDERS, BASE_WANDER_TO_SURVIVOR_CHANCE, FINAL_WANDER_TO_SURVIVOR_CHANCE, EasingType.Linear );
+			if ( Rand.Float( 0f, 1f ) < wanderToSurvivorChance )
+			{
+				MoveToNearestSurvivor();
+			}
+			else
+			{
+				base.Wander();
+			}
+
+			_numWanders++;
+		}
+
+		public override void MeleeAttack( Vector2 dir, Person target )
+		{
+			AftermathGame.Instance.SpawnFloater( Position, $"Melee {target.PersonName}!", new Color( 1f, 0.1f, 0.1f, 1f ) );
+
+			MeleeAttackCommand meleeAttackCommand = new MeleeAttackCommand( target )
+			{
+				Inaccuracy = MeleeAttackInaccuracy
+			};
+
+			meleeAttackCommand.PreAttackFinished += OnPreBiteFinished;
+
+			CommandHandler.InsertCommand( meleeAttackCommand );
+			_newWanderTimer = Rand.Float( NEW_WANDER_TIME_MIN, NEW_WANDER_TIME_MAX );
+		}
+
+		void OnPreBiteFinished( MeleeAttackCommand meleeAttackCommand )
+		{
+			// bite sparks
+			// sfx
+		}
+
+		public void MoveToNearestSurvivor()
+		{
+			float closestDistSqr = float.MaxValue;
+			Person closestSurvivor = null;
+
+			List<Survivor> survivors = Entity.All.OfType<Survivor>().Where( survivor => !survivor.IsDead ).ToList();
+			foreach ( Survivor survivor in survivors)
+			{
+				float sqrDist = (survivor.Position2D - Position2D).LengthSquared;
+				if ( sqrDist < closestDistSqr )
+				{
+					closestDistSqr = sqrDist;
+					closestSurvivor = survivor;
+				}
+			}
+
+			if ( closestSurvivor != null )
+			{
+				MoveAndLook( closestSurvivor.Position2D );
+			}
 		}
 	}
 }

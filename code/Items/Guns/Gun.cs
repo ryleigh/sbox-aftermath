@@ -113,7 +113,7 @@ namespace aftermath
 			// DebugOverlay.Line( BarrelPos, Rotation.Forward * 1000f, Color.Magenta, 3f );
 			// DebugOverlay.Line( BarrelPos, BarrelPos + dir * 250f, Color.Yellow, 0.1f );
 
-			// AmmoAmount--;
+			AmmoAmount--;
 			GenerateExtraShots();
 
 			ShootProjectiles();
@@ -125,9 +125,9 @@ namespace aftermath
 
 		protected virtual void ShootProjectiles()
 		{
-			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f ) );
+			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f, 0.2f ) );
 
-			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
+			Vector3 dir = (Vector3)(PersonHolding?.Aiming.BodyDirection ?? Rotation.Forward);
 			Rotation rot = global::Rotation.From( new Angles( dir.x, dir.y, dir.z ) );
 			Vector3 from = BarrelPos + dir * 20f;
 
@@ -154,7 +154,7 @@ namespace aftermath
 
 		protected virtual void ApplyShootForce()
 		{
-			Vector3 dir = (Vector3)(PersonHolding?.Aiming.SightDirection ?? Rotation.Forward);
+			Vector3 dir = (Vector3)(PersonHolding?.Aiming.BodyDirection ?? Rotation.Forward);
 			PersonHolding?.Movement.AddForceVelocity( -Utils.GetVector2( dir ) * Rand.Float( ShootForceMin, ShootForceMax ) * PersonHolding.GunShootForceFactor );
 		}
 

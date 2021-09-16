@@ -67,6 +67,10 @@ namespace aftermath
 		[Net] public Gun EquippedGun { get; set; }
 		public Vector3 HeadPos => Position + new Vector3( 0f, 0f, 10f );
 
+		public float MeleeRangeMin { get; protected set; }
+		public float MeleeRangeMax { get; protected set; }
+		public int MeleeDamage { get; protected set; }
+
 		[Net] public bool IsAIControlled { get; protected set; }
 
 		public float GunAimSpeedFactor => 1f;
@@ -95,6 +99,14 @@ namespace aftermath
 
 		public virtual List<Person> GetValidTargets() { return new List<Person>(); }
 
+		public float MeleeAttackInaccuracy { get; protected set; }
+		public float MeleeAttackDelayTime { get; protected set; }
+		public float MeleeAttackAttackTime { get; protected set; }
+		public float MeleeAttackPauseTime { get; protected set; }
+		public float MeleeAttackRecoverTime { get; protected set; }
+
+		public float RotationSpeed { get; protected set; }
+		public float MeleeRotationSpeed { get; protected set; }
 		public float CloseRangeDetectionDistance { get; protected set; }
 
 		public float Hp { get; protected set; }
@@ -130,8 +142,6 @@ namespace aftermath
 
 			CommandHandler.FinishedAllCommands += OnFinishAllCommands;
 
-			RotationController.RotationSpeed = 3f;
-
 			CollisionGroup = CollisionGroup.Player;
 			SetupPhysicsFromCapsule( PhysicsMotionType.Static, Capsule.FromHeightAndRadius( 64f, 10f ) ); // 8 radius default
 			EnableHitboxes = true;
@@ -146,6 +156,11 @@ namespace aftermath
 
 			IsMale = Rand.Float( 0f, 1f ) < (PersonType == PersonType.Soldier ? 0.8f : 0.5f);
 			SetName( IsMale ? NameGenerator.GetRandomMaleName() : NameGenerator.GetRandomFemaleName() );
+
+			MeleeRangeMin = 40f;
+			MeleeRangeMax = 40f;
+			MeleeAttackInaccuracy = 45f;
+			MeleeDamage = 50;
 
 			// item.SetParent( this, true );
 
@@ -194,13 +209,15 @@ namespace aftermath
 			RotationController.Update( dt );
 			Aiming.Update( dt );
 
+			// DebugText = $"RotationSpeed: {RotationController.RotationSpeed}";
+
 			DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			foreach ( var command in CommandHandler.CommandList )
 			{
 				DebugText += $"\n{command.ToString()}";
 			}
-
-			DebugText += $"\nHP:{Hp}";
+			
+			DebugText += $"\nHP:{Hp.FloorToInt()}";
 		}
 
 		[Event.Tick.Client]
@@ -336,8 +353,18 @@ namespace aftermath
 
 		public virtual void FoundTarget( Person target )
 		{
-			AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.7f ) );
+			AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.2f ) );
 			// DebugOverlay.Line( Position, target.Position, Color.Red, 1f );
+		}
+
+		public virtual void LostTarget( Person target, Vector2 lastSeenPos )
+		{
+
+		}
+
+		public virtual void MeleeAttack( Vector2 dir, Person target )
+		{
+
 		}
 
 		public void HitByGunshot( Gunshot gunshot, Vector3 hitPos, bool penetrate )
@@ -350,6 +377,11 @@ namespace aftermath
 			{
 				Die( gunshot.Direction, gunshot.ShootingPerson );
 			}
+		}
+
+		public void HitByMelee( Person attacker, Vector3 hitPos )
+		{
+			Die( HeadPos - attacker.HeadPos, attacker );
 		}
 
 		public virtual void Die( Vector3 force, Person killer )

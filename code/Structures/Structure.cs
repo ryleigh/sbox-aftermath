@@ -48,6 +48,11 @@ namespace aftermath
 			Damage( gunshot.Damage, Utils.GetVector2( gunshot.Direction ) );
 		}
 
+		public virtual void MeleeAttacked( Person person, Vector3 pos )
+		{
+			Damage( person.MeleeDamage, (Position2D - person.Position2D).Normal );
+		}
+
 		public virtual void Damage( float damage, Vector2 direction )
 		{
 			Hp -= damage;

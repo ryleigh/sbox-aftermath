@@ -75,7 +75,7 @@ namespace aftermath
 				}
 
 				// we know we can see the target - but how noticeable are they compared to other targets?
-				float angleDiff = Math.Abs( Utils.GetAngleDegreesFromVector( Person.Aiming.SightDirection ) - Utils.GetAngleDegreesFromVector( target.Position2D - Person.Position2D ) );
+				float angleDiff = Math.Abs( Utils.GetAngleDegreesFromVector( Person.Aiming.BodyDirection ) - Utils.GetAngleDegreesFromVector( target.Position2D - Person.Position2D ) );
 				float noticeability = distSqr * CLOSE_PRIORITY + angleDiff;
 
 				if ( noticeability < bestNoticeability )

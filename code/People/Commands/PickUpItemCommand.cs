@@ -66,7 +66,7 @@ namespace aftermath
 
 		bool CheckFacing()
 		{
-			float dot = (float)Vector2.GetDot( Person.Aiming.SightDirection, (Item.Position2D - Person.Position2D).Normal );
+			float dot = (float)Vector2.GetDot( Person.Aiming.BodyDirection, (Item.Position2D - Person.Position2D).Normal );
 			// DebugOverlay.Line(Person.Position.WithZ( 0.1f ), Person.Position.WithZ( 0.1f ) + (Vector3)Person.Aiming.SightDirection * 100f, Color.Blue);
 			// DebugOverlay.Line( Person.Position.WithZ( 0.1f ), Person.Position.WithZ( 0.1f ) + (Vector3)( Item.Position2D - Person.Position2D).Normal * 100f, Color.Cyan);
 

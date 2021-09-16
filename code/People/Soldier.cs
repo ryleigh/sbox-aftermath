@@ -29,6 +29,14 @@ namespace aftermath
 			base.Spawn();
 
 			Hp = 10f;
+
+			RotationSpeed = 5f;
+			MeleeRotationSpeed = 2.5f;
+			MeleeAttackDelayTime = Rand.Float( 0.3f, 0.6f );
+			MeleeAttackAttackTime = Rand.Float( 0.08f, 0.1f );
+			MeleeAttackPauseTime = Rand.Float( 0.1f, 0.14f );
+			MeleeAttackRecoverTime = Rand.Float( 0.1f, 0.14f );
+			RotationController.RotationSpeed = RotationSpeed;
 		}
 
 		public override void Assign( Player player )
@@ -49,6 +57,37 @@ namespace aftermath
 			base.FoundTarget( target );
 
 			// CommandHandler.SetCommand( new FollowTargetCommand( target ) );
+		}
+
+		public override void LostTarget( Person target, Vector2 lastSeenPos )
+		{
+			MoveAndLook( lastSeenPos );
+		}
+
+		public override void MeleeAttack( Vector2 dir, Person target )
+		{
+			MeleeAttackCommand meleeAttackCommand = new MeleeAttackCommand( target )
+			{
+				Inaccuracy = MeleeAttackInaccuracy
+			};
+
+			meleeAttackCommand.PreAttackFinished += OnPreAttackFinished;
+			meleeAttackCommand.PauseFinished += OnPauseFinished;
+
+			// WieldKnife();
+
+			CommandHandler.InsertCommand( meleeAttackCommand );
+			_newWanderTimer = Rand.Float( NEW_WANDER_TIME_MIN, NEW_WANDER_TIME_MAX );
+		}
+
+		void OnPreAttackFinished( MeleeAttackCommand meleeAttackCommand )
+		{
+			// sfx
+		}
+
+		void OnPauseFinished( MeleeAttackCommand meleeAttackCommand )
+		{
+			// HolsterKnife();
 		}
 	}
 }

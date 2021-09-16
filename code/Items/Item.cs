@@ -18,7 +18,7 @@ namespace aftermath
 		{
 			if ( string.IsNullOrEmpty(DebugText) ) return;
 
-			Color color = new Color( 0.66f, 0.66f, 0.66f, 0.66f );
+			Color color = new Color( 0.66f, 0.66f, 0.66f, 0.2f );
 			float duration = 0f;
 			float dist = float.MaxValue;
 

@@ -47,7 +47,12 @@ namespace aftermath
 
 		protected override void OnFinishAllCommands( Person_CommandHandler commandHandler )
 		{
-			WaitCommand waitCommand = new WaitCommand( Rand.Float( 0.1f, 0.4f ) );
+			float waitTime = Rand.Float( 0.1f, 0.4f );
+			if ( Rand.Float( 0f, 1f ) < 0.2f )
+				waitTime += Rand.Float( 0.25f, 3f );
+
+			WaitCommand waitCommand = new WaitCommand(waitTime);
+
 			waitCommand.WaitFinished += ( e ) => { Wander(); };
 			CommandHandler.SetCommand( waitCommand );
 		}

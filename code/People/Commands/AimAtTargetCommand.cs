@@ -96,7 +96,7 @@ namespace aftermath
 			float rangeSqr = MathF.Pow( Rand.Float( gun.MinRange, gun.MaxRange ), 2f );
 			if ( rangeSqr < (Target.Position2D - Person.Position2D).LengthSquared )
 			{
-				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"TOO FAR!", new Color( 1f, 0.6f, 0.5f, 0.25f ) );
+				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"TOO FAR!", new Color( 1f, 0.6f, 0.5f, 0.15f ) );
 				return;
 			}
 
@@ -105,7 +105,7 @@ namespace aftermath
 
 			if ( dot < gun.RequiredAimQuality )
 			{
-				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"BAD ANGLE!", new Color( 1f, 0.3f, 0.5f, 0.6f ) );
+				AftermathGame.Instance.SpawnFloater( Person.Position2D, $"BAD ANGLE!", new Color( 1f, 0.3f, 0.5f, 0.2f ) );
 				return;
 			}
 

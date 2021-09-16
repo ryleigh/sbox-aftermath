@@ -13,7 +13,7 @@ namespace aftermath
 	{
 		private Person_RotationController RotationController => Person.RotationController;
 
-		public Vector2 SightDirection => Utils.GetVector2FromAngleDegrees( Person.RotationController.CurrentRotation );
+		public Vector2 BodyDirection => Utils.GetVector2FromAngleDegrees( Person.RotationController.CurrentRotation );
 		public float TargetSightDegrees { get; protected set; }
 
 		public float SightRadius { get; set; }
@@ -55,9 +55,10 @@ namespace aftermath
 				color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
 					? new Color( 1f, 0f, 0f, 1f )
 					: new Color( 1f, 1f, 1f, 0.1f );
-				DebugOverlay.Line( Person.Position.WithZ( 1f ), Person.Position.WithZ( 1f ) + (Vector3)SightDirection * SightRadius, color );
+				DebugOverlay.Line( Person.Position.WithZ( 1f ), Person.Position.WithZ( 1f ) + (Vector3)BodyDirection * SightRadius, color );
 			}
-				
+
+			// DebugOverlay.Line( Person.EyePos, Person.EyePos + Person.EyeRot.Forward * 200f, Color.Orange);
 
 			HandleAiming( dt );
 		}
@@ -101,7 +102,7 @@ namespace aftermath
 		{
 			List<Vector2> sightConePoints = new List<Vector2>();
 
-			Vector2 forwardVector = SightDirection * SightRadius;
+			Vector2 forwardVector = BodyDirection * SightRadius;
 			Vector2 leftVector = Utils.RotateVector2( forwardVector, SightAngle / 2f ) * SightRadius;
 			Vector2 rightVector = Utils.RotateVector2( forwardVector, -SightAngle / 2f ) * SightRadius;
 			float leftAngleRads = forwardVector.AngleRadians() + Utils.Deg2Rad( SightAngle / 2f );
@@ -176,7 +177,7 @@ namespace aftermath
 			if ( (pos - Person.Position2D).LengthSquared > MathF.Pow( SightRadius, 2f ) )
 				return false;
 
-			Vector2 forwardVector = SightDirection * SightRadius;
+			Vector2 forwardVector = BodyDirection * SightRadius;
 			float leniency = (Person.PersonType == PersonType.Survivor) ? 5f : 0f;
 
 			float leftAngle = forwardVector.AngleRadians() + Utils.Deg2Rad( SightAngle / 2f + leniency );

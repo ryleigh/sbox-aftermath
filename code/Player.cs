@@ -174,7 +174,9 @@ namespace aftermath
 					{
 						if ( entity is Survivor survivor )
 						{
-							Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+							// Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+							GridPosition gridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
+							Person.MoveToBuild( mouseWorldPos, gridPos.X, gridPos.Y, StructureType.Wall, Direction.Up, 0, survivor.NetworkIdent );
 						}
 					}
 				}

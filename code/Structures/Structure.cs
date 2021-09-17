@@ -4,6 +4,8 @@ using Sandbox;
 
 namespace aftermath
 {
+	public enum StructureType { None, Wall, Fence, Factory, AmmoCacheBullets, AmmoCacheShells, AmmoCacheHPBullets, Turret }
+
 	public partial class Structure : ModelEntity
 	{
 		public StructureManager StructureManager { get; set; }
@@ -35,7 +37,7 @@ namespace aftermath
 		{
 			base.ClientSpawn();
 
-			Log.Warning( $"Structure - ClientSpawn **************** IsServer: {Host.IsServer}, StructureManager: {AftermathGame.Instance.StructureManager}" );
+			// Log.Warning( $"Structure - ClientSpawn **************** IsServer: {Host.IsServer}, StructureManager: {AftermathGame.Instance.StructureManager}" );
 		}
 
 		public virtual void Update( float dt )
@@ -82,6 +84,24 @@ namespace aftermath
 		public virtual void SetDirection( Direction direction )
 		{
 			FacingDirection = direction;
+		}
+
+		public static float GetBuildTime( StructureType structureType )
+		{
+			float buildTime = 0f;
+
+			switch ( structureType )
+			{
+				case StructureType.Wall: buildTime = 10f; break;
+				case StructureType.Fence: buildTime = 15f; break;
+				case StructureType.AmmoCacheBullets: buildTime = 12f; break;
+				case StructureType.AmmoCacheShells: buildTime = 12f; break;
+				case StructureType.AmmoCacheHPBullets: buildTime = 12f; break;
+				case StructureType.Turret: buildTime = 15f; break;
+				case StructureType.Factory: buildTime = 20f; break;
+			}
+
+			return buildTime;
 		}
 	}
 }

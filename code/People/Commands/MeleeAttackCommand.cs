@@ -19,6 +19,8 @@ namespace aftermath
 		public Structure TargetStructure { get; private set; }
 		public Vector2 TargetStructurePos { get; private set; }
 
+		public override string ToString() { return $"Follow: {(TargetPerson != null ? TargetPerson.PersonName : "NONE")}"; }
+
 		public float Inaccuracy { get; set; }
 
 		private float _timer;

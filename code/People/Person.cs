@@ -79,6 +79,7 @@ namespace aftermath
 		public float GunSpreadFactor => 1f;
 		public float GunShootForceFactor => 1f;
 		public float ReloadSpeedFactor => 1f;
+		public float BuildSpeedFactor => 1f;
 
 		public bool IsLocalPlayers
 		{
@@ -149,10 +150,6 @@ namespace aftermath
 			// UseAnimGraph = false;
 
 			Scale = 1.25f;
-
-			Gun gun = new Pistol();
-			GunHandler.StartEquippingGun( gun );
-			GunHandler.FinishEquippingGun( gun );
 
 			IsMale = Rand.Float( 0f, 1f ) < (PersonType == PersonType.Soldier ? 0.8f : 0.5f);
 			SetName( IsMale ? NameGenerator.GetRandomMaleName() : NameGenerator.GetRandomFemaleName() );
@@ -296,6 +293,17 @@ namespace aftermath
 			MoveToPickUpItemCommand moveToPickUpCommand = new( item );
 			ParallelCommand parallelCommand = new(new List<PersonCommand>() {moveCommand, moveToPickUpCommand});
 
+			person.CommandHandler.SetCommand( parallelCommand );
+		}
+
+		[ServerCmd]
+		public static void MoveToBuild( Vector2 pos, int gridX, int gridY, StructureType structureType, Direction structureDirection, int cost, int personId )
+		{
+			if ( Entity.FindByIndex( personId ) is not Person person ) return;
+
+			MoveToPosCommand moveCommand = new MoveToPosCommand( pos );
+			MoveToBuildCommand moveToBuildCommand = new MoveToBuildCommand( new GridPosition(gridX, gridY), structureType, structureDirection, cost );
+			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() {moveCommand, moveToBuildCommand} );
 			person.CommandHandler.SetCommand( parallelCommand );
 		}
 

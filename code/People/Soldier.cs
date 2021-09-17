@@ -37,6 +37,10 @@ namespace aftermath
 			MeleeAttackPauseTime = Rand.Float( 0.1f, 0.14f );
 			MeleeAttackRecoverTime = Rand.Float( 0.1f, 0.14f );
 			RotationController.RotationSpeed = RotationSpeed;
+
+			Gun gun = new Pistol();
+			GunHandler.StartEquippingGun( gun );
+			GunHandler.FinishEquippingGun( gun );
 		}
 
 		public override void Assign( Player player )

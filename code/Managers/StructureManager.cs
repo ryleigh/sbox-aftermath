@@ -8,8 +8,6 @@ using Sandbox;
 
 namespace aftermath
 {
-	public enum StructureType { None, Wall }
-
 	public partial class StructureManager : Entity
 	{
 		readonly SortedDictionary<int, Structure> _structures = new SortedDictionary<int, Structure>();
@@ -71,6 +69,8 @@ namespace aftermath
 					Structure structure = _structures[index];
 					structure.Delete();
 					_structures.Remove( index );
+
+					RemoveStructureClient( index );
 				}
 			}
 			_toRemove.Clear();
@@ -108,7 +108,7 @@ namespace aftermath
 
 			AddStructureClient( index, structure, gridPos );
 
-			Log.Info( $"StructureManager - AddStructureServer: {structure} at index: {index} and gridPos: {gridPos}, blocksMovement: {structure.BlocksMovement}, IsServer: {IsServer}" );
+			// Log.Info( $"StructureManager - AddStructureServer: {structure} at index: {index} and gridPos: {gridPos}, blocksMovement: {structure.BlocksMovement}, IsServer: {IsServer}" );
 
 			return structure;
 		}
@@ -117,12 +117,13 @@ namespace aftermath
 		public void AddStructureClient( int index, Structure structure, GridPosition gridPos)
 		{
 			structure.SetGridPos( gridPos );
-			Log.Info( $"StructureManager - AddStructureClient: {structure} at index: {index} and gridPos: {structure.GridPosition}, blocksMovement: {structure.BlocksMovement}, IsServer: {IsServer}" );
+			// Log.Info( $"StructureManager - AddStructureClient: {structure} at index: {index} and gridPos: {structure.GridPosition}, blocksMovement: {structure.BlocksMovement}, IsServer: {IsServer}" );
 			_structures.Add( index, structure );
 		}
 
 		public void RemoveStructure( Structure structure )
 		{
+			Log.Info( "RemoveStructure" );
 			GridPosition gridPos = structure.GridPosition;
 
 			int index = AftermathGame.Instance.GridManager.GetIndexForGridPos( gridPos );
@@ -136,6 +137,12 @@ namespace aftermath
 
 			if ( IsEdge( gridPos ) ) _emptyEdgeIndexes.Add( index );
 			else _emptyMiddleIndexes.Add( index );
+		}
+
+		[ClientRpc]
+		public void RemoveStructureClient( int index)
+		{
+			_structures.Remove( index );
 		}
 
 		public int GetRandomEmptyIndex()

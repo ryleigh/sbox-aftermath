@@ -301,7 +301,7 @@ namespace aftermath
 		{
 			if ( Entity.FindByIndex( personId ) is not Person person ) return;
 
-			MoveToPosCommand moveCommand = new MoveToPosCommand( pos );
+			MoveToPosCommand moveCommand = new MoveToPosCommand( pos, default(GridPosition) );
 			MoveToBuildCommand moveToBuildCommand = new MoveToBuildCommand( new GridPosition(gridX, gridY), structureType, structureDirection, cost );
 			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() {moveCommand, moveToBuildCommand} );
 			person.CommandHandler.SetCommand( parallelCommand );

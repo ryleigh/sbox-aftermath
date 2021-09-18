@@ -123,7 +123,7 @@ namespace aftermath
 
 		public void RemoveStructure( Structure structure )
 		{
-			Log.Info( "RemoveStructure" );
+			// Log.Info( "RemoveStructure" );
 			GridPosition gridPos = structure.GridPosition;
 
 			int index = AftermathGame.Instance.GridManager.GetIndexForGridPos( gridPos );

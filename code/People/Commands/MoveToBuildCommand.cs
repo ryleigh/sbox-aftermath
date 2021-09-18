@@ -14,7 +14,7 @@ namespace aftermath
 		public StructureType StructureType { get; private set; }
 		public Direction StructureDirection { get; private set; }
 
-		private const float REQ_DISTANCE = 60f;
+		private const float REQ_DISTANCE = 70f;
 		public bool IsWaitingToBuild { get; private set; }
 
 		private float _waitCheckTimer;
@@ -73,6 +73,10 @@ namespace aftermath
 					{
 						StartBuilding();
 					}
+					else
+					{
+						AftermathGame.Instance.SpawnFloater( Person.Position2D, $"Build Blocked!", new Color( 0.4f, 0.6f, 1f, 1f ) );
+					}
 
 					_waitCheckTimer += WAIT_CHECK_DELAY;
 				}
@@ -96,6 +100,11 @@ namespace aftermath
 				{
 					IsWaitingToBuild = true;
 					_waitCheckTimer = WAIT_CHECK_DELAY;
+
+					MoveToPosCommand moveCommand = Person.CommandHandler.GetCurrentCommandIfExists( PersonCommandType.MoveToPos ) as MoveToPosCommand;
+					Log.Info( $"moveCommand: {moveCommand}" );
+					if ( moveCommand != null )
+						moveCommand.ShouldMove = false;
 				}
 			}
 		}
@@ -109,6 +118,8 @@ namespace aftermath
 		public override void Interrupt()
 		{
 			base.Interrupt();
+
+			// Log.Info( "INTERRUPT ---------" );
 
 			// if ( !_didStartBuilding )
 			// 	GameMode.AdjustScrapAmount( _cost );

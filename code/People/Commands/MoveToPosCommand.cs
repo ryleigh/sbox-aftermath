@@ -24,12 +24,16 @@ namespace aftermath
 		protected float WALKING_NOISE_TICK_MIN = 0.33f;
 		protected float WALKING_NOISE_TICK_MAX = 0.75f;
 
-		public MoveToPosCommand( Vector2 pos, GridPosition treatAsWalkable = default( GridPosition ) )
+		public bool ShouldMove { get; set; }
+
+		public MoveToPosCommand( Vector2 pos, GridPosition treatAsWalkable = default( GridPosition ))
 		{
 			TargetPos = pos;
 			TreatAsWalkable = treatAsWalkable;
 
 			Type = PersonCommandType.MoveToPos;
+
+			ShouldMove = true;
 
 			// Log.Warning( $"MoveToPosCommand ctor **************** IsServer: {Host.IsServer}," );
 		}
@@ -50,7 +54,7 @@ namespace aftermath
 
 		public override void Update( float dt )
 		{
-			if ( IsFinished )
+			if ( IsFinished || !ShouldMove)
 				return;
 
 			base.Update( dt );
@@ -163,6 +167,8 @@ namespace aftermath
 
 			// client rpc
 			Person.StopDrawingPath();
+
+			Log.Info( "MOVE FINISHED" );
 
 			base.Finish();
 		}

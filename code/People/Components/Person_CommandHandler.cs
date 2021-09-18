@@ -86,18 +86,18 @@ namespace aftermath
 			if ( CurrentCommandType == commandType )
 				return CurrentCommand;
 
-			// if ( CurrentCommandType == PersonCommandType.Parallel )
-			// {
-			// 	ParallelCommand parallelCommand = (ParallelCommand)CurrentCommand;
-			//
-			// 	foreach ( PersonCommand personCommand in parallelCommand.SubCommands )
-			// 	{
-			// 		if ( personCommand.Type == commandType )
-			// 		{
-			// 			return personCommand;
-			// 		}
-			// 	}
-			// }
+			if ( CurrentCommandType == PersonCommandType.Parallel )
+			{
+				ParallelCommand parallelCommand = (ParallelCommand)CurrentCommand;
+			
+				foreach ( PersonCommand command in parallelCommand.SubCommands )
+				{
+					if ( command.Type == commandType )
+					{
+						return command;
+					}
+				}
+			}
 
 			return null;
 		}

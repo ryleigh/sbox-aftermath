@@ -15,7 +15,7 @@ namespace aftermath
 
 		public override string ToString()
 		{
-			return "ParallelCommand: (" + SubCommands.Count + ") " + SubCommands.Aggregate( "", ( current, subCommand ) => current + ("\n- " + subCommand.ToString()) );
+			return "ParallelCommand: (" + SubCommands.Count + ") " + SubCommands.Aggregate( "", ( current, subCommand ) => current + ("\n- " + subCommand.ToString() + ": " + subCommand.IsFinished) );
 		}
 
 		public ParallelCommand( List<PersonCommand> subCommands )

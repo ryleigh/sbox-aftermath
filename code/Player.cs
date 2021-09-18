@@ -90,6 +90,8 @@ namespace aftermath
 				DebugOverlay.ScreenText( 5, $"Rounds.Current (Server): {Rounds.Current}" );
 				DebugOverlay.ScreenText( 8, $"Selected (Server): {Selected.Count}" );
 
+				DebugOverlay.ScreenText( 11, $"Does contain person: {AftermathGame.Instance.GridManager.DoesGridPosContainPerson( AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos ) )}" );
+
 				if ( Input.Released( InputButton.Slot1 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Survivor ); }
 				if ( Input.Released( InputButton.Slot2 ) ) { AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up ); }
 				if ( Input.Released( InputButton.Slot3 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Zombie); }
@@ -216,18 +218,25 @@ namespace aftermath
 				}
 				else if ( trace.Entity is Item item )
 				{
-					ItemTooltip.Instance.Update( item );
-					ItemTooltip.Instance.Hover( item );
-					ItemTooltip.Instance.Show();
-					showTooltip = true;
-
-					if ( Input.Pressed( InputButton.Attack2 ) )
+					if ( item is Gun {IsHeld: true} )
 					{
-						foreach ( var entity in Selected )
+						// do nothing
+					}
+					else
+					{
+						ItemTooltip.Instance.Update( item );
+						ItemTooltip.Instance.Hover( item );
+						ItemTooltip.Instance.Show();
+						showTooltip = true;
+
+						if ( Input.Pressed( InputButton.Attack2 ) )
 						{
-							if ( entity is Survivor survivor )
+							foreach ( var entity in Selected )
 							{
-								Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+								if ( entity is Survivor survivor )
+								{
+									Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+								}
 							}
 						}
 					}

@@ -294,23 +294,17 @@ namespace aftermath
 
 		public bool DoesGridPosContainPerson( GridPosition gridPos )
 		{
-			// return DoesPersonExistInGridPos( gridPos, GameMode.PersonManager.People );
-
-			return false;
+			return DoesPersonExistInGridPos( gridPos, Entity.All.OfType<Person>().ToList() );
 		}
 
 		public bool DoesGridPosContainSurvivor( GridPosition gridPos )
 		{
-			// return DoesPersonExistInGridPos( gridPos, GameMode.PersonManager.Survivors );
-
-			return false;
+			return DoesPersonExistInGridPos( gridPos, Entity.All.OfType<Person>().Where( person => person is Survivor ).ToList() );
 		}
 
 		public bool DoesGridPosContainZombie( GridPosition gridPos )
 		{
-			// return DoesPersonExistInGridPos( gridPos, GameMode.PersonManager.Zombies );
-
-			return false;
+			return DoesPersonExistInGridPos( gridPos, Entity.All.OfType<Person>().Where( person => person is Zombie).ToList() );
 		}
 
 		public bool DoesPersonExistInGridPos( GridPosition gridPos, List<Person> people )
@@ -318,13 +312,13 @@ namespace aftermath
 			if ( !gridPos.IsValid || !IsGridPosInBounds( gridPos ) )
 				return false;
 		
-			// foreach ( Person person in people )
-			// {
-			// 	if ( !person.IsDead && person.Movement.CurrentGridPos == gridPos )
-			// 	{
-			// 		return true;
-			// 	}
-			// }
+			foreach ( Person person in people )
+			{
+				if ( !person.IsDead && person.Movement.CurrentGridPos == gridPos )
+				{
+					return true;
+				}
+			}
 		
 			return false;
 		}

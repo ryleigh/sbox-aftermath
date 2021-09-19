@@ -145,9 +145,11 @@ namespace aftermath
 
 		void ConsiderShot()
 		{
+			// AftermathGame.Instance.SpawnFloater( Person.Position, $"CONSIDER SHOT!", new Color( 0f, 1f, 0.3f, 1f ) );
+
 			Gun gun = Person.GunHandler.Gun;
 
-			if ( (Target.Position2D - Person.Position2D).LengthSquared > Rand.Float( gun.MinRange, gun.MaxRange ) )
+			if ( (Target.Position2D - Person.Position2D).Length > Rand.Float( gun.MinRange, gun.MaxRange ) )
 				return;
 
 			Person.CommandHandler.InsertCommand( new AimAtTargetCommand( Target ) );

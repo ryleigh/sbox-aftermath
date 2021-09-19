@@ -50,8 +50,8 @@ namespace aftermath
 
 			Log.Info( $"Zombie - Assign: {player}, color: {player?.TeamColor}" );
 
-			Movement.MoveSpeed = 40f;
-			Movement.FollowTargetMoveSpeed = 50f;
+			Movement.MoveSpeed = 30f;
+			Movement.FollowTargetMoveSpeed = 40f;
 
 			RenderColor = new Color( Rand.Float( 0.2f, 0.25f ), Rand.Float( 0.5f, 0.7f ), Rand.Float( 0.2f, 0.25f ) );
 			Wander();

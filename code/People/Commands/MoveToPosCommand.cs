@@ -168,7 +168,7 @@ namespace aftermath
 			// client rpc
 			Person.StopDrawingPath();
 
-			Log.Info( "MOVE FINISHED" );
+			// Log.Info( "MOVE FINISHED" );
 
 			base.Finish();
 		}

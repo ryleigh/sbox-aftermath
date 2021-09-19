@@ -86,6 +86,24 @@ namespace aftermath
 			FacingDirection = direction;
 		}
 
+		public static int GetCost( StructureType structureType )
+		{
+			int cost = 0;
+
+			switch ( structureType )
+			{
+				case StructureType.Wall: cost = 10; break;
+				case StructureType.Fence: cost = 20; break;
+				case StructureType.AmmoCacheBullets: cost = 20; break;
+				case StructureType.AmmoCacheShells: cost = 20; break;
+				case StructureType.AmmoCacheHPBullets: cost = 20; break;
+				case StructureType.Turret: cost = 30; break;
+				case StructureType.Factory: cost = 50; break;
+			}
+
+			return cost;
+		}
+
 		public static float GetBuildTime( StructureType structureType )
 		{
 			float buildTime = 0f;
@@ -102,6 +120,42 @@ namespace aftermath
 			}
 
 			return buildTime;
+		}
+
+		public static string GetBuildingName( StructureType structureType )
+		{
+			string name = "";
+
+			switch ( structureType )
+			{
+				case StructureType.Wall: name = "Wall"; break;
+				case StructureType.Fence: name = "Fence"; break;
+				case StructureType.AmmoCacheBullets: name = "Bullet Cache"; break;
+				case StructureType.AmmoCacheShells: name = "Shell Cache"; break;
+				case StructureType.AmmoCacheHPBullets: name = "High-Power Bullet Cache"; break;
+				case StructureType.Turret: name = "Turret"; break;
+				case StructureType.Factory: name = "Factory"; break;
+			}
+
+			return name;
+		}
+
+		public static string GetBuildingIcon( StructureType structureType )
+		{
+			string icon = "";
+
+			switch ( structureType )
+			{
+				case StructureType.Wall: icon = "crop_din"; break;
+				case StructureType.Fence: icon = "view_comfy"; break;
+				case StructureType.AmmoCacheBullets: icon = "dashboard"; break;
+				case StructureType.AmmoCacheShells: icon = "grid_view"; break;
+				case StructureType.AmmoCacheHPBullets: icon = "dashboard_customize"; break;
+				case StructureType.Turret: icon = "outbox"; break;
+				case StructureType.Factory: icon = "select_all"; break;
+			}
+
+			return icon;
 		}
 	}
 }

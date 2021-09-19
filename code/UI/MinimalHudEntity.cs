@@ -17,7 +17,7 @@ namespace aftermath
 			// RootPanel.AddChild<CursorController>();
 			RootPanel.AddChild<ItemTooltip>();
 			RootPanel.AddChild<SelectionInfoPanel>();
-			// RootPanel.AddChild<BasicMenu>();
+			RootPanel.AddChild<BuildMenuPanel>();
 		}
 	}
 }

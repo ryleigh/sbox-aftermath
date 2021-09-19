@@ -65,7 +65,13 @@ namespace aftermath
 	        // Desc.Text = item.Position2D.ToString();
         }
 
-        public override void Tick()
+        public void Update( string message )
+        {
+	        Name.Text = message;
+	        // Desc.Text = item.Position2D.ToString();
+        }
+
+		public override void Tick()
         {
 	        SetClass("hidden", !IsShowing );
 

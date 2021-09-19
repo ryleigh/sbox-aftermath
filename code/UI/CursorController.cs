@@ -93,7 +93,7 @@ namespace aftermath
 
 					foreach ( var b in selectable )
 					{
-						if ( b is Person {IsDead: false} person )
+						if ( b is Person {IsDead: false, IsSelected: false} person )
 						{
 							var screenScale = person.Position.ToScreen();
 							var screenX = Screen.Width * screenScale.y;

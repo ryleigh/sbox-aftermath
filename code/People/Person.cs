@@ -215,6 +215,7 @@ namespace aftermath
 			}
 			
 			DebugText += $"\nHP:{Hp.FloorToInt()}";
+			DebugText += $"\nSelected:{IsSelected}";
 		}
 
 		[Event.Tick.Client]
@@ -231,6 +232,9 @@ namespace aftermath
 				RenderPath();
 
 			DrawDebugText();
+
+			// if(Rand.Float( 0f, 1f ) < 0.1f)
+			// 	AftermathGame.Instance.SpawnFloater( Position, $"Selected (Client): {IsSelected}!", IsSelected ? new Color( 0f, 0.4f, 0.8f, 0.8f ) : new Color( 1f, 0.4f, 0.8f, 0.5f ) );
 		}
 
 		// CLIENT

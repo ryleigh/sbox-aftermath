@@ -14,6 +14,7 @@ namespace aftermath
 		private Panel ScrapBackgroundPanel;
 
 		private Label NameLabel;
+		private Button BuildButton;
 		private Button ItemButton;
 		private Panel HudBackgroundPanel;
 		private Panel PersonBackgroundPanel;
@@ -30,10 +31,16 @@ namespace aftermath
 
 			PersonBackgroundPanel = HudBackgroundPanel.Add.Panel( "personBackground" );
 
-			Panel buttonBackground = PersonBackgroundPanel.Add.Panel( "itemButtonBackground" );
+			Panel buttonBackground = PersonBackgroundPanel.Add.Panel( "buttonBackground" );
+			BuildButton = buttonBackground.AddChild<BuildButton>();
+			BuildButton.SetClass( "button", true );
+			BuildButton.AddEventListener( "onclick", BuildMode );
+			BuildButton.Text = "build";
+			BuildButton.SetClass( "open", true );
+
 			// ItemButton = buttonBackground.Add.Button( "", "itemButton" );
 			ItemButton = buttonBackground.AddChild<ItemButton>( );
-			ItemButton.SetClass( "itemButton", true );
+			ItemButton.SetClass( "button", true );
 			ItemButton.AddEventListener( "onclick", () => {
 				DropItem();
 			} );
@@ -66,9 +73,8 @@ namespace aftermath
 				if ( player.Selected[0] is Person person )
 				{
 					NameLabel.Text = person.PersonName;
-					ItemButton.Text = person.EquippedGun != null ? "get_app" : "";
+					ItemButton.Text = person.EquippedGun != null ? "auto_fix_normal" : "";
 					ItemButton.SetClass( "open", person.EquippedGun != null );
-
 				}
 
 				PersonBackgroundPanel.SetClass( "open", true );
@@ -90,13 +96,39 @@ namespace aftermath
 				}
 			}
 		}
+
+		public void BuildMode()
+		{
+			
+		}
+	}
+
+	public class BuildButton : Button
+	{
+		protected override void OnMouseOver( MousePanelEvent e )
+		{
+			if ( Local.Pawn is not Player player ) return;
+			if ( player.Selected.Count == 1 )
+			{
+				if ( player.Selected[0] is Person person )
+				{
+					ItemTooltip.Instance.Update( "Build" );
+					ItemTooltip.Instance.Hover( this );
+					ItemTooltip.Instance.Show();
+				}
+			}
+		}
+
+		protected override void OnMouseOut( MousePanelEvent e )
+		{
+			ItemTooltip.Instance.Hide();
+		}
 	}
 
 	public class ItemButton : Button
 	{
 		protected override void OnMouseOver( MousePanelEvent e )
 		{
-			Log.Info( $"OVER!!! {Time.Now}" );
 			if ( Local.Pawn is not Player player ) return;
 			if ( player.Selected.Count == 1 )
 			{
@@ -114,7 +146,6 @@ namespace aftermath
 
 		protected override void OnMouseOut( MousePanelEvent e )
 		{
-			Log.Info( $"OUT! {Time.Now}" );
 			ItemTooltip.Instance.Hide();
 		}
 	}

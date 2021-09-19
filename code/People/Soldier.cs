@@ -60,7 +60,7 @@ namespace aftermath
 		{
 			base.FoundTarget( target );
 
-			// CommandHandler.SetCommand( new FollowTargetCommand( target ) );
+			CommandHandler.SetCommand( new FollowTargetCommand( target ) );
 		}
 
 		public override void LostTarget( Person target, Vector2 lastSeenPos )

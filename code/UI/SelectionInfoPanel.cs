@@ -68,6 +68,8 @@ namespace aftermath
 			// XpBar.Style.Width = Length.Percent( 50f + (float)Math.Sin( Time.Now ) * 50f );
 			// XpBar.Style.Dirty();
 
+			BuildButton.SetClass( "toggledOn", player.IsBuildMode );
+
 			if ( player.Selected.Count == 1 )
 			{
 				if ( player.Selected[0] is Person person )
@@ -99,7 +101,8 @@ namespace aftermath
 
 		public void BuildMode()
 		{
-			
+			if ( Local.Pawn is not Player player ) return;
+			player.ToggleBuildMode();
 		}
 	}
 

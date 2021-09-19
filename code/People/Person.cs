@@ -225,7 +225,7 @@ namespace aftermath
 
 			if ( IsSelected && IsLocalPlayers )
 			{
-				Utils.DrawCircle( Position2D, 7f + MathF.Sin( Time.Now * 2f ) * 6f, 25f, 12, Player.TeamColor, Time.Now * -4f );
+				Utils.DrawCircle( Position2D, 7f + MathF.Sin( Time.Now * 2f ) * 6f, 25f, 12, Player.TeamColor.WithAlpha( 0.75f ), Time.Now * -4f );
 			}
 
 			if ( _shouldDrawPath )
@@ -352,10 +352,10 @@ namespace aftermath
 			if ( _path.Count == 0 )
 				return;
 
-			DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( Position2D ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[0] ).WithZ( 0.01f ), Player.TeamColor);
+			DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( Position2D ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[0] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.25f ));
 
 			for ( int i = 0; i < _path.Count - 1; i++ )
-				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor );
+				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.25f ) );
 		}
 
 		protected virtual void OnFinishAllCommands( Person_CommandHandler commandHandler )

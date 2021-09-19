@@ -13,6 +13,8 @@ namespace aftermath
 		public FrustumSelect FrustumSelect = new FrustumSelect();
 
 		public List<Entity> Selected = new();
+		public bool IsBuildMode { get; set; }
+		public StructureType BuildModeType { get; set; }
 
 		[Net] public Color TeamColor { get; set; }
 		[Net] public int PlayerNum { get; set; }
@@ -48,8 +50,6 @@ namespace aftermath
 				DebugOverlay.ScreenText( 5, $"Rounds.Current (Server): {Rounds.Current}" );
 				DebugOverlay.ScreenText( 8, $"Selected (Server): {Selected.Count}" );
 
-				DebugOverlay.ScreenText( 11, $"Does contain person: {AftermathGame.Instance.GridManager.DoesGridPosContainPerson( AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos ) )}" );
-
 				if ( Input.Released( InputButton.Slot1 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Survivor ); }
 				if ( Input.Released( InputButton.Slot2 ) ) { AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up ); }
 				if ( Input.Released( InputButton.Slot3 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Zombie); }
@@ -71,7 +71,7 @@ namespace aftermath
 					item.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 8 );
 				}
 
-				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 1; }
+				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 15; }
 
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );
@@ -79,6 +79,7 @@ namespace aftermath
 			else
 			{
 				// CLIENT
+
 				if ( Input.Pressed( InputButton.Attack1 ) )
 					FrustumSelect.Init( Input.Cursor, EyeRot );
 				
@@ -99,14 +100,8 @@ namespace aftermath
 				
 					if ( FrustumSelect.IsDragging )
 					{
-						foreach ( var entity in Selected )
-						{
-							if ( entity is Person person )
-								person.Deselect();
-						}
-				
-						Selected.Clear();
-				
+						DeselectAll();
+
 						var f = FrustumSelect.GetFrustum();
 				
 						foreach ( var ent in Entity.All )
@@ -249,8 +244,8 @@ namespace aftermath
 
 			EyePos = Position;
 
-			DebugOverlay.Line( new Vector3( 0f, 0f, 0.01f ), new Vector3( 1024f, 0f, 0.01f ), Color.Black );
-			DebugOverlay.Line( new Vector3( 0f, 0f, 0.01f ), new Vector3( 0f, -1024f, 0.01f ), Color.Black );
+			// DebugOverlay.Line( new Vector3( 0f, 0f, 0.01f ), new Vector3( 1024f, 0f, 0.01f ), Color.Black );
+			// DebugOverlay.Line( new Vector3( 0f, 0f, 0.01f ), new Vector3( 0f, -1024f, 0.01f ), Color.Black );
 		}
 
 		// CLIENT
@@ -274,6 +269,9 @@ namespace aftermath
 			}
 
 			Selected.Clear();
+
+			IsBuildMode = false;
+			SelectBuildType( StructureType.None );
 		}
 
 		public void Select( ISelectable selectable, bool isAdditive )
@@ -296,6 +294,53 @@ namespace aftermath
 			DebugOverlay.ScreenText( 4, $"Player: {this}" );
 
 			DebugOverlay.ScreenText( 7, $"Selected (Client): {Selected.Count}" );
+			DebugOverlay.ScreenText( 11, $"IsBuildMode (Client): {IsBuildMode}" );
+
+			if ( _buildingIndicator != null )
+			{
+				Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
+				Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
+				Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
+				GridPosition mouseGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
+
+				_buildingIndicator.Position = AftermathGame.Instance.GridManager.Get2DPosForGridPos( mouseGridPos );
+				_buildingIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.4f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+				// _buildingIndicator.GlowColor = new Color( 0.1f, 0.1f, 1f, 0f + MathF.Sin( Time.Now * 5f ) * 0.4f );
+				// _buildingIndicator.GlowActive = true;
+			}
+			
+		}
+
+		public void ToggleBuildMode()
+		{
+			Host.AssertClient();
+
+			IsBuildMode = !IsBuildMode;
+			SelectBuildType( StructureType.None );
+		}
+
+		private BuildingIndicator _buildingIndicator;
+
+		public void SelectBuildType( StructureType structureType )
+		{
+			Host.AssertClient();
+
+			BuildModeType = structureType;
+
+			if ( _buildingIndicator != null )
+			{
+				_buildingIndicator.Delete();
+				_buildingIndicator = null;
+			}
+
+
+			if ( structureType != StructureType.None )
+			{
+				_buildingIndicator = new BuildingIndicator
+				{
+					RenderColor = new Color( 0f, 0f, 0f, 0f )
+				};
+			}
 		}
 	}
 }

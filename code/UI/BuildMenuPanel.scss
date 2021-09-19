@@ -42,6 +42,10 @@
             color: #ff6666;
         }
 
+        &.selected {
+            color: #bbbbff;
+        }
+
         &:hover {
             background-color: rgb(60, 60, 60);
         }

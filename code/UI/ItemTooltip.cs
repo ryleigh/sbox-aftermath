@@ -24,7 +24,7 @@ namespace aftermath
 	        StyleSheet.Load( "/UI/ItemTooltip.scss" );
 
 	        Name = Add.Label( "", "name" );
-	        Desc = Add.Label("", "name");
+	        Desc = Add.Label("", "desc");
 
 	        Instance = this;
         }
@@ -56,19 +56,27 @@ namespace aftermath
 		public void Update( Person person )
         {
 	        Name.Text = person.PersonName;
-	        // Desc.Text = person.Position2D.ToString();
-        }
+			Desc.Text = "";
+		}
 
         public void Update( Item item )
         {
 	        Name.Text = item.GetHoverInfo();
-	        // Desc.Text = item.Position2D.ToString();
-        }
+			Desc.Text = "";
+		}
 
         public void Update( string message )
         {
 	        Name.Text = message;
-	        // Desc.Text = item.Position2D.ToString();
+	        Desc.Text = "";
+        }
+
+        public void Update( string message, string description, bool negativeDesc = false )
+        {
+	        Name.Text = message;
+	        Desc.Text = description;
+
+			Desc.SetClass( "negative", negativeDesc );
         }
 
 		public override void Tick()

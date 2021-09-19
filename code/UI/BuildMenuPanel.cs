@@ -54,12 +54,13 @@ namespace aftermath
 
 			if ( Local.Pawn is not Player player ) return;
 
-			HudBackgroundPanel.SetClass( "open", player.Selected.Count == 1 );
-			PersonBackgroundPanel.SetClass( "open", player.Selected.Count == 1 );
+			HudBackgroundPanel.SetClass( "open", player.IsBuildMode );
+			PersonBackgroundPanel.SetClass( "open", player.IsBuildMode );
 
 			foreach ( BuildingButton button in _buildingButtons )
 			{
 				button.SetClass( "tooExpensive", button.Cost > player.ScrapAmount );
+				button.SetClass( "selected", player.IsBuildMode && player.BuildModeType == button.StructureType );
 			}
 		}
 
@@ -74,6 +75,7 @@ namespace aftermath
 				BuildingSelected( structureType );
 			} );
 			button.SetClass( "open", true );
+			button.StructureType = structureType;
 			button.Name = Structure.GetBuildingName( structureType );
 			button.Cost = Structure.GetCost( structureType );
 			button.Text = Structure.GetBuildingIcon( structureType );
@@ -83,12 +85,25 @@ namespace aftermath
 
 		public void BuildingSelected(StructureType structureType)
 		{
-			Log.Info( $"building selected: {structureType}" );
+			if ( Local.Pawn is not Player player ) return;
+
+			int cost = Structure.GetCost( structureType );
+
+			if ( cost > player.ScrapAmount )
+			{
+				if(player.Selected.Count > 0)
+					AftermathGame.Instance.SpawnFloater( player.Selected[0].Position, $"Need more scrap for {Structure.GetBuildingName( structureType )}!", new Color( 1f, 0.2f, 0.1f, 0.5f ) );
+			}
+			else
+			{
+				player.SelectBuildType( structureType );
+			}
 		}
 	}
 
 	public class BuildingButton : Button
 	{
+		public StructureType StructureType { get; set; }
 		public string Name { get; set; }
 		public int Cost { get; set; }
 
@@ -99,7 +114,7 @@ namespace aftermath
 			{
 				if ( player.Selected[0] is Person person )
 				{
-					ItemTooltip.Instance.Update( Name + "\n" + Cost + " Scrap");
+					ItemTooltip.Instance.Update( Name, Cost + " Scrap", negativeDesc: Cost > player.ScrapAmount);
 					ItemTooltip.Instance.Hover( this );
 					ItemTooltip.Instance.Show();
 				}

@@ -47,15 +47,14 @@ namespace aftermath
 				DrawSightCone();
 
 				Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
-					? new Color( 1f, 0.5f, 0.5f, 0.9f )
-					: new Color( 0.6f, 0.6f, 1f, 0.66f );
+					? new Color( 1f, 0.5f, 0.5f, 0.45f )
+					: new Color( 0.6f, 0.6f, 1f, 0.3f );
 				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.CloseRangeDetectionDistance, 12, color, Time.Now * -2f );
 
-
-				color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
-					? new Color( 1f, 0f, 0f, 1f )
-					: new Color( 1f, 1f, 1f, 0.1f );
-				DebugOverlay.Line( Person.Position.WithZ( 1f ), Person.Position.WithZ( 1f ) + (Vector3)BodyDirection * SightRadius, color );
+				// color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+				// 	? new Color( 1f, 0f, 0f, 1f )
+				// 	: new Color( 1f, 1f, 1f, 0.1f );
+				// DebugOverlay.Line( Person.Position.WithZ( 1f ), Person.Position.WithZ( 1f ) + (Vector3)BodyDirection * SightRadius, color );
 			}
 
 			// DebugOverlay.Line( Person.EyePos, Person.EyePos + Person.EyeRot.Forward * 200f, Color.Orange);
@@ -154,8 +153,8 @@ namespace aftermath
 			sightConePoints.Add( rightStart );
 
 			Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
-				? new Color( 1f, 0.5f, 0.5f, 0.9f )
-				: new Color( 0.6f, 0.6f, 1f, 0.66f );
+				? new Color( 1f, 0.5f, 0.5f, 0.6f )
+				: new Color( 0.6f, 0.6f, 1f, 0.4f );
 
 			for ( int i = 0; i < sightConePoints.Count; i++ )
 			{

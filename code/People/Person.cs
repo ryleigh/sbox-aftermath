@@ -240,12 +240,18 @@ namespace aftermath
 		// CLIENT
 		public virtual void Select()
 		{
+			if(IsSelected)
+				return;
+
 			IsSelected = true;
 			Person.SetSelected( true, NetworkIdent );
 		}
 
 		public virtual void Deselect()
 		{
+			if(!IsSelected)
+				return;
+
 			IsSelected = false;
 			Person.SetSelected( false, NetworkIdent );
 		}

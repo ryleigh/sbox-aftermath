@@ -81,15 +81,6 @@ namespace aftermath
 				// CLIENT
 
 				if ( Input.Pressed( InputButton.Attack1 ) )
-					FrustumSelect.Init( Input.Cursor, EyeRot );
-				
-				if ( Input.Down( InputButton.Attack1 ) )
-					FrustumSelect.Update( Input.Cursor );
-				
-				if ( !Input.Down( InputButton.Attack1 ) )
-					FrustumSelect.IsDragging = false;
-				
-				if ( Input.Pressed( InputButton.Attack1 ) )
 				{
 					FrustumSelect.Init( Input.Cursor, EyeRot );
 				}
@@ -168,27 +159,45 @@ namespace aftermath
 					ItemTooltip.Instance.Hover( p );
 					ItemTooltip.Instance.Show();
 					showTooltip = true;
-				}
-				else if ( trace.Entity is Item item )
-				{
-					if ( item is Gun {IsHeld: true} )
-					{
-						// do nothing
-					}
-					else
-					{
-						ItemTooltip.Instance.Update( item );
-						ItemTooltip.Instance.Hover( item );
-						ItemTooltip.Instance.Show();
-						showTooltip = true;
 
-						if ( Input.Pressed( InputButton.Attack2 ) )
+					if ( Input.Pressed( InputButton.Attack1 ) )
+					{
+						if ( !Input.Down( InputButton.Run ) )
+							DeselectAll();
+					
+						if ( !p.IsDead && p.Tags.Has( "selectable" ) && p.IsLocalPlayers && p is Survivor )
 						{
-							foreach ( var entity in Selected )
+							p.Select();
+							Selected.Add( p );
+						}
+					}
+				}
+				else 
+				{
+					if ( Input.Pressed( InputButton.Attack1 ) )
+						DeselectAll();
+					
+					if ( trace.Entity is Item item )
+					{
+						if ( item is Gun {IsHeld: true} )
+						{
+							// do nothing
+						}
+						else
+						{
+							ItemTooltip.Instance.Update( item );
+							ItemTooltip.Instance.Hover( item );
+							ItemTooltip.Instance.Show();
+							showTooltip = true;
+
+							if ( Input.Pressed( InputButton.Attack2 ) )
 							{
-								if ( entity is Survivor survivor )
+								foreach ( var entity in Selected )
 								{
-									Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+									if ( entity is Survivor survivor )
+									{
+										Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+									}
 								}
 							}
 						}
@@ -258,7 +267,7 @@ namespace aftermath
 
 		public void DeselectAll()
 		{
-			Log.Info( "Deselect All" );
+			// Log.Info( "Deselect All" );
 
 			foreach ( Entity entity in Selected )
 			{

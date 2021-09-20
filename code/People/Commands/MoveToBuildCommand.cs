@@ -46,8 +46,6 @@ namespace aftermath
 				return;
 			}
 
-			// spend scrap
-
 			TargetPos = AftermathGame.Instance.GridManager.Get2DPosForGridPos( GridPos );
 		}
 
@@ -112,7 +110,7 @@ namespace aftermath
 		void StartBuilding()
 		{
 			_didStartBuilding = true;
-			Person.CommandHandler.SetCommand( new BuildCommand( GridPos, StructureType, StructureDirection ) );
+			Person.CommandHandler.SetCommand( new BuildCommand( GridPos, StructureType, StructureDirection, _cost ) );
 		}
 
 		public override void Interrupt()
@@ -122,7 +120,7 @@ namespace aftermath
 			// Log.Info( "INTERRUPT ---------" );
 
 			// if ( !_didStartBuilding )
-			// 	GameMode.AdjustScrapAmount( _cost );
+			// 	Person.Player.AdjustScrapAmount( _cost );
 		}
 	}
 }

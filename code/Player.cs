@@ -72,6 +72,7 @@ namespace aftermath
 				}
 
 				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 15; }
+				if ( Input.Released( InputButton.Slot8 ) ) { ScrapAmount = 0; }
 
 				if ( Input.Down( InputButton.Flashlight ) )
 					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );
@@ -138,17 +139,17 @@ namespace aftermath
 					}
 				}
 
-				if ( Input.Pressed( InputButton.Slot8 ) )
-				{
-					foreach ( var entity in Selected )
-					{
-						if ( entity is Survivor survivor )
-						{
-							Person.Attack( survivor.NetworkIdent );
-							// Person.DropGun( survivor.NetworkIdent );
-						}
-					}
-				}
+				// if ( Input.Pressed( InputButton.Slot8 ) )
+				// {
+				// 	foreach ( var entity in Selected )
+				// 	{
+				// 		if ( entity is Survivor survivor )
+				// 		{
+				// 			Person.Attack( survivor.NetworkIdent );
+				// 			// Person.DropGun( survivor.NetworkIdent );
+				// 		}
+				// 	}
+				// }
 
 				var trace = Utils.TraceRayDirection( Input.Cursor.Origin, Input.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
 				bool showTooltip = false;
@@ -175,7 +176,28 @@ namespace aftermath
 				else 
 				{
 					if ( Input.Pressed( InputButton.Attack1 ) )
-						DeselectAll();
+					{
+						if ( IsBuildMode && BuildModeType != StructureType.None )
+						{
+							if ( Selected.Count == 1 )
+							{
+								foreach ( var entity in Selected )
+								{
+									if ( entity is Survivor survivor )
+									{
+										GridPosition gridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
+										Person.MoveToBuild( mouseWorldPos, gridPos.X, gridPos.Y, BuildModeType, Direction.Up, Structure.GetCost( BuildModeType ), survivor.NetworkIdent );
+										// Person.DropGun( survivor.NetworkIdent );
+										ToggleBuildMode();
+									}
+								}
+							}
+						}
+						else
+						{
+							DeselectAll();
+						}
+					}
 					
 					if ( trace.Entity is Item item )
 					{
@@ -304,6 +326,7 @@ namespace aftermath
 
 			DebugOverlay.ScreenText( 7, $"Selected (Client): {Selected.Count}" );
 			DebugOverlay.ScreenText( 11, $"IsBuildMode (Client): {IsBuildMode}" );
+			DebugOverlay.ScreenText( 12, $"BuildModeType: {BuildModeType}" );
 
 			if ( _buildingIndicator != null )
 			{
@@ -350,6 +373,11 @@ namespace aftermath
 					RenderColor = new Color( 0f, 0f, 0f, 0f )
 				};
 			}
+		}
+
+		public void AdjustScrapAmount( int amount )
+		{
+			ScrapAmount += amount;
 		}
 	}
 }

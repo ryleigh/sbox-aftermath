@@ -108,8 +108,7 @@ namespace aftermath
 			// this.DrawText( $"AmmoAmount: {AmmoAmount}", 8, 0.5f, 0.1f );
 			if ( AmmoAmount <= 0 )
 			{
-				AftermathGame.Instance.SpawnFloater( Position, $"{GunName} OUT OF AMMO!", new Color( 1f, 0.5f, 0.5f ) );
-				return true;
+				return false;
 			}
 
 			// DebugOverlay.Line( BarrelPos, Rotation.Forward * 1000f, Color.Magenta, 3f );

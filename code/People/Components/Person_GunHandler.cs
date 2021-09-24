@@ -80,7 +80,8 @@ namespace aftermath
 			{
 				if ( Person.PersonType == PersonType.Survivor )
 				{
-					// floater
+					AftermathGame.Instance.SpawnFloater( Person.Position, $"{Person.GunHandler.Gun?.GunName ?? "NULL"} OUT OF AMMO!", new Color( 1f, 0.5f, 0.5f ) );
+
 					// sfx
 
 					Person.CommandHandler.SetCommand( new WaitCommand( Rand.Float( 3f, 6f ) ) );
@@ -99,6 +100,14 @@ namespace aftermath
 
 		public bool Reload()
 		{
+			if ( HasGun && Person.AmmoHandler.HasAmmo && Gun.AmmoType == Person.AmmoHandler.AmmoType )
+			{
+				AftermathGame.Instance.SpawnFloater( Person.Position, $"RELOADING!", new Color( 0.5f, 0.5f, 1f ) );
+
+				Person.CommandHandler.SetCommand( new ReloadCommand() );
+				return true;
+			}
+
 			return false;
 		}
 	}

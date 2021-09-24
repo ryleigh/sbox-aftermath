@@ -26,6 +26,8 @@ namespace aftermath
 		private int _ammoDropAmount;
 		private AmmoType _droppedAmmoType;
 
+		private AmmoItem _ammoItem;
+
 		public static string GetDisplayName( AmmoType ammoType, bool plural )
 		{
 			string displayName = "";
@@ -51,65 +53,75 @@ namespace aftermath
 		{
 			base.Update( dt );
 
-			if( Person.IsDead ) return;
-
-			if ( IsDroppingAmmo )
-			{
-				_dropAmmoTimer += dt;
-				_dropAmmoTotalTime = Math.Min( _dropAmmoTotalTime + dt, DROP_AMMO_TRANSITION_TIME );
-
-				float time = Utils.Map( _dropAmmoTotalTime, 0f, DROP_AMMO_TRANSITION_TIME, DROP_AMMO_TIME_START, DROP_AMMO_TIME_END, EasingType.SineIn );
-
-				if ( _dropAmmoTimer >= time )
-				{
-					if ( _droppedAmmoType == AmmoType && RemoveSingleAmmo() )
-					{
-						_ammoDropAmount++;
-						_dropAmmoTimer -= time;
-					}
-					else
-					{
-						FinishDroppingAmmo();
-					}
-				}
-			}
+			if ( Person.IsDead ) return;
 		}
 
 		public void AddAmmo( AmmoItem ammoItem )
 		{
-			if ( IsDroppingAmmo )
-				FinishDroppingAmmo();
-
+			// if we're carrying a diff type of ammo, drop it
 			if ( HasAmmo && AmmoType != ammoItem.AmmoType )
-			{
-				DropAmmo( AmmoType, AmmoAmount );
-				AmmoAmount = 0;
-			}
+				DropAllAmmo();
 
-			AmmoType = ammoItem.AmmoType;
-			int amountToAdd = Math.Min( ammoItem.AmmoAmount, MaxExtraAmmo - AmmoAmount );
-
-			if ( amountToAdd < ammoItem.AmmoAmount )
+			if ( !HasAmmo )
 			{
-				ammoItem.AmmoAmount -= amountToAdd;
-				ammoItem.Drop( new Vector2( Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ) ).Normal, 40f, 5f, 8);
+				AmmoType = ammoItem.AmmoType;
+				int amountToAdd = Math.Min( ammoItem.AmmoAmount, MaxExtraAmmo - AmmoAmount );
+				int amountToDrop = ammoItem.AmmoAmount - amountToAdd;
+
+				_ammoItem = ammoItem;
+				_ammoItem.SetCarryingPerson( Person );
+
+				if ( amountToDrop > 0 )
+					CreateAmmoItem( AmmoType, amountToDrop );
+
+				AmmoAmount += amountToAdd;
 			}
 			else
 			{
-				ammoItem.Delete();
+				int amountToAdd = Math.Min( ammoItem.AmmoAmount, MaxExtraAmmo - AmmoAmount );
+				int amountToDrop = ammoItem.AmmoAmount - amountToAdd;
+
+				if ( amountToDrop > 0 )
+				{
+					ammoItem.SetAmmoAmount( amountToDrop );
+					ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+				}
+				else
+				{
+					ammoItem.Delete();
+				}
+
+				AmmoAmount += amountToAdd;
 			}
 
-			AmmoAmount += amountToAdd;
+			_ammoItem?.SetAmmoAmount( AmmoAmount );
+		}
+
+		void CreateAmmoItem( AmmoType ammoType, int ammoAmount )
+		{
+			AmmoItem droppedAmmoItem = new AmmoItem { Position = Person.Position };
+			droppedAmmoItem.SetPosition2D( Person.Position2D );
+			droppedAmmoItem.Init( ammoType, ammoAmount );
+			droppedAmmoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
 		}
 
 		bool DropAmmo( AmmoType ammoType, int ammoAmount )
 		{
 			if ( ammoType == AmmoType.None || ammoAmount == 0 ) return false;
 
-			AmmoItem ammoItem = new AmmoItem { Position = Person.Position };
-			ammoItem.SetPosition2D( Person.Position2D );
-			ammoItem.Init( ammoType, ammoAmount );
-			ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+			if ( ammoAmount == AmmoAmount && _ammoItem != null )
+			{
+				_ammoItem.RemoveCarryingPerson();
+				_ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+				_ammoItem = null;
+			}
+			else
+			{
+				AmmoItem ammoItem = new AmmoItem { Position = Person.Position };
+				ammoItem.SetPosition2D( Person.Position2D );
+				ammoItem.Init( ammoType, ammoAmount );
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+			}
 
 			return true;
 		}
@@ -127,49 +139,18 @@ namespace aftermath
 
 			AmmoAmount--;
 			if ( AmmoAmount == 0 )
+			{
 				AmmoType = AmmoType.None;
 
+				_ammoItem?.Delete();
+				_ammoItem = null;
+			}
+			else
+			{
+				_ammoItem.SetAmmoAmount( AmmoAmount );
+			}
+
 			return true;
-		}
-
-		public void StartDroppingAmmo()
-		{
-			if ( IsDroppingAmmo )
-				return;
-
-			if ( HasAmmo )
-			{
-				IsDroppingAmmo = true;
-				_ammoDropAmount = 0;
-				_dropAmmoTimer = 0f;
-				_dropAmmoTotalTime = 0f;
-				_droppedAmmoType = AmmoType;
-			}
-		}
-
-		public void FinishDroppingAmmo( bool fromTool = false )
-		{
-			if ( !IsDroppingAmmo )
-				return;
-
-			IsDroppingAmmo = false;
-
-			if ( _ammoDropAmount == 0 )
-			{
-				if ( fromTool && AmmoType != AmmoType.None && AmmoAmount > 0 )
-				{
-					_ammoDropAmount = AmmoAmount;
-					_droppedAmmoType = AmmoType;
-					AmmoAmount = 0;
-					AmmoType = AmmoType.None;
-				}
-				else
-				{
-					return;
-				}
-			}
-
-			DropAmmo( _droppedAmmoType, _ammoDropAmount );
 		}
 
 		public void DropAllAmmo()

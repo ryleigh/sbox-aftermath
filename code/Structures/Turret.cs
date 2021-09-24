@@ -20,9 +20,9 @@ namespace aftermath
 
 		public override void Spawn()
 		{
-			SetModel( "models/square_wooden_box.vmdl" );
+			SetModel( "models/citizen_props/crate01.vmdl" );
 			Scale = 1.83f;
-			RenderColor = new Color( 0f, 0f, 1f );
+			RenderColor = new Color( 1f, 1f, 1f );
 		}
 	}
 }

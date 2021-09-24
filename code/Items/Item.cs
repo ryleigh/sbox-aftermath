@@ -221,7 +221,8 @@ namespace aftermath
 		{
 			if ( IsInAir )
 			{
-				float landingHeight = _groundHeight + CollisionBounds.Size.y * 0.4f;
+				// float landingHeight = _groundHeight + CollisionBounds.Size.y * 0.4f;
+				float landingHeight = _groundHeight;
 
 				float currentHeight = (_airTimer < _airTimeTotal * 0.5f)
 					? Utils.Map( _airTimer, 0f, _airTimeTotal * 0.5f, _startingHeight, _peakHeight, EasingType.SineOut )

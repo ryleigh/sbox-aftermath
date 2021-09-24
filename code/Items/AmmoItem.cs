@@ -13,6 +13,8 @@ namespace aftermath
 		[Net] public int AmmoAmount { get; set; }
 		[Net] public int MaxAmount { get; protected set; }
 
+		public Person CarryingPerson { get; private set; }
+
 		public AmmoItem()
 		{
 
@@ -20,8 +22,8 @@ namespace aftermath
 
 		public override void Spawn()
 		{
-			ModelPath = "models/square_wooden_box.vmdl";
-			Scale = 0.4f;
+			ModelPath = "models/maya_testcube_100.vmdl";
+			Scale = 0.125f;
 
 			base.Spawn();
 		}
@@ -47,7 +49,7 @@ namespace aftermath
 			}
 			else if ( ammoType == AmmoType.Grenade )
 			{
-				RenderColor = new Color( 0.7f, 0.7f, 0.7f );
+				RenderColor = new Color( 0.3f, 0.3f, 0.3f );
 				MaxAmount = 25;
 			}
 
@@ -59,6 +61,12 @@ namespace aftermath
 			float dt = Time.Delta;
 
 			DebugText = GetHoverInfo();
+
+			if ( CarryingPerson != null )
+			{
+				Position = CarryingPerson.Position + CarryingPerson.Rotation.Forward * -5f + CarryingPerson.Rotation.Up * 50f;
+				Rotation = CarryingPerson.Rotation;
+			}
 
 			base.Tick();
 		}
@@ -93,6 +101,22 @@ namespace aftermath
 				str = AmmoAmount + (AmmoAmount == 1 ? " Grenade" : " Grenades");
 
 			return str;
+		}
+
+		public void SetCarryingPerson( Person person )
+		{
+			CarryingPerson = person;
+			PhysicsEnabled = false;
+			EnableHitboxes = false;
+		}
+
+		public void RemoveCarryingPerson()
+		{
+			if ( CarryingPerson == null ) return;
+
+			CarryingPerson = null;
+			PhysicsEnabled = true;
+			EnableHitboxes = true;
 		}
 	}
 }

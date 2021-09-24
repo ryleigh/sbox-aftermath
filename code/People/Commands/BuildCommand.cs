@@ -86,7 +86,7 @@ namespace aftermath
 			}
 			else
 			{
-				float heightProgress = Utils.Map( _buildTimer, 0f, BuildTime, 0f, 1f, EasingType.SineOut );
+				float heightProgress = Utils.Map( _buildTimer, 0f, BuildTime, 0f, 1f, EasingType.SineIn );
 				float height = (1f - heightProgress) * -grid.SquareSize;
 				Structure.Position = grid.GetWorldPosForGridPos( GridPos ) + new Vector3( 0f, 0f, height );
 			}

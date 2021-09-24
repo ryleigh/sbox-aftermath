@@ -87,17 +87,39 @@ namespace aftermath
 
 			Structure structure = null;
 
-			if ( structureType == StructureType.Wall )
+			switch ( structureType )
 			{
-				structure = new Wall
-				{
-					StructureManager = this
-				};
-				structure.Tags.Add( "wall" );
+				case StructureType.Wall:
+					structure = new Wall();
+					structure.Tags.Add( "wall" );
+					break;
+				case StructureType.Fence:
+					structure = new Fence();
+					break;
+				case StructureType.Turret:
+					structure = new Turret();
+					break;
+				case StructureType.AmmoCacheBullets:
+					structure = new AmmoCache();
+					((AmmoCache)structure).SetAmmoType( AmmoType.Bullet );
+					break;
+				case StructureType.AmmoCacheShells:
+					structure = new AmmoCache();
+					((AmmoCache)structure).SetAmmoType( AmmoType.Shell );
+					break;
+				case StructureType.AmmoCacheHPBullets:
+					structure = new AmmoCache();
+					((AmmoCache)structure).SetAmmoType( AmmoType.HPBullet);
+					break;
+				case StructureType.Factory:
+					structure = new Factory();
+					break;
 			}
 
 			if ( structure == null )
 				return null;
+
+			structure.StructureManager = this;
 
 			_structures.Add( index, structure );
 			structure.SetGridPos( gridPos );

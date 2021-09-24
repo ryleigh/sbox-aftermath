@@ -206,8 +206,6 @@ namespace aftermath
 			RotationController.Update( dt );
 			Aiming.Update( dt );
 
-			// DebugText = $"RotationSpeed: {RotationController.RotationSpeed}";
-
 			DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			foreach ( var command in CommandHandler.CommandList )
 			{
@@ -215,7 +213,8 @@ namespace aftermath
 			}
 			
 			DebugText += $"\nHP:{Hp.FloorToInt()}";
-			DebugText += $"\nSelected:{IsSelected}";
+			// DebugText += $"\nSelected:{IsSelected}";
+			DebugText += $"\nAmmo:{AmmoHandler.AmmoAmount}/{AmmoHandler.MaxExtraAmmo} ({AmmoHandler.AmmoType})";
 		}
 
 		[Event.Tick.Client]
@@ -358,10 +357,10 @@ namespace aftermath
 			if ( _path.Count == 0 )
 				return;
 
-			DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( Position2D ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[0] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.25f ));
+			DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( Position2D ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[0] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.15f ));
 
 			for ( int i = 0; i < _path.Count - 1; i++ )
-				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.25f ) );
+				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.15f ) );
 		}
 
 		protected virtual void OnFinishAllCommands( Person_CommandHandler commandHandler )

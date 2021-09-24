@@ -289,6 +289,7 @@ namespace aftermath
 			_startingRotation = Rotation.Yaw();
 			_targetRotation = numFlips * 180f;
 
+			PhysicsActive = true;
 			IsInAir = true;
 
 			AssignLifetime();

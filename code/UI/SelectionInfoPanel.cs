@@ -35,7 +35,7 @@ namespace aftermath
 			BuildButton = buttonBackground.AddChild<BuildButton>();
 			BuildButton.SetClass( "button", true );
 			BuildButton.AddEventListener( "onclick", BuildMode );
-			BuildButton.Text = "build";
+			BuildButton.Text = "construction";
 			BuildButton.SetClass( "open", true );
 
 			// ItemButton = buttonBackground.Add.Button( "", "itemButton" );

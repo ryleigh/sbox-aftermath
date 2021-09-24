@@ -59,16 +59,28 @@ namespace aftermath
 				{
 					// Log.Info( $"Person - spawn item at pos: {mouseWorldPos}" );
 
-					Item item = new Item
-					{
-						Position = mouseWorldPos,
-					};
+					AmmoItem ammoItem = new AmmoItem {Position = mouseWorldPos};
+					ammoItem.SetPosition2D( new Vector2( mouseWorldPos.x, mouseWorldPos.y ) );
 
-					item.SetPosition2D( new Vector2( mouseWorldPos.x, mouseWorldPos.y ) );
+					switch ( Rand.Int(0, 3) )
+					{
+						case 0:
+							ammoItem.Init( AmmoType.Bullet, 12 );
+							break;
+						case 1:
+							ammoItem.Init( AmmoType.Shell, 10 );
+							break;
+						case 2:
+							ammoItem.Init( AmmoType.HPBullet, 8);
+							break;
+						case 3:
+							ammoItem.Init( AmmoType.Grenade, 3 );
+							break;
+					}
 
 					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ), 0f ), 50f, 1f, 8 );
 					// item.PlaceItem( item.Position + new Vector3( Rand.Float( -50f, 50f ), Rand.Float( -50f, 50f ), 0f ), Rand.Float( 50f, 100f ), Rand.Float( 0.5f, 1f ), 8);
-					item.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 8 );
+					ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 8 );
 				}
 
 				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 15; }

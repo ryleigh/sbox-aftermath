@@ -18,7 +18,7 @@ namespace aftermath
 		private float _buildTimer;
 		public float BuildTime { get; private set; }
 
-		private int _cost;
+		private readonly int _cost;
 
 		public override string ToString() { return $"Build: {StructureType}"; }
 
@@ -118,13 +118,12 @@ namespace aftermath
 			if ( Structure != null )
 				AftermathGame.Instance.StructureManager.RemoveStructure( Structure );
 
-			int refundAmount = ((1f - Progress) * _cost).FloorToInt();
-			if ( refundAmount > 0 )
-			{
-				AftermathGame.Instance.SpawnFloater( Person.Position, $"REFUNDED {refundAmount}!", new Color( 0.4f, 0.2f, 1f, 1f ) );
-				Person.Player.AdjustScrapAmount( refundAmount );
-			}
-				
+			// int refundAmount = ((1f - Progress) * _cost).FloorToInt();
+			// if ( refundAmount > 0 )
+			// {
+			// 	AftermathGame.Instance.SpawnFloater( Person.Position, $"REFUNDED {refundAmount}!", new Color( 0.4f, 0.2f, 1f, 1f ) );
+			// 	Person.Player.AdjustScrapAmount( refundAmount );
+			// }
 
 			// Person.BodyAnimHandler.SetAnim( PersonAnimationMode.None );
 			// Person.Sounds.Play( Plugin.GetResource<SoundEffect>( "Zombies.Structure.WallDestroyed" ) );

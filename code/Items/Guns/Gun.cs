@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Sandbox;
@@ -26,8 +27,8 @@ namespace aftermath
 		public string GunName { get; protected set; }
 
 		public bool IsHeld => PersonHolding != null || StructureHolding != null;
-		public Person PersonHolding { get; set; }
-		public Structure StructureHolding { get; set; }
+		[Net] public Person PersonHolding { get; set; }
+		[Net] public Structure StructureHolding { get; set; }
 
 		public float MinShotSpeed { get; protected set; }
 		public float MaxShotSpeed { get; protected set; }
@@ -54,13 +55,13 @@ namespace aftermath
 		public float MaxRange { get; protected set; }
 
 		public AmmoType AmmoType { get; set; }
-		public int AmmoAmount { get; set; }
+		[Net] public int AmmoAmount { get; set; }
 		public int MaxAmmoAmount { get; protected set; }
 		public bool HasAmmo => AmmoAmount > 0;
 		public bool HasFullAmmo => AmmoAmount == MaxAmmoAmount;
 		public float ReloadTimePerAmmo { get; protected set; }
-		private float _reloadTimer;
-		public bool IsReloading => _reloadTimer > 0f;
+		[Net] public float ReloadTimer { get; set; }
+		public bool IsReloading => ReloadTimer > 0f;
 
 		private int _currentNumExtraShots;
 		public int NumExtraShotsMin { get; protected set; }
@@ -81,7 +82,8 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 
-			DebugText = $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1)}";
+			DebugText = AmmoAmount > 0 ? $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1 )}" : "";
+			DebugText += $"\nIsHeld: {IsHeld}, IsServer: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
 
 			if ( IsReloading && PersonHolding != null )
 				HandleReloading( dt );
@@ -191,8 +193,8 @@ namespace aftermath
 
 		private void HandleReloading( float dt )
 		{
-			_reloadTimer -= dt * PersonHolding.ReloadSpeedFactor;
-			if ( _reloadTimer <= 0f )
+			ReloadTimer -= dt * PersonHolding.ReloadSpeedFactor;
+			if ( ReloadTimer <= 0f )
 			{
 				ReloadSingleAmmo();
 			}
@@ -231,7 +233,7 @@ namespace aftermath
 				ReloadSingleAmmo();
 			}
 
-			_reloadTimer = ReloadTimePerAmmo;
+			ReloadTimer = ReloadTimePerAmmo;
 		}
 
 		public void StopReloading()
@@ -241,12 +243,12 @@ namespace aftermath
 				ReloadSingleAmmo();
 			}
 
-			_reloadTimer = 0f;
+			ReloadTimer = 0f;
 		}
 
 		public override string GetHoverInfo()
 		{
-			return GunName;
+			return GunName + $" isheld: {IsHeld}, isserver: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
 		}
 	}
 }

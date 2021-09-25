@@ -89,6 +89,14 @@ namespace aftermath
 
 		void PickUpItem( float dt )
 		{
+			if ( Item == null || !Item.IsValid)
+			{
+				if( !IsFinished )
+					Finish();
+
+				return;
+			}
+
 			_pickupTimer += dt;
 			float progress = Utils.Map( _pickupTimer, 0f, _pickupTimeTotal, 0f, 1f, EasingType.SineIn );
 			Item.Position = Vector3.Lerp( _startingPos, Person.Position, progress );

@@ -64,6 +64,8 @@ namespace aftermath
 		[Net] public bool IsBeingHovered { get; protected set; }
 		[Net] public int NumPeopleMovingToPickUp { get; set; }
 
+		protected bool _disablePhysicsOnRest;
+
 		public event ItemDelegate HitGroundCallback;
 
 		protected float _lifetime;
@@ -81,6 +83,7 @@ namespace aftermath
 			_deceleration = 0.05f;
 			_groundedDeceleration = 0.2f;
 			PhysicsActive = true;
+			_disablePhysicsOnRest = true;
 			IsVisible = true;
 
 			_lifetime = float.MaxValue;
@@ -108,7 +111,7 @@ namespace aftermath
 				HandleHorizontalPhysics( dt );
 				HandleVerticalPhysics( dt );
 
-				if ( !IsInAir && Velocity2D.Length < 0.1f )
+				if ( _disablePhysicsOnRest && !IsInAir && Velocity2D.Length < 0.1f )
 				{
 					Velocity2D = Vector2.Zero;
 					PhysicsActive = false;
@@ -119,8 +122,6 @@ namespace aftermath
 				HandleLifetime( dt );
 			else if ( !IsVisible )
 				SetVisible( true );
-
-
 
 			// DebugText = $"Phys: {PhysicsActive}";
 		}

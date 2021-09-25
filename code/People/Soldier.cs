@@ -38,7 +38,8 @@ namespace aftermath
 			MeleeAttackRecoverTime = Rand.Float( 0.1f, 0.14f );
 			RotationController.RotationSpeed = RotationSpeed;
 
-			Gun gun = new Pistol();
+			// Gun gun = new Pistol();
+			Gun gun = new Shotgun();
 			GunHandler.StartEquippingGun( gun );
 			GunHandler.FinishEquippingGun( gun );
 		}

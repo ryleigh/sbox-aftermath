@@ -33,8 +33,8 @@ namespace aftermath
 			MeleeRotationSpeed = 2.5f;
 			RotationController.RotationSpeed = RotationSpeed;
 
-			// Gun gun = new Pistol();
-			Gun gun = new Shotgun();
+			Gun gun = new Pistol();
+			// Gun gun = new Shotgun();
 			GunHandler.StartEquippingGun( gun );
 			GunHandler.FinishEquippingGun( gun );
 		}

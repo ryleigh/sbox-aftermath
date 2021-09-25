@@ -94,6 +94,8 @@ namespace aftermath
 
 			DebugOverlay.Line( PosA, PosB, _color, 0f, true );
 
+			// Direction = Direction.WithZ( Direction.z - 0.1f * dt );
+
 			CheckBounds();
 
 			if ( !HasHit )

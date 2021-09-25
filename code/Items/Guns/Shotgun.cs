@@ -31,10 +31,10 @@ namespace aftermath
 			ShootTimeMax = 0.8f;
 			RequiredAimQuality = 0.8f;
 			AimSpeed = 4f;
-			ShootForceMin = 0.3f;
-			ShootForceMax = 1.1f;
-			BulletForceMin = 0.3f;
-			BulletForceMax = 0.5f;
+			ShootForceMin = 45f;
+			ShootForceMax = 75f;
+			BulletForceMin = 75f;
+			BulletForceMax = 110f;
 			MinRange = 240f;
 			MaxRange = 280;
 

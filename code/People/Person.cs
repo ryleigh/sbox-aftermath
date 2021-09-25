@@ -19,6 +19,7 @@ namespace aftermath
 		void DrawDebugText()
 		{
 			if ( string.IsNullOrEmpty( DebugText ) ) return;
+			if ( !IsValid ) return;
 
 			Color color = Player?.TeamColor?? Color.Black;
 			float duration = 0f;

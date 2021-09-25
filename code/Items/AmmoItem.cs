@@ -118,5 +118,18 @@ namespace aftermath
 			PhysicsEnabled = true;
 			EnableHitboxes = true;
 		}
+
+		public override void AssignLifetime()
+		{
+			_lifetime = Utils.Map( (float)AmmoAmount, 1f, 100f, 15f, 40f, EasingType.CubicOut );
+
+			if ( AmmoType == AmmoType.Grenade )
+				_lifetime *= 1.5f;
+		}
+
+		protected override bool AllowedToDespawn()
+		{
+			return CarryingPerson == null && !IsInAir && !IsBeingHovered && !IsBeingPickedUp && NumPeopleMovingToPickUp == 0 && Velocity2D.LengthSquared < 0.01f;
+		}
 	}
 }

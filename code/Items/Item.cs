@@ -16,7 +16,7 @@ namespace aftermath
 
 		void DrawDebugText()
 		{
-			if ( string.IsNullOrEmpty(DebugText) ) return;
+			if ( string.IsNullOrEmpty( DebugText ) ) return;
 
 			Color color = new Color( 0.66f, 0.66f, 0.66f, 0.3f );
 			float duration = 0f;
@@ -68,8 +68,9 @@ namespace aftermath
 
 		protected float _lifetime;
 		private float _blinkTimer;
-		private readonly float BLINK_START_TIME = 3f;
+		private readonly float BLINK_START_TIME = 5f;
 		protected bool _shouldBlink = true;
+		[Net] public bool IsVisible { get; private set; }
 
 		public string ModelPath { get; protected set; } = "models/citizen_props/roadcone01.vmdl";
 
@@ -80,6 +81,7 @@ namespace aftermath
 			_deceleration = 0.05f;
 			_groundedDeceleration = 0.2f;
 			PhysicsActive = true;
+			IsVisible = true;
 
 			_lifetime = float.MaxValue;
 		}
@@ -115,7 +117,10 @@ namespace aftermath
 
 			if ( AllowedToDespawn() )
 				HandleLifetime( dt );
-			// else
+			else if ( !IsVisible )
+				SetVisible( true );
+
+
 
 			// DebugText = $"Phys: {PhysicsActive}";
 		}
@@ -127,14 +132,14 @@ namespace aftermath
 			DrawDebugText();
 		}
 
-		private void HandleLifetime(float dt)
+		private void HandleLifetime( float dt )
 		{
 			_lifetime -= dt;
 
 			if ( _lifetime < 0f )
 				LifetimeFinished();
 			else if ( _lifetime < BLINK_START_TIME )
-				HandleBlinking();
+				HandleBlinking( dt );
 		}
 
 		protected virtual void LifetimeFinished()
@@ -142,10 +147,24 @@ namespace aftermath
 			Delete();
 		}
 
-		private void HandleBlinking()
+		private void HandleBlinking( float dt )
 		{
-			if( !_shouldBlink ) return;
+			if ( !_shouldBlink ) return;
 
+			_blinkTimer -= dt;
+			if ( _blinkTimer <= 0f )
+			{
+				SetVisible( !IsVisible );
+				_blinkTimer = Utils.Map( _lifetime, BLINK_START_TIME, 0f, 0.1f, 0.01f, EasingType.CubicIn );
+			}
+		}
+
+		public void SetVisible( bool visible )
+		{
+			if ( IsVisible == visible ) return;
+
+			RenderColor = RenderColor.WithAlpha( visible ? 1f : 0f );
+			IsVisible = visible;
 		}
 
 		protected virtual bool AllowedToDespawn()
@@ -155,7 +174,7 @@ namespace aftermath
 
 		private void HandleHorizontalPhysics( float dt )
 		{
-			if(_useHorizontalTargetPos)
+			if ( _useHorizontalTargetPos )
 				HandleHorizontalTargetMovement( dt );
 			else
 				HandleHorizontalVelocity( dt );
@@ -179,26 +198,36 @@ namespace aftermath
 				float down = center.y - SQUARE_SIZE * 0.5f + BUFFER;
 				float up = center.y + SQUARE_SIZE * 0.5f - BUFFER;
 
-				if ( newPos.x < Position2D.x ) {
-					if ( newPos.x < left && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Left ) ) ) {
+				if ( newPos.x < Position2D.x )
+				{
+					if ( newPos.x < left && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Left ) ) )
+					{
 						newPos = new Vector2( left, newPos.y );
 						Velocity2D = new Vector2( -Velocity2D.x, Velocity2D.y );
 					}
-				} else if ( newPos.x > Position2D.x ) {
-					if ( newPos.x > right && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Right) ) ) {
+				}
+				else if ( newPos.x > Position2D.x )
+				{
+					if ( newPos.x > right && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Right ) ) )
+					{
 						newPos = new Vector2( right, newPos.y );
 						Velocity2D = new Vector2( -Velocity2D.x, Velocity2D.y );
 					}
 				}
 
-				if ( newPos.y < Position2D.y ) {
-					if ( newPos.y < down && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Down) ) ) {
+				if ( newPos.y < Position2D.y )
+				{
+					if ( newPos.y < down && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Down ) ) )
+					{
 						newPos = new Vector2( newPos.x, down );
 						Velocity2D = new Vector2( Velocity2D.x, -Velocity2D.y );
 					}
-				} else if ( newPos.y > Position2D.y ) {
-					if ( newPos.y > up && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Up) ) ) {
-						newPos = new Vector2( newPos.x, up);
+				}
+				else if ( newPos.y > Position2D.y )
+				{
+					if ( newPos.y > up && !grid.IsWalkable( grid.GetGridPosInDirection( gridPos, Direction.Up ) ) )
+					{
+						newPos = new Vector2( newPos.x, up );
 						Velocity2D = new Vector2( Velocity2D.x, -Velocity2D.y );
 					}
 				}
@@ -213,7 +242,7 @@ namespace aftermath
 			if ( IsInAir )
 			{
 				float progress = Utils.Map( _airTimer, 0f, _airTimeTotal, 0f, 1f );
-				SetPosition2D( _horizontalStartingPos + (_horizontalTargetPos - _horizontalStartingPos) * progress);
+				SetPosition2D( _horizontalStartingPos + (_horizontalTargetPos - _horizontalStartingPos) * progress );
 			}
 		}
 
@@ -229,8 +258,8 @@ namespace aftermath
 					: Utils.Map( _airTimer, _airTimeTotal * 0.5f, _airTimeTotal, _peakHeight, landingHeight, EasingType.SineIn );
 
 				float currentRot = (_airTimer < _airTimeTotal * 0.5f)
-					? Utils.Map( _airTimer, 0f, _airTimeTotal * 0.5f, _startingRotation, _startingRotation + (_targetRotation - _startingRotation) * 0.5f, EasingType.SineIn)
-					: Utils.Map( _airTimer, _airTimeTotal * 0.5f, _airTimeTotal, _startingRotation + (_targetRotation - _startingRotation) * 0.5f, _targetRotation, EasingType.SineOut);
+					? Utils.Map( _airTimer, 0f, _airTimeTotal * 0.5f, _startingRotation, _startingRotation + (_targetRotation - _startingRotation) * 0.5f, EasingType.SineIn )
+					: Utils.Map( _airTimer, _airTimeTotal * 0.5f, _airTimeTotal, _startingRotation + (_targetRotation - _startingRotation) * 0.5f, _targetRotation, EasingType.SineOut );
 
 				_airTimer += dt;
 

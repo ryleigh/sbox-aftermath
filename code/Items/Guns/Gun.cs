@@ -249,5 +249,22 @@ namespace aftermath
 		{
 			return GunName + $" isheld: {IsHeld}, isserver: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
 		}
+
+		public override void AssignLifetime()
+		{
+			_lifetime = 60f;
+		}
+
+		protected override bool AllowedToDespawn()
+		{
+			return !IsHeld
+			       && !IsInAir
+			       && !IsBeingHovered
+			       && !IsBeingPickedUp
+			       && NumPeopleMovingToPickUp == 0
+			       && StructurePickingUp == null
+			       && StructureHolding == null
+			       && PersonHolding == null;
+		}
 	}
 }

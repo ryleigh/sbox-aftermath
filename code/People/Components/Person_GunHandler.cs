@@ -47,8 +47,11 @@ namespace aftermath
 
 		public void InterruptEquippingGun( Gun gun )
 		{
-			gun.PersonHolding = null;
-			gun.PhysicsActive = true;
+			// gun.PersonHolding = null;
+			// gun.PhysicsActive = true;
+
+			gun.Unequip();
+			gun.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 75f ), Rand.Float( 3f, 8f ), 8 );
 		}
 
 		public void DropGun( Vector2 dir, float force, float peakHeightOffset, int numFlips )

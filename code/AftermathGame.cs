@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.Internal;
+using System.Linq;
 
 namespace aftermath
 {
@@ -172,6 +173,34 @@ namespace aftermath
 		public void SpawnFloater( Vector3 pos, string text, Color color )
 		{
 			_floaterTexts.Add( new FloaterText( pos, text, color ) );
+		}
+
+		public void MakeNoise( Vector2 noisePos, float loudness, PersonType noiseType )
+		{
+			Host.AssertServer();
+
+			var people = Entity.All.OfType<Person>()
+					.Where( p => !p.IsDead )
+					.Where( p => !p.IsSpawning )
+					.Where( p => p.PersonType != PersonType.None && p.PersonType != noiseType )
+					.ToList();
+
+			foreach ( var person in people )
+			{
+				float sqrDistToNoise = (noisePos - person.Position2D).LengthSquared;
+				float sqrHearingRadius = MathF.Pow( person.HearingRadius, 2f );
+
+				if ( sqrDistToNoise < sqrHearingRadius )
+				{
+					float distFactor = sqrDistToNoise / sqrHearingRadius;
+					if ( Rand.Float( 0f, 1f ) * (1f - distFactor) > (1f - loudness) )
+					{
+						person.HeardNoise( noisePos );
+					}
+				}
+			}
+
+			DebugOverlay.Line( new Vector3( noisePos.x, noisePos.y, 1f ), new Vector3( noisePos.x, noisePos.y, Utils.Map( loudness, 0f, 1f, 10f, 200f )), Color.Red, 1f, true );
 		}
 	}
 }

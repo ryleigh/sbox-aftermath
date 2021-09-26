@@ -51,6 +51,8 @@ namespace aftermath
 					: new Color( 0.6f, 0.6f, 1f, 0.3f );
 				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.CloseRangeDetectionDistance, 12, color, Time.Now * -2f );
 
+				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.HearingRadius, 15, new Color( 0f, 0f, 0f, 0.25f ), Time.Now * -2f );
+
 				// color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
 				// 	? new Color( 1f, 0f, 0f, 1f )
 				// 	: new Color( 1f, 1f, 1f, 0.1f );
@@ -245,28 +247,13 @@ namespace aftermath
 
 			// the closer we are, the quicker we'll respond
 			float sqrDist = (pos - Person.Position2D).LengthSquared;
-			// float delayFactor = Utils.Map( sqrDist, 0f, MathF.Pow( Person.Hearing.HearingRadius, 2f ), 0f, 1f, EasingType.SineEaseOut );
-			float delayFactor = 1f;
+			float delayFactor = Utils.Map( sqrDist, 0f, MathF.Pow( Person.HearingRadius, 2f ), 0f, 1f, EasingType.SineOut);
 			float delay = Rand.Float( INVESTIGATION_DELAY_TIME_MIN, INVESTIGATION_DELAY_TIME_MAX ) * delayFactor;
 			_investigationDelayTimer = delay;
 
-			// floater
 			// Person.Scaler.Scale( Rand.Float( 1.05f, 1.1f ), Rand.Float( 0.33f, 0.5f ) );
 
-			Vector3 horizVelocity = new Vector3( Rand.Float( -1f, 1f ), 0f, Rand.Float( -1f, 1f ) ) * 0.3f;
-			Vector3 vertVelocity = new Vector3( 0f, Rand.Float( 0.5f, 0.7f ), 0f );
-
-			// GameMode.FloaterManager.AddFloater(
-			// 	"?",
-			// 	Person.HeadPos,
-			// 	horizVelocity + vertVelocity,
-			// 	0.99f,
-			// 	0.6f,
-			// 	MathF.Random( 0.77f, 0.88f ),
-			// 	MathF.Random( 1.3f, 1.5f ),
-			// 	new Color( 0.7f, 1f, 0.7f ),
-			// 	new Color( 0.1f, 0.25f, 0.1f )
-			// );
+			AftermathGame.Instance.SpawnFloater( Person.Position, "?", Color.Black );
 		}
 	}
 }

@@ -26,6 +26,7 @@ namespace aftermath
 			PersonType = PersonType.Zombie;
 
 			CloseRangeDetectionDistance = 65f;
+			HearingRadius = 400f;
 			_gridWanderDistance = 5;
 		}
 

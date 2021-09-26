@@ -110,6 +110,7 @@ namespace aftermath
 		public float RotationSpeed { get; protected set; }
 		public float MeleeRotationSpeed { get; protected set; }
 		public float CloseRangeDetectionDistance { get; protected set; }
+		public float HearingRadius { get; set; }
 
 		public float Hp { get; protected set; }
 		public event PersonDelegate DiedCallback;
@@ -424,6 +425,11 @@ namespace aftermath
 
 			DiedCallback?.Invoke( this );
 			AftermathGame.Instance.PersonManager.PersonDied( this );
+		}
+
+		public virtual void HeardNoise( Vector2 noisePos )
+		{
+
 		}
 	}
 }

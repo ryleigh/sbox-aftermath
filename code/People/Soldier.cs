@@ -21,6 +21,7 @@ namespace aftermath
 			PersonType = PersonType.Soldier;
 
 			CloseRangeDetectionDistance = 75f;
+			HearingRadius = 600f;
 			_gridWanderDistance = 13;
 		}
 
@@ -71,6 +72,8 @@ namespace aftermath
 
 		public override void MeleeAttack( Vector2 dir, Person target )
 		{
+			AftermathGame.Instance.SpawnFloater( Position, $"Melee {target.PersonName}!", new Color( 1f, 0.1f, 0.3f, 1f ) );
+
 			MeleeAttackCommand meleeAttackCommand = new MeleeAttackCommand( target )
 			{
 				Inaccuracy = MeleeAttackInaccuracy

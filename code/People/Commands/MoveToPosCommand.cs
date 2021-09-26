@@ -70,13 +70,13 @@ namespace aftermath
 
 		void HandleWalkingSounds( float dt )
 		{
-			// _walkingNoiseCooldown -= dt;
-			//
-			// if ( _walkingNoiseCooldown <= 0f )
-			// {
-			// 	GameMode.NoiseManager.MakeNoise( Person.Position2D, Person.Movement.FootstepVolume, Person.PersonType );
-			// 	_walkingNoiseCooldown = MathF.Random( WALKING_NOISE_TICK_MIN, WALKING_NOISE_TICK_MAX );
-			// }
+			_walkingNoiseCooldown -= dt;
+
+			if ( _walkingNoiseCooldown <= 0f )
+			{
+				AftermathGame.Instance.MakeNoise( Person.Position2D, loudness: Person.Movement.FootstepVolume, noiseType: Person.PersonType );
+				_walkingNoiseCooldown = Rand.Float( WALKING_NOISE_TICK_MIN, WALKING_NOISE_TICK_MAX );
+			}
 		}
 
 		void HandleMovement( float dt )

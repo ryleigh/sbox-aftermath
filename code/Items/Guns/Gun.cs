@@ -121,6 +121,8 @@ namespace aftermath
 
 			ApplyShootForce();
 
+			AftermathGame.Instance.MakeNoise( Utils.GetVector2( BarrelPos ), loudness: 1f, noiseType: PersonHolding?.PersonType ?? PersonType.None );
+
 			return true;
 		}
 

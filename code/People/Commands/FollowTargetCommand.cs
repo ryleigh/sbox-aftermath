@@ -105,7 +105,13 @@ namespace aftermath
 
 		void HandleWalkingSounds( float dt )
 		{
+			_walkingNoiseCooldown -= dt;
 
+			if ( _walkingNoiseCooldown <= 0f )
+			{
+				AftermathGame.Instance.MakeNoise( Person.Position2D, loudness: Person.Movement.FootstepVolume, noiseType: Person.PersonType );
+				_walkingNoiseCooldown = Rand.Float( WALKING_NOISE_TICK_MIN, WALKING_NOISE_TICK_MAX );
+			}
 		}
 
 		void HandleAttacking( float dt )

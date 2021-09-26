@@ -49,6 +49,8 @@ namespace aftermath
 		public override void Init()
 		{
 			CurrentGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( Person.Position2D );
+
+			FootstepVolume = 0.5f;
 		}
 
 		public override void Update( float dt )

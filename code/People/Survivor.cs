@@ -21,6 +21,7 @@ namespace aftermath
 			PersonType = PersonType.Survivor;
 
 			CloseRangeDetectionDistance = 75f;
+			HearingRadius = 375f;
 		}
 
 		public override void Spawn()
@@ -65,6 +66,14 @@ namespace aftermath
 		public override void LostTarget( Person target, Vector2 lastSeenPos )
 		{
 			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
+		}
+
+		public override void HeardNoise( Vector2 noisePos )
+		{
+			if ( CommandHandler.CurrentCommandType != PersonCommandType.LookForTarget )
+				return;
+
+			Aiming.Investigate( noisePos );
 		}
 	}
 }

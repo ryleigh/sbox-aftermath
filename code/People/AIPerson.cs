@@ -118,5 +118,51 @@ namespace aftermath
 
 			CommandHandler.SetCommand( parallelCommand );
 		}
+
+		public override void HeardNoise( Vector2 noisePos )
+		{
+			if ( _investigationCooldownTimer > 0f )
+				return;
+
+			if ( CommandHandler.CurrentCommandType 
+					is PersonCommandType.AimAtTarget 
+					or PersonCommandType.Bite 
+					or PersonCommandType.FollowTarget 
+					or PersonCommandType.MoveToPickUpItem 
+					or PersonCommandType.PickUpItem 
+					or PersonCommandType.MoveToAttackStructure 
+					or PersonCommandType.Reload 
+					or PersonCommandType.Shoot )
+				return;
+
+			// if we're already moving towards a spot closer than the noisePos, ignore noise
+			if ( CommandHandler.CurrentCommandType == PersonCommandType.MoveAndLook )
+			{
+				MoveToPosCommand moveToPosCommand = null;
+				foreach ( PersonCommand personCommand in ((ParallelCommand)CommandHandler.CurrentCommand).SubCommands )
+				{
+					if ( personCommand.Type == PersonCommandType.MoveToPos )
+					{
+						moveToPosCommand = (MoveToPosCommand)personCommand;
+						break;
+					}
+				}
+
+				if ( moveToPosCommand != null )
+				{
+					float currMoveDistSqr = (moveToPosCommand.TargetPos - Position2D).LengthSquared;
+					float newDistSqr = (noisePos - Position2D).LengthSquared;
+
+					if ( currMoveDistSqr < newDistSqr )
+						return;
+				}
+			}
+
+			AftermathGame.Instance.SpawnFloater( Position, "?", Color.Black );
+
+			MoveAndLook( noisePos );
+
+			_investigationCooldownTimer = Rand.Float( INVESTIGATION_COOLDOWN_TIME_MIN, INVESTIGATION_COOLDOWN_TIME_MAX );
+		}
 	}
 }

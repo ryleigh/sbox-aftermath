@@ -253,7 +253,7 @@ namespace aftermath
 
 			// Person.Scaler.Scale( Rand.Float( 1.05f, 1.1f ), Rand.Float( 0.33f, 0.5f ) );
 
-			AftermathGame.Instance.SpawnFloater( Person.Position, "?", Color.Black );
+			AftermathGame.Instance.SpawnFloater( Person.Position, "HUH?", Color.White.WithAlpha( 0.5f ));
 		}
 	}
 }

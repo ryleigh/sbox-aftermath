@@ -23,6 +23,9 @@ namespace aftermath
 			CloseRangeDetectionDistance = 75f;
 			HearingRadius = 600f;
 			_gridWanderDistance = 13;
+
+			SpawnTimeMin = 3.4f;
+			SpawnTimeMax = 3.5f;
 		}
 
 		public override void Spawn()
@@ -55,7 +58,6 @@ namespace aftermath
 			Movement.FollowTargetMoveSpeed = 85f;
 
 			RenderColor = new Color( Rand.Float( 0.7f, 0.8f ), Rand.Float( 0.7f, 0.8f ), Rand.Float( 0.1f, 0.15f ) );
-			Wander();
 		}
 
 		public override void FoundTarget( Person target )
@@ -105,6 +107,28 @@ namespace aftermath
 		void OnPauseFinished( MeleeAttackCommand meleeAttackCommand )
 		{
 			// HolsterKnife();
+		}
+
+		public override void PersonSpawn()
+		{
+			base.PersonSpawn();
+
+			Position = Position.WithZ( FALL_HEIGHT );
+		}
+
+		protected override void UpdateSpawning( float dt )
+		{
+			base.UpdateSpawning( dt );
+
+			Position = Position.WithZ( Utils.Map( SpawnTimer, 0f, SpawnDuration, FALL_HEIGHT, 0f, EasingType.SineIn ) );
+		}
+
+		public override void FinishSpawning()
+		{
+			base.FinishSpawning();
+
+			Position = Position.WithZ( 0f );
+			Wander();
 		}
 	}
 }

@@ -22,6 +22,9 @@ namespace aftermath
 
 			CloseRangeDetectionDistance = 75f;
 			HearingRadius = 375f;
+
+			SpawnTimeMin = 0.6f;
+			SpawnTimeMax = 0.7f;
 		}
 
 		public override void Spawn()
@@ -47,8 +50,6 @@ namespace aftermath
 
 			Movement.MoveSpeed = 70f;
 			Movement.FollowTargetMoveSpeed = 80f;
-
-			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
 		}
 
 		protected override void OnFinishAllCommands( Person_CommandHandler commandHandler )
@@ -74,6 +75,28 @@ namespace aftermath
 				return;
 
 			Aiming.Investigate( noisePos );
+		}
+
+		public override void PersonSpawn()
+		{
+			base.PersonSpawn();
+
+			Position = Position.WithZ( FALL_HEIGHT );
+		}
+
+		protected override void UpdateSpawning( float dt )
+		{
+			base.UpdateSpawning( dt );
+
+			Position = Position.WithZ( Utils.Map( SpawnTimer, 0f, SpawnDuration, FALL_HEIGHT, 0f, EasingType.SineIn ) );
+		}
+
+		public override void FinishSpawning()
+		{
+			base.FinishSpawning();
+
+			Position = Position.WithZ( 0f );
+			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
 		}
 	}
 }

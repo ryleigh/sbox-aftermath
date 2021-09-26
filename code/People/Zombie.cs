@@ -13,12 +13,6 @@ namespace aftermath
 		private const float FINAL_WANDER_TO_SURVIVOR_CHANCE = 0.80f;
 		private const int FINAL_NUM_WANDERS = 15;
 
-		private float _riseTimer;
-		private float _riseDuration;
-		private const float RISE_TIME_MIN = 1.2f;
-		private const float RISE_TIME_MAX = 2.5f;
-		private const float RISE_DEPTH = -90f;
-
 		public override List<Person> GetValidTargets()
 		{
 			return Entity.All.OfType<Person>()
@@ -34,6 +28,9 @@ namespace aftermath
 			CloseRangeDetectionDistance = 65f;
 			HearingRadius = 400f;
 			_gridWanderDistance = 5;
+
+			SpawnTimeMin = 1.2f;
+			SpawnTimeMax = 2.5f;
 		}
 
 		public override void Spawn()
@@ -69,20 +66,6 @@ namespace aftermath
 			base.Tick();
 
 			float dt = Time.Delta;
-
-			if ( IsSpawning )
-			{
-				_riseTimer += dt;
-
-				if ( _riseTimer >= _riseDuration )
-				{
-					OnFinishSpawning();
-				}
-				else
-				{
-					Position = Position.WithZ( Utils.Map( _riseTimer, 0f, _riseDuration, RISE_DEPTH, 0f, EasingType.SineIn ) );
-				}
-			}
 		}
 
 		public override void FoundTarget( Person target )
@@ -103,16 +86,21 @@ namespace aftermath
 		{
 			base.PersonSpawn();
 
-			_riseTimer = 0f;
-			_riseDuration = Rand.Float( RISE_TIME_MIN, RISE_TIME_MAX );
-
 			Position = Position.WithZ( RISE_DEPTH );
 		}
 
-		public override void OnFinishSpawning()
+		protected override void UpdateSpawning( float dt )
 		{
-			base.OnFinishSpawning();
+			base.UpdateSpawning( dt );
 
+			Position = Position.WithZ( Utils.Map( SpawnTimer, 0f, SpawnDuration, RISE_DEPTH, 0f, EasingType.SineIn ) );
+		}
+
+		public override void FinishSpawning()
+		{
+			base.FinishSpawning();
+
+			Position = Position.WithZ( 0f );
 			Wander();
 		}
 

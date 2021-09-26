@@ -117,6 +117,14 @@ namespace aftermath
 
 		[Net] public Vector2 Position2D { get; private set; }
 
+		public float SpawnTimer { get; protected set; }
+		public float SpawnDuration { get; protected set; }
+		public float SpawnTimeMin { get; protected set; }
+		public float SpawnTimeMax { get; protected set; }
+
+		protected const float RISE_DEPTH = -90f;
+		protected const float FALL_HEIGHT = 700f;
+
 		public void SetPosition2D( Vector2 pos )
 		{
 			if ( IsServer )
@@ -202,11 +210,18 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 
-			Movement.Update( dt );
-			Pathfinding.Update( dt );
-			CommandHandler.Update( dt );
-			RotationController.Update( dt );
-			Aiming.Update( dt );
+			if ( IsSpawning )
+			{
+				UpdateSpawning( dt );
+			}
+			else
+			{
+				Movement.Update( dt );
+				Pathfinding.Update( dt );
+				CommandHandler.Update( dt );
+				RotationController.Update( dt );
+				Aiming.Update( dt );
+			}
 
 			DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			foreach ( var command in CommandHandler.CommandList )
@@ -380,9 +395,19 @@ namespace aftermath
 		public virtual void PersonSpawn()
 		{
 			IsSpawning = true;
+
+			SpawnTimer = 0f;
+			SpawnDuration = Rand.Float( SpawnTimeMin, SpawnTimeMax );
 		}
 
-		public virtual void OnFinishSpawning()
+		protected virtual void UpdateSpawning( float dt )
+		{
+			SpawnTimer += dt;
+			if(SpawnTimer >= SpawnDuration)
+				FinishSpawning();
+		}
+
+		public virtual void FinishSpawning()
 		{
 			IsSpawning = false;
 		}

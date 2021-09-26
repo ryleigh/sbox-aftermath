@@ -189,7 +189,7 @@ namespace aftermath
 				}
 			}
 
-			AftermathGame.Instance.SpawnFloater( Position, "?", Color.Black );
+			AftermathGame.Instance.SpawnFloater( Position, "HUH?", new Color( 1f, 1f, 1f, 0.5f ) );
 
 			MoveAndLook( noisePos );
 

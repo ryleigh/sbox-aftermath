@@ -119,6 +119,37 @@ namespace aftermath
 			CommandHandler.SetCommand( parallelCommand );
 		}
 
+		protected Structure GetNearbyStructure()
+		{
+			Structure closestStructure = null;
+			float closestDistSqr = float.MaxValue;
+
+			int SEARCH_DEPTH = 3;
+
+			GridManager gridManager = AftermathGame.Instance.GridManager;
+			StructureManager structureManager = AftermathGame.Instance.StructureManager;
+
+			for ( int x = -SEARCH_DEPTH; x <= SEARCH_DEPTH; x++ )
+			{
+				for ( int y = -SEARCH_DEPTH; y <= SEARCH_DEPTH; y++ )
+				{
+					GridPosition newGridPos = new GridPosition( Movement.CurrentGridPos.X + x, Movement.CurrentGridPos.Y + y );
+					Structure structure = structureManager.GetStructure( newGridPos );
+					if ( structure != null )
+					{
+						float sqrDist = (gridManager.Get2DPosForGridPos( newGridPos ) - Position2D).LengthSquared;
+						if ( sqrDist < closestDistSqr )
+						{
+							closestDistSqr = sqrDist;
+							closestStructure = structure;
+						}
+					}
+				}
+			}
+
+			return closestStructure;
+		}
+
 		public override void HeardNoise( Vector2 noisePos )
 		{
 			if ( _investigationCooldownTimer > 0f )

@@ -70,6 +70,15 @@ namespace aftermath
 			MoveAndLook( lastSeenPos );
 		}
 
+		public override void CantPathToPos( Vector2 pos )
+		{
+			base.CantPathToPos( pos );
+
+			Structure structure = GetNearbyStructure();
+			if ( structure != null )
+				Person.MoveToAttackStructure( structure, NetworkIdent );
+		}
+
 		public override void MeleeAttack( Vector2 dir, Person target )
 		{
 			AftermathGame.Instance.SpawnFloater( Position, $"Melee {target.PersonName}!", new Color( 1f, 0.1f, 0.3f, 1f ) );

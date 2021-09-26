@@ -159,7 +159,7 @@ namespace aftermath
 			MeleeRangeMin = 40f;
 			MeleeRangeMax = 40f;
 			MeleeAttackInaccuracy = 45f;
-			MeleeDamage = 50;
+			MeleeDamage = 20;
 
 			// item.SetParent( this, true );
 
@@ -319,6 +319,18 @@ namespace aftermath
 		}
 
 		[ServerCmd]
+		public static void MoveToAttackStructure( Structure structure, int personId )
+		{
+			if ( structure == null ) return;
+			if ( Entity.FindByIndex( personId ) is not Person person ) return;
+
+			MoveToPosCommand moveCommand = new MoveToPosCommand( AftermathGame.Instance.GridManager.Get2DPosForGridPos( structure.GridPosition ), structure.GridPosition );
+			MoveToAttackStructureCommand moveToAttackStructureCommand = new MoveToAttackStructureCommand( structure );
+			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() { moveCommand, moveToAttackStructureCommand } );
+			person.CommandHandler.SetCommand( parallelCommand );
+		}
+
+		[ServerCmd]
 		public static void DropGun( int id )
 		{
 			var person = Entity.FindByIndex( id ) as Person;
@@ -425,6 +437,11 @@ namespace aftermath
 
 			DiedCallback?.Invoke( this );
 			AftermathGame.Instance.PersonManager.PersonDied( this );
+		}
+
+		public virtual void CantPathToPos( Vector2 pos )
+		{
+			AftermathGame.Instance.SpawnFloater( Position, "CANT PATH THERE!", new Color( 1f, 0.75f, 0.75f, 0.85f ) );
 		}
 
 		public virtual void HeardNoise( Vector2 noisePos )

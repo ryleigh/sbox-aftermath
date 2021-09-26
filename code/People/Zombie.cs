@@ -129,5 +129,14 @@ namespace aftermath
 				MoveAndLook( closestSurvivor.Position2D );
 			}
 		}
+
+		public override void CantPathToPos( Vector2 pos )
+		{
+			base.CantPathToPos( pos );
+
+			Structure structure = GetNearbyStructure();
+			if ( structure != null )
+				Person.MoveToAttackStructure( structure, NetworkIdent );
+		}
 	}
 }

@@ -141,7 +141,7 @@ namespace aftermath
 			if ( Path.Count == 0 )
 			{
 				Finish();
-				// Person.CantPathToPos( TargetPos );
+				Person.CantPathToPos( TargetPos );
 				return false;
 			}
 

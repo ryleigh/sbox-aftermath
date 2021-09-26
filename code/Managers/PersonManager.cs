@@ -34,6 +34,7 @@ namespace aftermath
 
 			person.Assign( player );
 			person.SetPosition2D( worldPos );
+			person.PersonSpawn();
 
 			person.Tags.Add( "selectable" );
 			person.Tags.Add( "person" );

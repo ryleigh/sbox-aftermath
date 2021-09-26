@@ -33,6 +33,8 @@ namespace aftermath
 
 		protected override void Tick()
 		{
+			base.Tick();
+
 			float dt = Time.Delta;
 
 			if ( IsSpawning ) return;
@@ -41,8 +43,6 @@ namespace aftermath
 
 			if ( _investigationCooldownTimer > 0f )
 				_investigationCooldownTimer -= dt;
-
-			base.Tick();
 		}
 
 		protected override void OnFinishAllCommands( Person_CommandHandler commandHandler )

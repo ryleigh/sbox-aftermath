@@ -13,6 +13,12 @@ namespace aftermath
 		private const float FINAL_WANDER_TO_SURVIVOR_CHANCE = 0.80f;
 		private const int FINAL_NUM_WANDERS = 15;
 
+		private float _riseTimer;
+		private float _riseDuration;
+		private const float RISE_TIME_MIN = 1.2f;
+		private const float RISE_TIME_MAX = 2.5f;
+		private const float RISE_DEPTH = -90f;
+
 		public override List<Person> GetValidTargets()
 		{
 			return Entity.All.OfType<Person>()
@@ -55,7 +61,28 @@ namespace aftermath
 			Movement.FollowTargetMoveSpeed = 40f;
 
 			RenderColor = new Color( Rand.Float( 0.2f, 0.25f ), Rand.Float( 0.5f, 0.7f ), Rand.Float( 0.2f, 0.25f ) );
-			Wander();
+			// Wander();
+		}
+
+		protected override void Tick()
+		{
+			base.Tick();
+
+			float dt = Time.Delta;
+
+			if ( IsSpawning )
+			{
+				_riseTimer += dt;
+
+				if ( _riseTimer >= _riseDuration )
+				{
+					OnFinishSpawning();
+				}
+				else
+				{
+					Position = Position.WithZ( Utils.Map( _riseTimer, 0f, _riseDuration, RISE_DEPTH, 0f, EasingType.SineIn ) );
+				}
+			}
 		}
 
 		public override void FoundTarget( Person target )
@@ -70,6 +97,23 @@ namespace aftermath
 			AftermathGame.Instance.SpawnFloater( Position, $"LostTarget {target.PersonName}!", new Color( 1f, 0f, 0.8f, 1f ) );
 
 			MoveAndLook( lastSeenPos );
+		}
+
+		public override void PersonSpawn()
+		{
+			base.PersonSpawn();
+
+			_riseTimer = 0f;
+			_riseDuration = Rand.Float( RISE_TIME_MIN, RISE_TIME_MAX );
+
+			Position = Position.WithZ( RISE_DEPTH );
+		}
+
+		public override void OnFinishSpawning()
+		{
+			base.OnFinishSpawning();
+
+			Wander();
 		}
 
 		public override void Wander()

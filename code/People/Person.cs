@@ -377,6 +377,16 @@ namespace aftermath
 				DebugOverlay.Line( AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i] ).WithZ( 0.01f ), AftermathGame.Instance.GridManager.GetWorldPosFor2DPos( _path[i + 1] ).WithZ( 0.01f ), Player.TeamColor.WithAlpha( 0.15f ) );
 		}
 
+		public virtual void PersonSpawn()
+		{
+			IsSpawning = true;
+		}
+
+		public virtual void OnFinishSpawning()
+		{
+			IsSpawning = false;
+		}
+
 		protected virtual void OnFinishAllCommands( Person_CommandHandler commandHandler )
 		{
 			

@@ -53,7 +53,7 @@ namespace aftermath
 			{
 				ProduceAmmo();
 				Damage(Rand.Int( 6, 10 ), Vector2.Zero);
-				_productionTimer = Rand.Float( PRODUCTION_TIME_MIN, PRODUCTION_TIME_MAX )f;
+				_productionTimer = Rand.Float( PRODUCTION_TIME_MIN, PRODUCTION_TIME_MAX );
 			}
 		}
 
@@ -84,11 +84,11 @@ namespace aftermath
 				ammoAmount = Rand.Int( 1, 3 );
 			}
 
-			GridPosition adjacentGridPosition = AftermathGame.Instance.GridManager.GetAdjacentEmptyGridPositionDiagonal( GridPosition );
-			if ( adjacentGridPosition.IsValid )
+			GridPosition adjacentGridPos = AftermathGame.Instance.GridManager.GetAdjacentEmptyGridPositionDiagonal( GridPosition );
+			if ( adjacentGridPos.IsValid )
 			{
-				Vector2 targetPos = AftermathGame.Instance.GridManager.Get2DPosForGridPos( adjacentGridPosition ) + new Vector2( Rand.Float( -0.3f, 0.3f ), Rand.Float( -0.3f, 0.3f ) ) * AftermathGame.Instance.GridManager.SquareSize;
-				AftermathGame.Instance.CreateAmmoItem( Position + SlotPos, targetPos, ammoType, ammoAmount, Rand.Float( 70f, 100f ), Rand.Float( 0.9f, 1.4f ), Rand.Int( 4, 9 ) );
+				Vector2 targetPos = AftermathGame.Instance.GridManager.Get2DPosForGridPos( adjacentGridPos ) + new Vector2( Rand.Float( -0.3f, 0.3f ), Rand.Float( -0.3f, 0.3f ) ) * AftermathGame.Instance.GridManager.SquareSize;
+				AftermathGame.Instance.CreateAmmoItem( Position + SlotPos, targetPos, ammoType, ammoAmount, Rand.Float( 70f, 100f ), Rand.Float( 0.9f, 1.4f ), 0 );
 			}
 		}
 	}

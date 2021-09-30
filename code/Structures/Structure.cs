@@ -87,6 +87,16 @@ namespace aftermath
 			FacingDirection = direction;
 		}
 
+		public virtual bool GetIsInteractable( Person person )
+		{
+			return false;
+		}
+
+		public virtual void Interact( Person person )
+		{
+
+		}
+
 		public static int GetCost( StructureType structureType )
 		{
 			int cost = 0;

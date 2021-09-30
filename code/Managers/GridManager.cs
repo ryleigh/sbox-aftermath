@@ -149,6 +149,33 @@ namespace aftermath
 			return GridPosition.Invalid;
 		}
 
+		public GridPosition GetAdjacentEmptyGridPositionDiagonal( GridPosition gridPos )
+		{
+			List<IntVector> offsets = new List<IntVector>();
+
+			for ( int x = -1; x <= 1; x++ )
+			{
+				for ( int y = -1; y <= 1; y++ )
+				{
+					offsets.Add( new IntVector( x, y ) );
+				}
+			}
+
+			offsets.Shuffle();
+
+			foreach ( var offset in offsets)
+			{
+				if ( offset.x == 0 && offset.y == 0 )
+					continue;
+
+				GridPosition adjacent = new GridPosition( gridPos.X + offset.x, gridPos.Y + offset.y );
+				if ( adjacent.IsValid && !AftermathGame.Instance.StructureManager.IsStructure( adjacent ) )
+					return adjacent;
+			}
+
+			return GridPosition.Invalid;
+		}
+
 		public bool Raycast( Vector2 a, Vector2 b, RaycastMode mode, out GridPosition o_gridPos, out Vector2 o_hitPos, out Vector2 o_normal )
 		{
 			GridPosition currGridPos = GetGridPosFor2DPos( a );

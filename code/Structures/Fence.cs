@@ -16,6 +16,8 @@ namespace aftermath
 
 			MaxHp = 35f;
 			Hp = MaxHp;
+
+			StructureType = StructureType.Fence;
 		}
 
 		public override void Spawn()

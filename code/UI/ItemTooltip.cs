@@ -55,7 +55,7 @@ namespace aftermath
 
 		public void Update( Person person )
         {
-	        Name.Text = person.PersonName;
+	        Name.Text = (person is Zombie ? "Zombie " : "") + person.PersonName;
 			Desc.Text = "";
 		}
 

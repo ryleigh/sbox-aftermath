@@ -37,14 +37,17 @@ namespace aftermath
 			if ( ammoType == AmmoType.Bullet )
 			{
 				RenderColor = new Color( 1f, 0.5f, 0.5f );
+				StructureType = StructureType.AmmoCacheBullets;
 			} 
 			else if ( ammoType == AmmoType.Shell )
 			{
 				RenderColor = new Color( 1f, 0.6f, 0.3f );
+				StructureType = StructureType.AmmoCacheShells;
 			}
 			else if ( ammoType == AmmoType.HPBullet )
 			{
 				RenderColor = new Color( 0.5f, 0.5f, 1f );
+				StructureType = StructureType.AmmoCacheHPBullets;
 			}
 		}
 	}

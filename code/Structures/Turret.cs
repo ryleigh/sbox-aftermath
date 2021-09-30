@@ -16,6 +16,8 @@ namespace aftermath
 
 			MaxHp = 100f;
 			Hp = MaxHp;
+
+			StructureType = StructureType.Turret;
 		}
 
 		public override void Spawn()

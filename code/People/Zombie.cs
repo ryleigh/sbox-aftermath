@@ -170,5 +170,16 @@ namespace aftermath
 			if ( structure != null )
 				Person.MoveToAttackStructure( structure, NetworkIdent );
 		}
+
+		public override void Die( Vector3 force, Person killer )
+		{
+			int NUM_TIMES = Rand.Int( 0, 3 );
+			for ( int i = 0; i < NUM_TIMES; i++ )
+			{
+				AftermathGame.Instance.CreateScrap( Position, Rand.Int( 1, 3 ) );
+			}
+			
+			base.Die( force, killer );
+		}
 	}
 }

@@ -200,7 +200,26 @@ namespace aftermath
 				}
 			}
 
-			DebugOverlay.Line( new Vector3( noisePos.x, noisePos.y, 1f ), new Vector3( noisePos.x, noisePos.y, Utils.Map( loudness, 0f, 1f, 10f, 200f )), Color.Red, 1f, true );
+			// DebugOverlay.Line( new Vector3( noisePos.x, noisePos.y, 1f ), new Vector3( noisePos.x, noisePos.y, Utils.Map( loudness, 0f, 1f, 10f, 200f )), Color.Red, 1f, true );
+		}
+
+		public Scrap CreateScrap( Vector3 pos, int amount )
+		{
+			Scrap scrap = new Scrap { Position = pos};
+			scrap.SetPosition2D( new Vector2( pos.x, pos.y ) );
+			scrap.Init( amount );
+			scrap.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 6 );
+
+			return scrap;
+		}
+
+		public AmmoItem CreateAmmoItem( Vector3 posA, Vector3 posB, AmmoType ammoType, int amount, float peakHeight, float airTimeTotal, int numFlips )
+		{
+			AmmoItem ammoItem = new AmmoItem { Position = posA };
+			ammoItem.SetPosition2D( new Vector2( posA.x, posA.y ) );
+			ammoItem.Init( ammoType, amount );
+			ammoItem.PlaceItem( posB, peakHeight, airTimeTotal, numFlips );
+			return ammoItem;
 		}
 	}
 }

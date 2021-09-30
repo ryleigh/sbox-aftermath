@@ -98,5 +98,10 @@ namespace aftermath
 			Position = Position.WithZ( 0f );
 			CommandHandler.SetCommand( new LookForTargetCommand( CloseRangeDetectionDistance ) );
 		}
+
+		public override void Damage( float damage, Vector3 dir, Person attacker )
+		{
+			base.Damage( damage, dir, attacker );
+		}
 	}
 }

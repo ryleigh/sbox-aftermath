@@ -46,7 +46,7 @@ namespace aftermath
 
 			float dt = Time.Delta;
 
-			DebugText = $"PhysicsActive: {PhysicsActive}";
+			// DebugText = $"PhysicsActive: {PhysicsActive}";
 
 			if ( !IsInAir )
 			{

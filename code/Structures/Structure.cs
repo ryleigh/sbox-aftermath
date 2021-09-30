@@ -25,6 +25,7 @@ namespace aftermath
 		public bool BlocksSight { get; protected set; }
 		public bool BlocksGunshots { get; protected set; }
 		public bool IsUpdateable { get; protected set; }
+		public bool ShowsHoverInfo { get; protected set; }
 
 		public float Height { get; protected set; }
 
@@ -119,7 +120,8 @@ namespace aftermath
 				case StructureType.Factory: buildTime = 20f; break;
 			}
 
-			return buildTime;
+			return buildTime * 0.01f;
+			// return buildTime;
 		}
 
 		public static string GetBuildingName( StructureType structureType )

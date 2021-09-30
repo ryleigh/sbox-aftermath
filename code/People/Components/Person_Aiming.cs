@@ -44,14 +44,14 @@ namespace aftermath
 
 			if ( Person.IsSelected )
 			{
-				DrawSightCone();
-
-				Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
-					? new Color( 1f, 0.5f, 0.5f, 0.45f )
-					: new Color( 0.6f, 0.6f, 1f, 0.3f );
-				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.CloseRangeDetectionDistance, 12, color, Time.Now * -2f );
-
-				Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.HearingRadius, 15, new Color( 0f, 0f, 0f, 0.25f ), Time.Now * -2f );
+				// DrawSightCone();
+				//
+				// Color color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+				// 	? new Color( 1f, 0.5f, 0.5f, 0.45f )
+				// 	: new Color( 0.6f, 0.6f, 1f, 0.3f );
+				// Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.CloseRangeDetectionDistance, 12, color, Time.Now * -2f );
+				//
+				// Utils.DrawCircle( Person.Position.WithZ( 1f ), 1f, Person.HearingRadius, 15, new Color( 0f, 0f, 0f, 0.25f ), Time.Now * -2f );
 
 				// color = (Person.CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
 				// 	? new Color( 1f, 0f, 0f, 1f )
@@ -253,7 +253,7 @@ namespace aftermath
 
 			// Person.Scaler.Scale( Rand.Float( 1.05f, 1.1f ), Rand.Float( 0.33f, 0.5f ) );
 
-			AftermathGame.Instance.SpawnFloater( Person.Position, "HUH?", Color.White.WithAlpha( 0.5f ));
+			AftermathGame.Instance.SpawnFloater( Person.Position, "HUH?", new Color( 1f, 1f, 1f, 0.5f ));
 		}
 	}
 }

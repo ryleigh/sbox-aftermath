@@ -82,8 +82,8 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 
-			DebugText = AmmoAmount > 0 ? $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1 )}" : "";
-			DebugText += $"\nIsHeld: {IsHeld}, IsServer: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
+			// DebugText = AmmoAmount > 0 ? $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1 )}" : "";
+			// DebugText += $"\nIsHeld: {IsHeld}, IsServer: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
 
 			if ( IsReloading && PersonHolding != null )
 				HandleReloading( dt );
@@ -128,7 +128,7 @@ namespace aftermath
 
 		protected virtual void ShootProjectiles()
 		{
-			AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f, 0.2f ) );
+			// AftermathGame.Instance.SpawnFloater( Position, $"{GunName} SHOOT!", new Color( 1f, 1f, 0.4f, 0.2f ) );
 
 			Vector3 dir = (Vector3)(PersonHolding?.Aiming.BodyDirection ?? Rotation.Forward);
 			Rotation rot = global::Rotation.From( new Angles( dir.x, dir.y, dir.z ) );
@@ -249,7 +249,8 @@ namespace aftermath
 
 		public override string GetHoverInfo()
 		{
-			return GunName + $" isheld: {IsHeld}, isserver: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
+			// return GunName + $" isheld: {IsHeld}, isserver: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
+			return GunName + $" {AmmoAmount}/{MaxAmmoAmount}";
 		}
 
 		public override void AssignLifetime()

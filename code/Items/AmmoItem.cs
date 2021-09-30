@@ -60,7 +60,7 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 
-			DebugText = GetHoverInfo();
+			// DebugText = GetHoverInfo();
 
 			if ( CarryingPerson != null )
 			{

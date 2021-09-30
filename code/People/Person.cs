@@ -223,15 +223,15 @@ namespace aftermath
 				Aiming.Update( dt );
 			}
 
-			DebugText = $"Commands: {CommandHandler.CommandList.Count}";
-			foreach ( var command in CommandHandler.CommandList )
-			{
-				DebugText += $"\n{command.ToString()}";
-			}
+			// DebugText = $"Commands: {CommandHandler.CommandList.Count}";
+			// foreach ( var command in CommandHandler.CommandList )
+			// {
+			// 	DebugText += $"\n{command.ToString()}";
+			// }
 			
-			DebugText += $"\nHP:{Hp.FloorToInt()}";
+			// DebugText += $"\nHP:{Hp.FloorToInt()}";
 			// DebugText += $"\nSelected:{IsSelected}";
-			DebugText += $"\nAmmo:{AmmoHandler.AmmoAmount}/{AmmoHandler.MaxExtraAmmo} ({AmmoHandler.AmmoType})";
+			// DebugText += $"\nAmmo:{AmmoHandler.AmmoAmount}/{AmmoHandler.MaxExtraAmmo} ({AmmoHandler.AmmoType})";
 		}
 
 		[Event.Tick.Client]
@@ -419,7 +419,7 @@ namespace aftermath
 
 		public virtual void FoundTarget( Person target )
 		{
-			AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.2f ) );
+			// AftermathGame.Instance.SpawnFloater( Position, $"FoundTarget {target.PersonName}!", new Color( 1f, 0.4f, 0.8f, 0.2f ) );
 			// DebugOverlay.Line( Position, target.Position, Color.Red, 1f );
 		}
 
@@ -435,19 +435,22 @@ namespace aftermath
 
 		public void HitByGunshot( Gunshot gunshot, Vector3 hitPos, bool penetrate )
 		{
-			Hp -= gunshot.Damage;
-
 			Movement.AddForceVelocity( Utils.GetVector2( gunshot.Direction ) * gunshot.BulletForce );
 
-			if ( Hp <= 0f )
-			{
-				Die( gunshot.Direction, gunshot.ShootingPerson );
-			}
+			Damage( gunshot.Damage, gunshot.Direction, gunshot.ShootingPerson );
 		}
 
 		public void HitByMelee( Person attacker, Vector3 hitPos )
 		{
 			Die( HeadPos - attacker.HeadPos, attacker );
+		}
+
+		public virtual void Damage( float damage, Vector3 dir, Person attacker )
+		{
+			Hp -= damage;
+
+			if ( Hp <= 0f )
+				Die( dir, attacker);
 		}
 
 		public virtual void Die( Vector3 force, Person killer )

@@ -87,10 +87,7 @@ namespace aftermath
 				{
 					// Log.Info( $"Person - spawn item at pos: {mouseWorldPos}" );
 
-					Scrap scrap = new Scrap { Position = mouseWorldPos };
-					scrap.SetPosition2D( new Vector2( mouseWorldPos.x, mouseWorldPos.y ) );
-					scrap.Init( Rand.Int( 2, 20 ) );
-					scrap.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 400f ), Rand.Float( 3f, 100f ), 6 );
+					AftermathGame.Instance.CreateScrap( mouseWorldPos, Rand.Int( 2, 20 ) );
 				}
 
 				if ( Input.Released( InputButton.Slot7 ) ) { ScrapAmount += 15; }

@@ -169,5 +169,10 @@ namespace aftermath
 
 			return icon;
 		}
+
+		public virtual string GetHoverInfo()
+		{
+			return "";
+		}
 	}
 }

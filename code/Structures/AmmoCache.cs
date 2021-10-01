@@ -14,9 +14,9 @@ namespace aftermath
 		public bool HasAmmo => AmmoAmount > 0;
 		public int MaxAmmoAmount { get; private set; }
 
-		private readonly float ATTRACT_DIST_SQR = MathF.Pow( 300f, 2f );
-		private readonly float ACQUIRE_DIST_SQR = MathF.Pow( 85f, 2f );
-		private readonly float ATTRACT_FORCE = 1f;
+		private readonly float ATTRACT_DIST_SQR = MathF.Pow( 220f, 2f );
+		private readonly float ACQUIRE_DIST_SQR = MathF.Pow( 60f, 2f );
+		private readonly float ATTRACT_FORCE = 0.5f;
 
 		public AmmoCache()
 		{
@@ -28,6 +28,11 @@ namespace aftermath
 
 			MaxHp = 100f;
 			Hp = MaxHp;
+
+			ShowsHoverInfo = true;
+			IsUpdateable = true;
+
+			MaxAmmoAmount = 100;
 		}
 
 		public override void Spawn()
@@ -62,6 +67,8 @@ namespace aftermath
 		{
 			base.Update( dt );
 
+			DebugOverlay.Text( Position, 0, $"{AmmoType}\n{AmmoAmount}/{MaxAmmoAmount}", GetFloaterColorForAmmo(), 0f, float.MaxValue );
+
 			if ( !IsBeingBuilt && !IsDestroyed && AmmoAmount < MaxAmmoAmount )
 			{
 				HandleAmmoAttraction( dt );
@@ -75,11 +82,15 @@ namespace aftermath
 				.Where( ammo => !ammo.IsInAir )
 				.Where( ammo => !ammo.IsBeingHovered )
 				.Where( ammo => !ammo.IsBeingPickedUp)
+				.Where( ammo => ammo.CarryingPerson == null)
 				.Where( ammo => ammo.NumPeopleMovingToPickUp == 0)
 				.ToList();
 
 			foreach ( var ammo in ammoItems )
 			{
+				if ( !ammo.PhysicsActive )
+					ammo.PhysicsActive = true;
+
 				float distSqr = (ammo.Position2D - Position2D).LengthSquared;
 
 				if ( distSqr < ACQUIRE_DIST_SQR )
@@ -133,59 +144,165 @@ namespace aftermath
 
 		public override bool GetIsInteractable( Person person )
 		{
-			// if ( IsBeingBuilt )
-			// 	return false;
-			//
-			// if ( CanGivePersonAmmo( person ) ||
-			//    CanReceiveAmmoFromPerson( person ) )
-			// 	return true;
+			if ( IsBeingBuilt )
+				return false;
+
+			if ( CanGivePersonAmmo( person ) ||
+			   CanReceiveAmmoFromPerson( person ) )
+				return true;
 
 			return false;
 		}
 
-		// bool CanGivePersonAmmo( Person person )
-		// {
-		// 	return
-		// 		AmmoAmount > 0 &&
-		// 		person != null &&
-		// 		(AmmoType == person.ExtraAmmoHandler.AmmoType || person.ExtraAmmoHandler.AmmoType == AmmoType.None) &&
-		// 		person.ExtraAmmoHandler.AmmoAmount < person.ExtraAmmoHandler.MaxExtraAmmo;
-		// }
-		//
-		// bool CanReceiveAmmoFromPerson( Person person )
-		// {
-		// 	return
-		// 		AmmoAmount < MaxAmmoAmount &&
-		// 		person != null &&
-		// 		AmmoType == person.ExtraAmmoHandler.AmmoType &&
-		// 		person.ExtraAmmoHandler.AmmoAmount > 0;
-		// }
-		//
-		// public override void Interact( Person person )
-		// {
-		// 	if ( CanGivePersonAmmo( person ) )
-		// 	{
-		// 		GivePersonAmmo( person );
-		// 	}
-		// 	else if ( CanReceiveAmmoFromPerson( person ) )
-		// 	{
-		// 		ReceiveAmmo( person );
-		// 	}
-		// }
-		//
-		// void GivePersonAmmo( Person person )
-		// {
-		// 	int numAmmo = Math.Min( person.ExtraAmmoHandler.MaxExtraAmmo - person.ExtraAmmoHandler.AmmoAmount, AmmoAmount );
-		// 	AmmoItem ammoItem = GameMode.ItemManager.CreateAmmoItem( AmmoType, Position + SlotPos, AmmoAmount );
-		// 	ammoItem.PersonPickingUp = person;
-		// 	PlaceItemCommand placeItemCommand = new PlaceItemCommand( ammoItem, person.Transform.Position, person.Transform.Position.Y + (MathF.Random( 3.5f, 4f ) / 16f), 0, false, false );
-		// 	placeItemCommand.StartPlacingItem += OnStartGivingAmmo;
-		// 	placeItemCommand.FinishPlacingItem += OnFinishGivingAmmo;
-		//
-		// 	AmmoAmount -= numAmmo;
-		// 	RefreshBlock();
-		//
-		// 	person.CommandHandler.SetCommand( placeItemCommand );
-		// }
+		bool CanGivePersonAmmo( Person person )
+		{
+			return
+				AmmoAmount > 0 &&
+				person != null &&
+				(AmmoType == person.AmmoHandler.AmmoType || person.AmmoHandler.AmmoType == AmmoType.None) &&
+				person.AmmoHandler.AmmoAmount < person.AmmoHandler.MaxExtraAmmo;
+		}
+
+		bool CanReceiveAmmoFromPerson( Person person )
+		{
+			return
+				AmmoAmount < MaxAmmoAmount &&
+				person != null &&
+				AmmoType == person.AmmoHandler.AmmoType &&
+				person.AmmoHandler.AmmoAmount > 0;
+		}
+
+		public override void Interact( Person person )
+		{
+			if ( CanGivePersonAmmo( person ) )
+			{
+				GivePersonAmmo( person );
+			}
+			else if ( CanReceiveAmmoFromPerson( person ) )
+			{
+				ReceiveAmmo( person );
+			}
+		}
+
+		void GivePersonAmmo( Person person )
+		{
+			int numAmmo = Math.Min( person.AmmoHandler.MaxExtraAmmo - person.AmmoHandler.AmmoAmount, AmmoAmount );
+			AmmoItem ammoItem = AftermathGame.Instance.CreateAmmoItem( Position + SlotPos, AmmoType, AmmoAmount );
+
+			ammoItem.PersonPickingUp = person;
+			PlaceItemCommand placeItemCommand = new PlaceItemCommand( ammoItem, person.Transform.Position, Rand.Float( 90f, 130f ), 0, false, false );
+			placeItemCommand.StartPlacingItem += OnStartGivingAmmo;
+			placeItemCommand.FinishPlacingItem += OnFinishGivingAmmo;
+
+			AmmoAmount -= numAmmo;
+
+			person.CommandHandler.SetCommand( placeItemCommand );
+		}
+
+		void OnStartGivingAmmo( Person person, Item item )
+		{
+			AmmoItem ammoItem = (AmmoItem)item;
+		}
+
+		void OnFinishGivingAmmo( Person person, Item item )
+		{
+			AftermathGame.Instance.SpawnFloater( Position2D, $"ON FINISH GIVING AMMO", Color.White );
+
+			AmmoItem ammoItem = (AmmoItem)item;
+			if ( person == null || person.IsDead )
+			{
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 75f ), Rand.Float( 5f, 12f ), 0 );
+				ammoItem.PersonPickingUp = null;
+				return;
+			}
+
+			person.AmmoHandler.AddAmmo( ammoItem );
+
+			AftermathGame.Instance.SpawnFloater( person.Position2D, $"+{ammoItem.AmmoAmount}", GetFloaterColorForAmmo() );
+		}
+
+		void ReceiveAmmo( Person person )
+		{
+			int numAmmo = Math.Min( MaxAmmoAmount - AmmoAmount, person.AmmoHandler.AmmoAmount );
+
+			if ( person.AmmoHandler.DropAmmo( AmmoType, numAmmo, out var ammoItem ) )
+			{
+				person.AmmoHandler.AmmoAmount -= numAmmo;
+
+				if ( person.AmmoHandler.AmmoAmount == 0 )
+					person.AmmoHandler.AmmoType = AmmoType.None;
+
+				ammoItem.StructurePickingUp = this;
+
+				Vector3 targetPos = Position + SlotPos;
+				PlaceItemCommand placeItemCommand = new PlaceItemCommand( ammoItem, targetPos, Rand.Float( 90f, 130f ), 0 );
+				placeItemCommand.StartPlacingItem += OnStartReceivingAmmo;
+				placeItemCommand.FinishPlacingItem += OnFinishReceivingAmmo;
+
+				person.CommandHandler.SetCommand( placeItemCommand );
+			}
+		}
+
+		void OnStartReceivingAmmo( Person person, Item item )
+		{
+			AmmoItem ammoItem = (AmmoItem)item;
+
+			AftermathGame.Instance.SpawnFloater( person.Position2D, $"-{ammoItem.AmmoAmount}", GetFloaterColorForAmmo() );
+		}
+
+		void OnFinishReceivingAmmo( Person person, Item item )
+		{
+			AmmoItem ammoItem = (AmmoItem)item;
+
+			if ( IsDestroyed )
+			{
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 75f ), Rand.Float( 5f, 12f ), 0 );
+				return;
+			}
+
+			int amountToAdd = Math.Min( ammoItem.AmmoAmount, MaxAmmoAmount - AmmoAmount );
+			AmmoAmount += amountToAdd;
+
+			ammoItem.Delete();
+		}
+
+		public override string GetHoverInfo()
+		{
+			if ( IsDestroyed )
+				return "";
+
+			string name = "";
+			if ( AmmoType == AmmoType.Bullet ) name = "Bullets";
+			else if ( AmmoType == AmmoType.Shell ) name = "Shells";
+			else if ( AmmoType == AmmoType.HPBullet ) name = "High-Powered Bullets";
+
+			return name + "\n" + AmmoAmount + "/" + MaxAmmoAmount;
+		}
+
+		Color GetFloaterColorForAmmo()
+		{
+			if ( AmmoType == AmmoType.Bullet )
+				return new Color( 0.6f, 0.6f, 0.1f );
+			else if ( AmmoType == AmmoType.Shell )
+				return new Color( 0.8f, 0.5f, 0.2f );
+			else if ( AmmoType == AmmoType.HPBullet )
+				return new Color( 0.2f, 0.2f, 0.7f );
+
+			return Color.White;
+		}
+
+		public override void Destroy( Vector2 direction )
+		{
+			if ( IsDestroyed )
+				return;
+
+			base.Destroy( direction );
+
+			if ( HasAmmo )
+			{
+				AmmoItem ammoItem = AftermathGame.Instance.CreateAmmoItem( Position + SlotPos, AmmoType, AmmoAmount );
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 75f ), Rand.Float( 5f, 12f ), 0 );
+			}
+		}
 	}
 }

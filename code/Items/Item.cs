@@ -131,6 +131,8 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 			DrawDebugText();
+
+			DebugOverlay.Text( Position, -2, $"{_useHorizontalTargetPos }", Color.Green, 0f, float.MaxValue );
 		}
 
 		private void HandleLifetime( float dt )

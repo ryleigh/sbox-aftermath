@@ -126,6 +126,32 @@ namespace aftermath
 			return true;
 		}
 
+		public bool DropAmmo( AmmoType ammoType, int ammoAmount, out AmmoItem ammoItem )
+		{
+			if ( ammoType == AmmoType.None || ammoAmount == 0 )
+			{
+				ammoItem = null;
+				return false;
+			}
+
+			if ( ammoAmount == AmmoAmount && _ammoItem != null )
+			{
+				ammoItem = _ammoItem;
+				ammoItem.RemoveCarryingPerson();
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+				_ammoItem = null;
+				return true;
+			}
+			else
+			{
+				ammoItem = new AmmoItem { Position = Person.Position };
+				ammoItem.SetPosition2D( Person.Position2D );
+				ammoItem.Init( ammoType, ammoAmount );
+				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
+				return true;
+			}
+		}
+
 		public bool RemoveSingleAmmo()
 		{
 			if ( AmmoType == AmmoType.None )

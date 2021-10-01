@@ -62,6 +62,11 @@ namespace aftermath
 
 			// DebugText = GetHoverInfo();
 
+			// DebugText = $"Structure: {StructurePickingUp}\nPersonPickingUp: {PersonPickingUp}\nNum: {NumPeopleMovingToPickUp}\nHovered: {IsBeingHovered}\nCan: {AllowedToDespawn()}" +
+			//             $"\nCarryingPerson: {CarryingPerson}\nIsBeingPickedUp: {IsBeingPickedUp}\nIsInAir: {IsInAir}\nVel: {Velocity2D.LengthSquared}\nPhys: {PhysicsActive}";
+
+			DebugText = $"IsInAir: {IsInAir}\nVel: {Velocity2D.LengthSquared}\nPhys: {PhysicsActive}";
+
 			if ( CarryingPerson != null )
 			{
 				Position = CarryingPerson.Position + CarryingPerson.Rotation.Forward * -5f + CarryingPerson.Rotation.Up * 50f;
@@ -129,7 +134,8 @@ namespace aftermath
 
 		protected override bool AllowedToDespawn()
 		{
-			return CarryingPerson == null && !IsInAir && !IsBeingHovered && !IsBeingPickedUp && NumPeopleMovingToPickUp == 0 && Velocity2D.LengthSquared < 0.01f;
+			// return CarryingPerson == null && !IsInAir && !IsBeingHovered && !IsBeingPickedUp && NumPeopleMovingToPickUp == 0 && Velocity2D.LengthSquared < 0.01f;
+			return CarryingPerson == null && !IsInAir && !IsBeingHovered && !IsBeingPickedUp && NumPeopleMovingToPickUp == 0;
 		}
 	}
 }

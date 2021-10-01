@@ -213,6 +213,14 @@ namespace aftermath
 			return scrap;
 		}
 
+		public AmmoItem CreateAmmoItem( Vector3 pos, AmmoType ammoType, int amount )
+		{
+			AmmoItem ammoItem = new AmmoItem { Position = pos };
+			ammoItem.SetPosition2D( new Vector2( pos.x, pos.y ) );
+			ammoItem.Init( ammoType, amount );
+			return ammoItem;
+		}
+
 		public AmmoItem CreateAmmoItem( Vector3 posA, Vector3 posB, AmmoType ammoType, int amount, float peakHeight, float airTimeTotal, int numFlips )
 		{
 			AmmoItem ammoItem = new AmmoItem { Position = posA };

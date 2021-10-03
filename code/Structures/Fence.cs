@@ -25,6 +25,8 @@ namespace aftermath
 			SetModel( "models/square_wooden_box.vmdl" );
 			Scale = 1.83f;
 			RenderColor = new Color( 1f, 1f, 1f, 0.5f );
+
+			base.Spawn();
 		}
 	}
 }

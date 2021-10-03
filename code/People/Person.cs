@@ -65,7 +65,12 @@ namespace aftermath
 		[Net] public Player Player { get; private set; }
 		[Net] public int PlayerNum { get; private set; }
 
+		// redundant for client since client people doesnt have PersonComponents
 		[Net] public Gun EquippedGun { get; set; }
+		[Net] public AmmoType AmmoType { get; set; }
+		[Net] public int AmmoAmount { get; set; }
+		[Net] public int MaxAmmoAmount { get; set; } = 50;
+
 		public Vector3 HeadPos => Position + new Vector3( 0f, 0f, 10f );
 
 		public float MeleeRangeMin { get; protected set; }

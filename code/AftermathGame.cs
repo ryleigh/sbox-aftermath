@@ -130,6 +130,8 @@ namespace aftermath
 					if(floater.ShouldRemove)
 						_floaterTexts.Remove( floater );
 				}
+
+				StructureManager.UpdateClient( Time.Delta );
 			}
 		}
 

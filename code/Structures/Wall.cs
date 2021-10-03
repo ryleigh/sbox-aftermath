@@ -24,6 +24,8 @@ namespace aftermath
 		{
 			SetModel( "models/square_wooden_box.vmdl" );
 			Scale = 1.83f;
+			
+			base.Spawn();
 		}
 	}
 }

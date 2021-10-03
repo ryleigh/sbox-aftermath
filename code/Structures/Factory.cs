@@ -34,6 +34,8 @@ namespace aftermath
 			Scale = 1.83f;
 			RenderColor = new Color( 0f, 0f, 0f );
 			_productionTimer = Rand.Float( PRODUCTION_TIME_MIN, PRODUCTION_TIME_MAX );
+
+			base.Spawn();
 		}
 
 		public override void Update( float dt )
@@ -52,7 +54,7 @@ namespace aftermath
 			if ( _productionTimer <= 0f )
 			{
 				ProduceAmmo();
-				Damage(Rand.Int( 6, 10 ), Vector2.Zero);
+				Damage(Rand.Int( 6, 8 ), Vector2.Zero);
 				_productionTimer = Rand.Float( PRODUCTION_TIME_MIN, PRODUCTION_TIME_MAX );
 			}
 		}

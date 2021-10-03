@@ -9,10 +9,10 @@ namespace aftermath
 	{
 		public static Vector3 SlotPos = new Vector3( 0f, 1.5f, 0f ) / 16f;
 
-		public AmmoType AmmoType { get; set; }
-		public int AmmoAmount { get; set; }
+		[Net] public AmmoType AmmoType { get; set; }
+		[Net] public int AmmoAmount { get; set; }
 		public bool HasAmmo => AmmoAmount > 0;
-		public int MaxAmmoAmount { get; private set; }
+		[Net] public int MaxAmmoAmount { get; private set; }
 
 		private readonly float ATTRACT_DIST_SQR = MathF.Pow( 220f, 2f );
 		private readonly float ACQUIRE_DIST_SQR = MathF.Pow( 60f, 2f );
@@ -40,6 +40,7 @@ namespace aftermath
 			SetModel( "models/barrels/square_wooden_box_gold.vmdl" );
 			Scale = 1.83f;
 			
+			base.Spawn();
 		}
 
 		public void SetAmmoType( AmmoType ammoType )
@@ -147,11 +148,7 @@ namespace aftermath
 			if ( IsBeingBuilt )
 				return false;
 
-			if ( CanGivePersonAmmo( person ) ||
-			   CanReceiveAmmoFromPerson( person ) )
-				return true;
-
-			return false;
+			return CanGivePersonAmmo( person ) || CanReceiveAmmoFromPerson( person );
 		}
 
 		bool CanGivePersonAmmo( Person person )
@@ -159,8 +156,8 @@ namespace aftermath
 			return
 				AmmoAmount > 0 &&
 				person != null &&
-				(AmmoType == person.AmmoHandler.AmmoType || person.AmmoHandler.AmmoType == AmmoType.None) &&
-				person.AmmoHandler.AmmoAmount < person.AmmoHandler.MaxExtraAmmo;
+				(AmmoType == person.AmmoType || person.AmmoType == AmmoType.None) &&
+				person.AmmoAmount < person.MaxAmmoAmount;
 		}
 
 		bool CanReceiveAmmoFromPerson( Person person )
@@ -168,20 +165,16 @@ namespace aftermath
 			return
 				AmmoAmount < MaxAmmoAmount &&
 				person != null &&
-				AmmoType == person.AmmoHandler.AmmoType &&
-				person.AmmoHandler.AmmoAmount > 0;
+				AmmoType == person.AmmoType &&
+				person.AmmoAmount > 0;
 		}
 
 		public override void Interact( Person person )
 		{
 			if ( CanGivePersonAmmo( person ) )
-			{
 				GivePersonAmmo( person );
-			}
 			else if ( CanReceiveAmmoFromPerson( person ) )
-			{
 				ReceiveAmmo( person );
-			}
 		}
 
 		void GivePersonAmmo( Person person )

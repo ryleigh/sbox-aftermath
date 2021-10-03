@@ -18,6 +18,8 @@ namespace aftermath
 			Hp = MaxHp;
 
 			StructureType = StructureType.Turret;
+			ShowsHoverInfo = true;
+			IsUpdateable = true;
 		}
 
 		public override void Spawn()
@@ -25,6 +27,8 @@ namespace aftermath
 			SetModel( "models/citizen_props/crate01.vmdl" );
 			Scale = 1.83f;
 			RenderColor = new Color( 1f, 1f, 1f );
+
+			base.Spawn();
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace aftermath
 
 		public Person_AmmoHandler()
 		{
-
+			
 		}
 
 		public override void Update( float dt )
@@ -65,6 +65,8 @@ namespace aftermath
 			if ( !HasAmmo )
 			{
 				AmmoType = ammoItem.AmmoType;
+				Person.AmmoType = AmmoType;
+
 				int amountToAdd = Math.Min( ammoItem.AmmoAmount, MaxExtraAmmo - AmmoAmount );
 				int amountToDrop = ammoItem.AmmoAmount - amountToAdd;
 
@@ -75,6 +77,7 @@ namespace aftermath
 					CreateAmmoItem( AmmoType, amountToDrop );
 
 				AmmoAmount += amountToAdd;
+				Person.AmmoAmount = AmmoAmount;
 			}
 			else
 			{
@@ -92,6 +95,7 @@ namespace aftermath
 				}
 
 				AmmoAmount += amountToAdd;
+				Person.AmmoAmount = AmmoAmount;
 			}
 
 			_ammoItem?.SetAmmoAmount( AmmoAmount );
@@ -164,9 +168,12 @@ namespace aftermath
 			}
 
 			AmmoAmount--;
+			Person.AmmoAmount = AmmoAmount;
+
 			if ( AmmoAmount == 0 )
 			{
 				AmmoType = AmmoType.None;
+				Person.AmmoType = AmmoType;
 
 				_ammoItem?.Delete();
 				_ammoItem = null;
@@ -209,7 +216,9 @@ namespace aftermath
 			}
 
 			AmmoType = AmmoType.None;
+			Person.AmmoType = AmmoType;
 			AmmoAmount = 0;
+			Person.AmmoAmount = AmmoAmount;
 			IsDroppingAmmo = false;
 		}
 	}

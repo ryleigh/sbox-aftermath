@@ -13,10 +13,12 @@ namespace aftermath
 		public StructureType StructureType { get; protected set; }
 		public Direction FacingDirection { get; protected set; }
 
-		public float MaxHp { get; protected set; }
-		public float Hp { get; protected set; }
-		public bool IsDestroyed { get; private set; }
-		public bool IsBeingBuilt { get; set; }
+		[Net] public float MaxHp { get; protected set; }
+		[Net] public float Hp { get; protected set; }
+		[Net] public bool IsDestroyed { get; private set; }
+		[Net] public bool IsBeingBuilt { get; set; }
+		public bool IsHighlighted { get; protected set; }
+		[Net] public bool ShowsHoverInfo { get; protected set; }
 
 		public GridPosition GridPosition { get; private set; }
 		public Vector2 Position2D { get; set; }
@@ -25,13 +27,20 @@ namespace aftermath
 		public bool BlocksSight { get; protected set; }
 		public bool BlocksGunshots { get; protected set; }
 		public bool IsUpdateable { get; protected set; }
-		public bool ShowsHoverInfo { get; protected set; }
 
 		public float Height { get; protected set; }
 
 		public Structure( )
 		{
 			Transmit = TransmitType.Always;
+		}
+
+		public override void Spawn()
+		{
+			base.Spawn();
+
+			SetupPhysicsFromModel( PhysicsMotionType.Static );
+			EnableHitboxes = true;
 		}
 
 		public override void ClientSpawn()
@@ -97,6 +106,36 @@ namespace aftermath
 
 		}
 
+		public virtual void SetHovered( bool hovered )
+		{
+			if ( hovered )
+			{
+				if ( Local.Pawn is not Player player )  return;
+
+				if ( player.Selected.Count == 1 )
+				{
+					if(!(player.Selected[0] is Survivor selectedSurvivor)) return;
+
+					if ( GetIsInteractable( selectedSurvivor ) )
+					{
+						SetHighlighted( true );
+					}
+				}
+			}
+			else
+			{
+				SetHighlighted( false );
+			}
+		}
+
+		public virtual void SetHighlighted( bool highlighted )
+		{
+			if ( IsHighlighted == highlighted ) return;
+
+			IsHighlighted = highlighted;
+			GlowActive = highlighted;
+		}
+
 		public static int GetCost( StructureType structureType )
 		{
 			int cost = 0;
@@ -130,8 +169,8 @@ namespace aftermath
 				case StructureType.Factory: buildTime = 20f; break;
 			}
 
-			return buildTime * 0.01f;
-			// return buildTime;
+			// return buildTime * 0.01f;
+			return buildTime;
 		}
 
 		public static string GetBuildingName( StructureType structureType )

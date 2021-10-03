@@ -65,7 +65,13 @@ namespace aftermath
 			Desc.Text = "";
 		}
 
-        public void Update( string message )
+        public void Update( Structure structure )
+        {
+	        Name.Text = structure.GetHoverInfo();
+	        Desc.Text = "";
+        }
+
+		public void Update( string message )
         {
 	        Name.Text = message;
 	        Desc.Text = "";

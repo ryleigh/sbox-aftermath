@@ -60,6 +60,8 @@ namespace aftermath
 
 				// Color color = Color.Lerp( new Color( 1f, 1f, 1f, 0.1f ), new Color( 1f, 0.1f, 0.1f, 0.7f ), Utils.Map( structure.Hp, structure.MaxHp, 0f, 0f, 1f, EasingType.SineIn ) );
 				// DebugOverlay.Text( structure.Position, 0, $"{structure.Hp.FloorToInt()}/{structure.MaxHp}", color, 0f, float.MaxValue);
+
+				// DebugOverlay.Text( structure.Position, -3, $"IsHighlighted: {structure.IsHighlighted}", Color.White, 0f, float.MaxValue);
 			}
 
 			foreach ( int index in _toRemove )
@@ -74,6 +76,21 @@ namespace aftermath
 				}
 			}
 			_toRemove.Clear();
+		}
+
+		public void UpdateClient( float dt )
+		{
+			float glowVal = 0.5f + MathF.Sin( Time.Now * 16f ) * 0.5f;
+
+			foreach ( KeyValuePair<int, Structure> pair in _structures )
+			{
+				Structure structure = pair.Value;
+
+				if ( structure.IsHighlighted )
+					structure.GlowColor = new Color( glowVal, glowVal, 1f );
+
+				// DebugOverlay.Text( structure.Position, -3, $"IsHighlighted: {structure.IsHighlighted}", Color.White, 0f, float.MaxValue);
+			}
 		}
 
 		public Structure AddStructureServer( GridPosition gridPos, StructureType structureType, Direction structureDirection = Direction.None )

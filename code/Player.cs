@@ -20,6 +20,10 @@ namespace aftermath
 		[Net] public int PlayerNum { get; set; }
 		[Net] public int ScrapAmount { get; set; }
 
+		public bool IsCastingInBounds { get; set; }
+
+		public Structure HitStructure { get; private set; } = null;
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -36,10 +40,12 @@ namespace aftermath
 			Rotation = Rotation.LookAt( new Vector3( 0f, 0.075f, -1f ), new Vector3( 0f, 1f, 0f ) );
 			EyeRot = Rotation;
 
+			GridManager grid = AftermathGame.Instance.GridManager;
+
 			Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
 			Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity);
 			Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
-			GridPosition mouseGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
+			GridPosition mouseGridPos = grid.GetGridPosFor2DPos( mouseWorldPos );
 
 			if ( IsServer )
 			{
@@ -94,11 +100,13 @@ namespace aftermath
 				if ( Input.Released( InputButton.Slot8 ) ) { ScrapAmount = 0; }
 
 				if ( Input.Down( InputButton.Flashlight ) )
-					AftermathGame.Instance.GridManager.HighlightGridSquare( mouseGridPos );
+					grid.HighlightGridSquare( mouseGridPos );
 			}
 			else
 			{
 				// CLIENT
+
+				IsCastingInBounds = grid.IsGridPosInBounds( mouseGridPos );
 
 				if ( Input.Pressed( InputButton.Attack1 ) )
 				{
@@ -173,6 +181,8 @@ namespace aftermath
 				var trace = Utils.TraceRayDirection( Input.Cursor.Origin, Input.Cursor.Direction ).EntitiesOnly().Radius( 10f ).Run();
 				bool showTooltip = false;
 
+				Structure hitStructure = null;
+
 				if ( trace.Entity is Person p )
 				{
 					ItemTooltip.Instance.Update( p );
@@ -243,6 +253,35 @@ namespace aftermath
 							}
 						}
 					}
+
+					if ( trace.Entity is Structure structure )
+					{
+						hitStructure = structure;
+					}
+				}
+
+				if ( hitStructure != null )
+				{
+					if ( hitStructure.ShowsHoverInfo )
+					{
+						ItemTooltip.Instance.Update( hitStructure );
+						ItemTooltip.Instance.Hover( hitStructure );
+						ItemTooltip.Instance.Show();
+						showTooltip = true;
+					}
+
+					if ( hitStructure != HitStructure )
+					{
+						HitStructure?.SetHovered( false );
+
+						hitStructure.SetHovered( true );
+						HitStructure = hitStructure;
+					}
+				}
+				else
+				{
+					HitStructure?.SetHovered( false );
+					HitStructure = null;
 				}
 
 				if ( !showTooltip && !ItemTooltip.Instance.IsOnHud )
@@ -346,6 +385,7 @@ namespace aftermath
 			DebugOverlay.ScreenText( 7, $"Selected (Client): {Selected.Count}" );
 			DebugOverlay.ScreenText( 11, $"IsBuildMode (Client): {IsBuildMode}" );
 			DebugOverlay.ScreenText( 12, $"BuildModeType: {BuildModeType}" );
+			DebugOverlay.ScreenText( 13, $"HitStructure: {HitStructure}" );
 
 			if ( _buildingIndicator != null )
 			{

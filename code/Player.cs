@@ -142,19 +142,6 @@ namespace aftermath
 				if ( !Input.Down( InputButton.Attack1 ) )
 					FrustumSelect.IsDragging = false;
 
-				if ( Input.Pressed( InputButton.Attack2 ) )
-				{
-					foreach ( var entity in Selected )
-					{
-						if ( entity is Survivor survivor )
-						{
-							Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
-							// GridPosition gridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
-							// Person.MoveToBuild( mouseWorldPos, gridPos.X, gridPos.Y, StructureType.Wall, Direction.Up, 0, survivor.NetworkIdent );
-						}
-					}
-				}
-
 				// if ( Input.Pressed( InputButton.Slot6 ) )
 				// {
 				// 	foreach ( var entity in Selected )
@@ -182,6 +169,7 @@ namespace aftermath
 				bool showTooltip = false;
 
 				Structure hitStructure = null;
+				Entity hoveredEntity = null;
 
 				if ( trace.Entity is Person p )
 				{
@@ -189,6 +177,7 @@ namespace aftermath
 					ItemTooltip.Instance.Hover( p );
 					ItemTooltip.Instance.Show();
 					showTooltip = true;
+					hoveredEntity = p;
 
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
@@ -240,17 +229,18 @@ namespace aftermath
 							ItemTooltip.Instance.Hover( item );
 							ItemTooltip.Instance.Show();
 							showTooltip = true;
+							hoveredEntity = item;
 
-							if ( Input.Pressed( InputButton.Attack2 ) )
-							{
-								foreach ( var entity in Selected )
-								{
-									if ( entity is Survivor survivor )
-									{
-										Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
-									}
-								}
-							}
+							// if ( Input.Pressed( InputButton.Attack2 ) )
+							// {
+							// 	foreach ( var entity in Selected )
+							// 	{
+							// 		if ( entity is Survivor survivor )
+							// 		{
+							// 			Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+							// 		}
+							// 	}
+							// }
 						}
 					}
 
@@ -268,6 +258,7 @@ namespace aftermath
 						ItemTooltip.Instance.Hover( hitStructure );
 						ItemTooltip.Instance.Show();
 						showTooltip = true;
+						hoveredEntity = hitStructure;
 					}
 
 					if ( hitStructure != HitStructure )
@@ -284,11 +275,39 @@ namespace aftermath
 					HitStructure = null;
 				}
 
+				// RIGHT CLICK
+				if ( Input.Pressed( InputButton.Attack2 ) )
+				{
+					HandleRightClick( hoveredEntity, mouseWorldPos );
+				}
+
 				if ( !showTooltip && !ItemTooltip.Instance.IsOnHud )
 					ItemTooltip.Instance.Hide();
 			}
 
 			HandleMovement( Time.Delta );
+		}
+
+		void HandleRightClick( Entity hoveredEntity, Vector2 mouseWorldPos )
+		{
+			foreach ( var entity in Selected )
+			{
+				if ( entity is Survivor survivor )
+				{
+					if ( hoveredEntity is Structure structure && structure.GetIsInteractable( survivor ) )
+					{
+						Person.MoveToInteractWithStructure( structure.NetworkIdent, survivor.NetworkIdent );
+					}
+					else if ( hoveredEntity is Item item )
+					{
+						Person.MoveToPickUpItem( item.NetworkIdent, survivor.NetworkIdent );
+					}
+					else
+					{
+						Person.MoveTo( mouseWorldPos, survivor.NetworkIdent );
+					}
+				}
+			}
 		}
 
 		void HandleMovement( float dt )

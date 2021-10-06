@@ -78,7 +78,7 @@ namespace aftermath
 
 			Structure structure = GetNearbyStructure();
 			if ( structure != null )
-				Person.MoveToAttackStructure( structure, NetworkIdent );
+				Person.MoveToAttackStructure( structure.NetworkIdent, NetworkIdent );
 		}
 
 		public override void MeleeAttack( Vector2 dir, Person target )

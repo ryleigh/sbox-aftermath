@@ -199,8 +199,6 @@ namespace aftermath
 
 		void OnFinishGivingAmmo( Person person, Item item )
 		{
-			AftermathGame.Instance.SpawnFloater( Position2D, $"ON FINISH GIVING AMMO", Color.White );
-
 			AmmoItem ammoItem = (AmmoItem)item;
 			if ( person == null || person.IsDead )
 			{

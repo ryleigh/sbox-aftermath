@@ -339,14 +339,26 @@ namespace aftermath
 		}
 
 		[ServerCmd]
-		public static void MoveToAttackStructure( Structure structure, int personId )
+		public static void MoveToAttackStructure( int structureId, int personId )
 		{
-			if ( structure == null ) return;
+			if ( Entity.FindByIndex( structureId ) is not Structure structure ) return;
 			if ( Entity.FindByIndex( personId ) is not Person person ) return;
 
 			MoveToPosCommand moveCommand = new MoveToPosCommand( AftermathGame.Instance.GridManager.Get2DPosForGridPos( structure.GridPosition ), structure.GridPosition );
 			MoveToAttackStructureCommand moveToAttackStructureCommand = new MoveToAttackStructureCommand( structure );
 			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() { moveCommand, moveToAttackStructureCommand } );
+			person.CommandHandler.SetCommand( parallelCommand );
+		}
+
+		[ServerCmd]
+		public static void MoveToInteractWithStructure( int structureId, int personId )
+		{
+			if ( Entity.FindByIndex( structureId ) is not Structure structure ) return;
+			if ( Entity.FindByIndex( personId ) is not Person person ) return;
+
+			MoveToPosCommand moveCommand = new MoveToPosCommand( AftermathGame.Instance.GridManager.Get2DPosForGridPos( structure.GridPosition ), structure.GridPosition );
+			MoveToInteractWithStructureCommand moveToInteractWithStructureCommand = new MoveToInteractWithStructureCommand( structure );
+			ParallelCommand parallelCommand = new ParallelCommand( new List<PersonCommand>() { moveCommand, moveToInteractWithStructureCommand } );
 			person.CommandHandler.SetCommand( parallelCommand );
 		}
 

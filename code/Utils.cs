@@ -613,7 +613,7 @@ namespace aftermath
 			if ( entity is Person person)
 			{
 				Player player = person.Player;
-				Color color = player == null ? Color.Black : person.Player.TeamColor;
+				Color color = player == null ? Color.Black : person.Player?.TeamColor ?? Color.White;
 				float dist = float.MaxValue;
 				Vector3 posOffset = new Vector3( Rand.Float( -scatter, scatter ), Rand.Float( -scatter, scatter ), Rand.Float( -scatter, scatter ) );
 				DebugOverlay.Text( entity.Position + posOffset, offset, text, color, duration, dist );

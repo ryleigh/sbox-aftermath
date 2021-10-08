@@ -127,11 +127,21 @@ namespace aftermath
 				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
 			}
 
+			AmmoAmount -= ammoAmount;
+			Person.AmmoAmount = AmmoAmount;
+
+			if ( AmmoAmount == 0 )
+				AmmoType = AmmoType.None;
+
+			_ammoItem?.SetAmmoAmount( AmmoAmount );
+
 			return true;
 		}
 
 		public bool DropAmmo( AmmoType ammoType, int ammoAmount, out AmmoItem ammoItem )
 		{
+			AftermathGame.Instance.SpawnFloater( Person.Position, $"DROPPING {ammoAmount} {GetDisplayName( ammoType, true )}", new Color( 1f, 0f, 0.8f, 1f ) );
+
 			if ( ammoType == AmmoType.None || ammoAmount == 0 )
 			{
 				ammoItem = null;
@@ -144,7 +154,6 @@ namespace aftermath
 				ammoItem.RemoveCarryingPerson();
 				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
 				_ammoItem = null;
-				return true;
 			}
 			else
 			{
@@ -152,8 +161,17 @@ namespace aftermath
 				ammoItem.SetPosition2D( Person.Position2D );
 				ammoItem.Init( ammoType, ammoAmount );
 				ammoItem.Drop( Utils.GetVector2FromAngleDegrees( Rand.Float( 0f, 360f ) ), Rand.Float( 50f, 100f ), Rand.Float( 3f, 10f ), 8 );
-				return true;
 			}
+
+			AmmoAmount -= ammoAmount;
+			Person.AmmoAmount = AmmoAmount;
+
+			if ( AmmoAmount == 0 )
+				AmmoType = AmmoType.None;
+
+			_ammoItem?.SetAmmoAmount( AmmoAmount );
+
+			return true;
 		}
 
 		public bool RemoveSingleAmmo()

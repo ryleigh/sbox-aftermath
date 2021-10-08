@@ -36,7 +36,7 @@ namespace aftermath
 			}
 		}
 
-		[Net] public bool PhysicsActive { get; set; }
+		[Net] public bool MovementActive { get; set; }
 
 		public Vector2 Velocity2D { get; set; }
 
@@ -82,7 +82,7 @@ namespace aftermath
 
 			_deceleration = 0.05f;
 			_groundedDeceleration = 0.2f;
-			PhysicsActive = true;
+			MovementActive = true;
 			_disablePhysicsOnRest = true;
 			IsVisible = true;
 
@@ -99,6 +99,9 @@ namespace aftermath
 			// SetupPhysicsFromCapsule( PhysicsMotionType.Dynamic, Capsule.FromHeightAndRadius( 64f, 26f ) ); // 8 radius default
 			SetupPhysicsFromModel( PhysicsMotionType.Static );
 			EnableHitboxes = true;
+
+			// EnableSolidCollisions = false;
+			// EnableTraceAndQueries = true;
 		}
 
 		[Event.Tick.Server]
@@ -106,7 +109,7 @@ namespace aftermath
 		{
 			float dt = Time.Delta;
 
-			if ( PhysicsActive )
+			if ( MovementActive )
 			{
 				HandleHorizontalPhysics( dt );
 				HandleVerticalPhysics( dt );
@@ -114,7 +117,7 @@ namespace aftermath
 				if ( _disablePhysicsOnRest && !IsInAir && Velocity2D.Length < 0.1f )
 				{
 					Velocity2D = Vector2.Zero;
-					PhysicsActive = false;
+					MovementActive = false;
 				}
 			}
 
@@ -302,7 +305,7 @@ namespace aftermath
 			_startingRotation = Rotation.Pitch();
 			_targetRotation = numFlips * 180f;
 
-			PhysicsActive = true;
+			MovementActive = true;
 			IsInAir = true;
 
 			AssignLifetime();
@@ -322,7 +325,7 @@ namespace aftermath
 			_startingRotation = Rotation.Yaw();
 			_targetRotation = numFlips * 180f;
 
-			PhysicsActive = true;
+			MovementActive = true;
 			IsInAir = true;
 
 			AssignLifetime();

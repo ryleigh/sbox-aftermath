@@ -35,7 +35,7 @@
             display: inline;
         }
 
-        &.toggledOn{
+        &.toggledOn {
             color: #bbbbff;
         }
 
@@ -45,6 +45,44 @@
 
         &.active {
             background-color: rgb(175, 175, 175);
+        }
+
+        &.active:hover {
+            background-color: rgb(75, 75, 75);
+        }
+
+        &.active:hover {
+            background-color: rgb(75, 75, 75);
+        }
+    }
+
+    .ammoButton {
+        color: #6666ff;
+        text-shadow: 0 0 1px black;
+        font-size: 20px;
+        padding: 0 3px;
+        cursor: pointer;
+        display: none;
+        font-family: Arial;
+
+        &.open {
+            display: inline;
+        }
+
+        &.toggledOn {
+            color: #bbbbff;
+        }
+
+        &:hover {
+            background-color: rgb(60, 60, 60);
+        }
+
+        &.active {
+            background-color: rgb(175, 175, 175);
+        }
+
+        &.active:hover {
+            background-color: rgb(75, 75, 75);
         }
 
         &.active:hover {

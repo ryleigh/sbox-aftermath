@@ -36,7 +36,7 @@ namespace aftermath
 			Person.EquippedGun = gun;
 
 			gun.PersonHolding = Person;
-			gun.PhysicsActive = false;
+			gun.MovementActive = false;
 			gun.SetIsHovered( false );
 		}
 

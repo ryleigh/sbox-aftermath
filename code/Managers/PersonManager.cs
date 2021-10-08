@@ -39,7 +39,7 @@ namespace aftermath
 			person.Tags.Add( "selectable" );
 			person.Tags.Add( "person" );
 
-			Log.Warning( $"PersonManager - SpawnPersonServer - person: {person}, player: {player}, NetworkIdent: {player.GetClientOwner().NetworkIdent}, IsServer: {IsServer}" );
+			Log.Warning( $"PersonManager - SpawnPersonServer - person: {person}, player: {player}, NetworkIdent: {player?.Client?.NetworkIdent ?? -1}, IsServer: {IsServer}" );
 		}
 
 		public void PersonDied( Person person )

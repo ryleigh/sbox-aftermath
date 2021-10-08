@@ -93,7 +93,7 @@ namespace aftermath
 			}
 		}
 
-		public Structure AddStructureServer( GridPosition gridPos, StructureType structureType, Direction structureDirection = Direction.None )
+		public Structure AddStructureServer( GridPosition gridPos, StructureType structureType, Direction structureDirection = Direction.None, Player owner = null )
 		{
 			int index = AftermathGame.Instance.GridManager.GetIndexForGridPos( gridPos );
 			if ( _structures.ContainsKey( index ) )
@@ -137,6 +137,7 @@ namespace aftermath
 				return null;
 
 			structure.StructureManager = this;
+			structure.Owner = owner;
 
 			_structures.Add( index, structure );
 			structure.SetGridPos( gridPos );

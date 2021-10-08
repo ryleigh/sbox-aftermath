@@ -176,9 +176,10 @@ namespace aftermath
 			return GridPosition.Invalid;
 		}
 
-		public bool Raycast( Vector2 a, Vector2 b, RaycastMode mode, out GridPosition o_gridPos, out Vector2 o_hitPos, out Vector2 o_normal )
+		public bool Raycast( Vector2 a, Vector2 b, RaycastMode mode, out GridPosition o_gridPos, out Vector2 o_hitPos, out Vector2 o_normal, bool ignoreStartGridPos = false )
 		{
 			GridPosition currGridPos = GetGridPosFor2DPos( a );
+			GridPosition startGridPos = currGridPos;
 			o_gridPos = currGridPos;
 			o_normal = Vector2.Zero;
 			o_hitPos = a;
@@ -232,15 +233,18 @@ namespace aftermath
 			while ( currGridPos.IsValid && IsGridPosInBounds( currGridPos ) )
 			{
 				//                int index = GetIndexForGridPos(currGridPos);
-			
-				if ((mode == RaycastMode.Movement && IsMovementBlockingStructure( currGridPos )) ||
-					(mode == RaycastMode.Sight && IsSightBlockingStructure( currGridPos )) ||
-					(mode == RaycastMode.Gunshot && IsGunshotBlockingStructure( currGridPos )) )
+
+				if ( currGridPos != startGridPos || !ignoreStartGridPos )
 				{
-					o_gridPos = currGridPos;
-					return true;
+					if ( (mode == RaycastMode.Movement && IsMovementBlockingStructure( currGridPos )) ||
+					     (mode == RaycastMode.Sight && IsSightBlockingStructure( currGridPos )) ||
+					     (mode == RaycastMode.Gunshot && IsGunshotBlockingStructure( currGridPos )) )
+					{
+						o_gridPos = currGridPos;
+						return true;
+					}
 				}
-			
+					
 				float tResult = (tMaxX < tMaxY) ? tMaxX : tMaxY;
 				if ( Math.Pow( tResult, 2f ) > sqrDist )
 				{

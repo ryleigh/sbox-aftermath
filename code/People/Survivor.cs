@@ -46,7 +46,9 @@ namespace aftermath
 		public override void Assign( Player player )
 		{
 			base.Assign( player );
-			RenderColor = player.TeamColor;
+
+			player?.AddSurvivor( this );
+			RenderColor = player?.TeamColor ?? Color.White;
 
 			Movement.MoveSpeed = 70f;
 			Movement.FollowTargetMoveSpeed = 80f;

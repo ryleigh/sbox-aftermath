@@ -100,7 +100,7 @@ namespace aftermath
 			PersonPickingUp = null;
 			StructurePickingUp = null;
 			SetParent( null );
-			PhysicsActive = true;
+			MovementActive = true;
 		}
 
 		public bool Shoot()

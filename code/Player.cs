@@ -12,6 +12,7 @@ namespace aftermath
 	{
 		public FrustumSelect FrustumSelect = new FrustumSelect();
 
+		public List<Survivor> Survivors = new();
 		public List<Entity> Selected = new();
 		public bool IsBuildMode { get; set; }
 		public StructureType BuildModeType { get; set; }
@@ -57,9 +58,9 @@ namespace aftermath
 				DebugOverlay.ScreenText( 8, $"Selected (Server): {Selected.Count}" );
 
 				if ( Input.Released( InputButton.Slot1 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Survivor ); }
-				if ( Input.Released( InputButton.Slot2 ) ) { AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up ); }
-				if ( Input.Released( InputButton.Slot3 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Zombie); }
-				if ( Input.Released( InputButton.Slot4 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, this, PersonType.Soldier); }
+				if ( Input.Released( InputButton.Slot2 ) ) { AftermathGame.Instance.StructureManager.AddStructureServer( mouseGridPos, StructureType.Wall, Direction.Up, owner: null ); }
+				if ( Input.Released( InputButton.Slot3 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, null, PersonType.Zombie); }
+				if ( Input.Released( InputButton.Slot4 ) ) { AftermathGame.Instance.PersonManager.SpawnPersonServer( mouseWorldPos, null, PersonType.Soldier); }
 
 				if ( Input.Released( InputButton.Slot5 ) )
 				{
@@ -456,6 +457,11 @@ namespace aftermath
 		public void AdjustScrapAmount( int amount )
 		{
 			ScrapAmount += amount;
+		}
+
+		public void AddSurvivor( Survivor survivor )
+		{
+			Survivors.Add( survivor );
 		}
 	}
 }

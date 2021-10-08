@@ -54,7 +54,7 @@ namespace aftermath
 			AftermathGame.Instance.SpawnFloater( Person.Position, $"SPENT {_cost}!", new Color( 1f, 0.2f, 1f, 1f ) );
 			Person.Player.AdjustScrapAmount( -_cost );
 
-			Structure = AftermathGame.Instance.StructureManager.AddStructureServer( GridPos, StructureType, StructureDirection );
+			Structure = AftermathGame.Instance.StructureManager.AddStructureServer( GridPos, StructureType, StructureDirection, Person.Player );
 			if ( Structure == null )
 			{
 				Finish();
@@ -72,8 +72,8 @@ namespace aftermath
 
 			Progress = Utils.Map( _buildTimer, 0f, BuildTime, 0f, 1f );
 
-			// if(Rand.Float( 0f, 1f) < 0.1f )
-			// 	AftermathGame.Instance.SpawnFloater( Structure.Position + new Vector3( 0f, 10f, 2f ), $"{(Progress * 100f).FloorToInt()}", new Color( 1f, 1f, 1f, 1f ) );
+			if(Rand.Float( 0f, 1f) < 0.1f )
+				AftermathGame.Instance.SpawnFloater( Structure.Position + new Vector3( 0f, 10f, 2f ), $"{(Progress * 100f).FloorToInt()}", new Color( 1f, 1f, 1f, 1f ) );
 
 			GridManager grid = AftermathGame.Instance.GridManager;
 

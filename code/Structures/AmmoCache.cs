@@ -89,8 +89,8 @@ namespace aftermath
 
 			foreach ( var ammo in ammoItems )
 			{
-				if ( !ammo.PhysicsActive )
-					ammo.PhysicsActive = true;
+				if ( !ammo.MovementActive )
+					ammo.MovementActive = true;
 
 				float distSqr = (ammo.Position2D - Position2D).LengthSquared;
 
@@ -218,10 +218,10 @@ namespace aftermath
 
 			if ( person.AmmoHandler.DropAmmo( AmmoType, numAmmo, out var ammoItem ) )
 			{
-				person.AmmoHandler.AmmoAmount -= numAmmo;
-
-				if ( person.AmmoHandler.AmmoAmount == 0 )
-					person.AmmoHandler.AmmoType = AmmoType.None;
+				// person.AmmoHandler.AmmoAmount -= numAmmo;
+				//
+				// if ( person.AmmoHandler.AmmoAmount == 0 )
+				// 	person.AmmoHandler.AmmoType = AmmoType.None;
 
 				ammoItem.StructurePickingUp = this;
 

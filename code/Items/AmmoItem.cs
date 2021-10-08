@@ -65,7 +65,7 @@ namespace aftermath
 			// DebugText = $"Structure: {StructurePickingUp}\nPersonPickingUp: {PersonPickingUp}\nNum: {NumPeopleMovingToPickUp}\nHovered: {IsBeingHovered}\nCan: {AllowedToDespawn()}" +
 			//             $"\nCarryingPerson: {CarryingPerson}\nIsBeingPickedUp: {IsBeingPickedUp}\nIsInAir: {IsInAir}\nVel: {Velocity2D.LengthSquared}\nPhys: {PhysicsActive}";
 
-			DebugText = $"IsInAir: {IsInAir}\nVel: {Velocity2D.LengthSquared}\nPhys: {PhysicsActive}";
+			DebugText = $"IsInAir: {IsInAir}\nVel: {Velocity2D.LengthSquared}\nPhys: {MovementActive}\n";
 
 			if ( CarryingPerson != null )
 			{
@@ -111,7 +111,7 @@ namespace aftermath
 		public void SetCarryingPerson( Person person )
 		{
 			CarryingPerson = person;
-			PhysicsEnabled = false;
+			MovementActive = false;
 			EnableHitboxes = false;
 		}
 
@@ -120,7 +120,7 @@ namespace aftermath
 			if ( CarryingPerson == null ) return;
 
 			CarryingPerson = null;
-			PhysicsEnabled = true;
+			MovementActive = true;
 			EnableHitboxes = true;
 		}
 

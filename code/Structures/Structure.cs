@@ -28,6 +28,8 @@ namespace aftermath
 		public bool BlocksGunshots { get; protected set; }
 		public bool IsUpdateable { get; protected set; }
 
+		[Net] public Player Owner { get; set; }
+
 		public float Height { get; protected set; }
 
 		public Structure( )
@@ -169,7 +171,7 @@ namespace aftermath
 				case StructureType.Factory: buildTime = 20f; break;
 			}
 
-			// return buildTime * 0.01f;
+			return buildTime * 0.01f;
 			return buildTime;
 		}
 

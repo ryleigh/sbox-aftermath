@@ -19,6 +19,8 @@ namespace aftermath
 		private Panel HudBackgroundPanel;
 		private Panel PersonBackgroundPanel;
 
+		private Button AmmoButton;
+
 		private Label ScrapLabel;
 		private Label ScrapIcon;
 		private Panel XpBar;
@@ -44,6 +46,12 @@ namespace aftermath
 			ItemButton.AddEventListener( "onclick", () => {
 				DropItem();
 			} );
+
+			AmmoButton = buttonBackground.AddChild<AmmoButton>();
+			AmmoButton.SetClass( "ammoButton", true );
+			AmmoButton.AddEventListener( "onclick", DropAmmo );
+			AmmoButton.Text = "No Ammo";
+			AmmoButton.SetClass( "open", false );
 
 			NameLabel = PersonBackgroundPanel.Add.Label( "", "nameText" );
 
@@ -77,6 +85,9 @@ namespace aftermath
 					NameLabel.Text = person.PersonName;
 					ItemButton.Text = person.EquippedGun != null ? "auto_fix_normal" : "";
 					ItemButton.SetClass( "open", person.EquippedGun != null );
+					// AmmoButton.Text = person.AmmoType == AmmoType.None ? "t" : $"{person.AmmoAmount} {Person_AmmoHandler.GetDisplayName( person.AmmoType, person.AmmoAmount > 0 )}";
+					AmmoButton.Text = person.AmmoType == AmmoType.None ? "" : $"{person.AmmoAmount} {Person_AmmoHandler.GetDisplayName( person.AmmoType, person.AmmoAmount > 0 )}";
+					AmmoButton.SetClass( "open", person.AmmoType != AmmoType.None );
 				}
 
 				PersonBackgroundPanel.SetClass( "open", true );
@@ -104,6 +115,18 @@ namespace aftermath
 			if ( Local.Pawn is not Player player ) return;
 			player.ToggleBuildMode();
 		}
+
+		public void DropAmmo()
+		{
+			if ( Local.Pawn is not Player player ) return;
+			if ( player.Selected.Count == 1 )
+			{
+				if ( player.Selected[0] is Person person )
+				{
+					Person.DropAmmo( person.NetworkIdent );
+				}
+			}
+		}
 	}
 
 	public class BuildButton : Button
@@ -116,6 +139,28 @@ namespace aftermath
 				if ( player.Selected[0] is Person person )
 				{
 					ItemTooltip.Instance.Update( "Build" );
+					ItemTooltip.Instance.Hover( this );
+					ItemTooltip.Instance.Show();
+				}
+			}
+		}
+
+		protected override void OnMouseOut( MousePanelEvent e )
+		{
+			ItemTooltip.Instance.Hide();
+		}
+	}
+
+	public class AmmoButton : Button
+	{
+		protected override void OnMouseOver( MousePanelEvent e )
+		{
+			if ( Local.Pawn is not Player player ) return;
+			if ( player.Selected.Count == 1 )
+			{
+				if ( player.Selected[0] is Person person )
+				{
+					ItemTooltip.Instance.Update( person.AmmoType == AmmoType.None ? "No Ammo" : $"{person.AmmoAmount} {Person_AmmoHandler.GetDisplayName( person.AmmoType, person.AmmoAmount > 0 )}" );
 					ItemTooltip.Instance.Hover( this );
 					ItemTooltip.Instance.Show();
 				}

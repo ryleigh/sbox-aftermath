@@ -4,6 +4,7 @@ using Sandbox.UI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Numerics;
 using Trace = Sandbox.Trace;
 
 namespace aftermath
@@ -15,7 +16,10 @@ namespace aftermath
 		public List<Survivor> Survivors = new();
 		public List<Entity> Selected = new();
 		public bool IsBuildMode { get; set; }
-		public StructureType BuildModeType { get; set; }
+		public StructureType BuildStructureType { get; set; }
+		public GridPosition BuildGridPos { get; set; }
+		public Direction BuildDirection { get; set; }
+		public BuildPhase BuildPhase { get; set; }
 
 		[Net] public Color TeamColor { get; set; }
 		[Net] public int PlayerNum { get; set; }
@@ -24,6 +28,8 @@ namespace aftermath
 		public bool IsCastingInBounds { get; set; }
 
 		public Structure HitStructure { get; private set; } = null;
+
+		private BuildingIndicator _buildingIndicator;
 
 		public override void Spawn()
 		{
@@ -196,7 +202,7 @@ namespace aftermath
 				{
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
-						if ( IsBuildMode && BuildModeType != StructureType.None )
+						if ( IsBuildMode && BuildStructureType != StructureType.None )
 						{
 							if ( Selected.Count == 1 )
 							{
@@ -205,9 +211,27 @@ namespace aftermath
 									if ( entity is Survivor survivor )
 									{
 										GridPosition gridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
-										Person.MoveToBuild( mouseWorldPos, gridPos.X, gridPos.Y, BuildModeType, Direction.Up, Structure.GetCost( BuildModeType ), survivor.NetworkIdent );
-										// Person.DropGun( survivor.NetworkIdent );
-										ToggleBuildMode();
+
+										if ( BuildStructureType == StructureType.Turret )
+										{
+											if ( BuildPhase == BuildPhase.Structure )
+											{
+												BuildPhase = BuildPhase.Direction;
+												BuildGridPos = gridPos;
+											} 
+											else if ( BuildPhase == BuildPhase.Direction )
+											{
+												Person.MoveToBuild( AftermathGame.Instance.GridManager.GetWorldPosForGridPos( BuildGridPos ), BuildGridPos.X, BuildGridPos.Y, BuildStructureType, BuildDirection, Structure.GetCost( BuildStructureType ), survivor.NetworkIdent );
+												ToggleBuildMode();
+											}
+										}
+										else
+										{
+											
+											Person.MoveToBuild( mouseWorldPos, gridPos.X, gridPos.Y, BuildStructureType, Direction.Up, Structure.GetCost( BuildStructureType ), survivor.NetworkIdent );
+											// Person.DropGun( survivor.NetworkIdent );
+											ToggleBuildMode();
+										}
 									}
 								}
 							}
@@ -404,22 +428,35 @@ namespace aftermath
 
 			DebugOverlay.ScreenText( 7, $"Selected (Client): {Selected.Count}" );
 			DebugOverlay.ScreenText( 11, $"IsBuildMode (Client): {IsBuildMode}" );
-			DebugOverlay.ScreenText( 12, $"BuildModeType: {BuildModeType}" );
-			DebugOverlay.ScreenText( 13, $"HitStructure: {HitStructure}" );
+			DebugOverlay.ScreenText( 12, $"BuildStructureType: {BuildStructureType}" );
+			DebugOverlay.ScreenText( 13, $"BuildPhase: {BuildPhase}" );
+			DebugOverlay.ScreenText( 14, $"HitStructure: {HitStructure}" );
 
-			if ( _buildingIndicator != null )
+			if ( IsBuildMode )
 			{
 				Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
 				Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
 				Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
 				GridPosition mouseGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
 
-				_buildingIndicator.Position = AftermathGame.Instance.GridManager.Get2DPosForGridPos( mouseGridPos );
-				_buildingIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.4f + MathF.Sin( Time.Now * 8f ) * 0.2f );
-				// _buildingIndicator.GlowColor = new Color( 0.1f, 0.1f, 1f, 0f + MathF.Sin( Time.Now * 5f ) * 0.4f );
-				// _buildingIndicator.GlowActive = true;
-			}
-			
+				if ( _buildingIndicator != null )
+					_buildingIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.4f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+
+				if ( BuildPhase == BuildPhase.Structure )
+				{
+					if ( _buildingIndicator != null )
+						_buildingIndicator.Position = AftermathGame.Instance.GridManager.Get2DPosForGridPos( mouseGridPos );
+				} 
+				else if ( BuildPhase == BuildPhase.Direction )
+				{
+					Vector3 worldPos = AftermathGame.Instance.GridManager.GetWorldPosForGridPos( BuildGridPos );
+
+					Vector2 offset = mouseWorldPos - Utils.GetVector2( worldPos );
+					BuildDirection = (MathF.Abs( offset.x ) > MathF.Abs( offset.y )) ? (offset.x > 0f ? Direction.Right : Direction.Left) : (offset.y > 0f ? Direction.Up : Direction.Down);
+
+					DebugOverlay.Line( worldPos.WithZ( 50f ), worldPos.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) * 100f ), Color.Magenta );
+				}
+			} 
 		}
 
 		public void ToggleBuildMode()
@@ -430,20 +467,18 @@ namespace aftermath
 			SelectBuildType( StructureType.None );
 		}
 
-		private BuildingIndicator _buildingIndicator;
-
 		public void SelectBuildType( StructureType structureType )
 		{
 			Host.AssertClient();
 
-			BuildModeType = structureType;
+			BuildStructureType = structureType;
+			BuildPhase = BuildPhase.Structure;
 
 			if ( _buildingIndicator != null )
 			{
 				_buildingIndicator.Delete();
 				_buildingIndicator = null;
 			}
-
 
 			if ( structureType != StructureType.None )
 			{

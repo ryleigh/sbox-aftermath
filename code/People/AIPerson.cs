@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sandbox;
-using Sandbox.Rcon;
 using Entity = Sandbox.Entity;
 
 namespace aftermath

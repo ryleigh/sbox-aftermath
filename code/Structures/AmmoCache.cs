@@ -37,7 +37,7 @@ namespace aftermath
 
 		public override void Spawn()
 		{
-			SetModel( "models/barrels/square_wooden_box_gold.vmdl" );
+			SetModel( "models/square_wooden_box_gold.vmdl" );
 			Scale = 1.83f;
 			
 			base.Spawn();

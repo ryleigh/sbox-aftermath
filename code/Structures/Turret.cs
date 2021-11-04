@@ -43,7 +43,7 @@ namespace aftermath
 
 		public override void Spawn()
 		{
-			SetModel( "models/citizen_props/crate01.vmdl" );
+			SetModel( "models/crate01.vmdl" );
 			Scale = 1.83f;
 			RenderColor = new Color( 1f, 1f, 1f );
 
@@ -55,6 +55,10 @@ namespace aftermath
 			base.Update( dt );
 
 			DebugOverlay.Text( Position + new Vector3( 0f, 0f, 0f ), HasGun ? $"{Gun.AmmoAmount}/{Gun.MaxAmmoAmount}" : $"EMPTY", Color.White, 0f, float.MaxValue );
+			DebugOverlay.Line( Position.WithZ( 50f ), Position.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( FacingDirection ) ) * 200f, Color.Blue);
+
+			if(Gun != null)
+				DebugOverlay.Line( Gun.Position, Gun.Position + Gun.Rotation.Forward * 200f, Color.Red );
 
 			if ( Gun != null )
 			{
@@ -89,7 +93,7 @@ namespace aftermath
 			if ( Owner != null && Owner.Survivors.Count > 0)
 			{
 				// var trace = Trace.Ray( Gun.BarrelPos, Gun.Rotation.Forward * 400f ).EntitiesOnly().WithTag( "person" ).Run();
-				var trace = Trace.Ray( Position.WithZ( 50f ), Position.WithZ( 50f ) + Rotation.Forward * 400f ).EntitiesOnly().WithTag( "person" ).Run();
+				var trace = Trace.Ray( Position.WithZ( 50f ), Position.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( FacingDirection ) ) * 400f ).EntitiesOnly().WithTag( "person" ).Run();
 				if ( trace.Hit )
 				{
 					if ( trace.Entity is Person p )
@@ -100,61 +104,20 @@ namespace aftermath
 							float dist = (Position2D - p.Position2D).Length;
 							AftermathGame.Instance.SpawnFloater( Position, $"{p.PersonName}", new Color( 0f, 0f, 0.8f, 0.5f ) );
 
-							DebugOverlay.Line( Position.WithZ( 50f ), Position.WithZ( 50f ) + Rotation.Forward * dist, Color.Blue, 0.1f );
-
+							DebugOverlay.Line( Position.WithZ( 50f ), Position.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( FacingDirection ) ) * dist, Color.Blue, 0.1f );
 
 							// make sure they aren't obscured by a wall
-							if ( !AftermathGame.Instance.GridManager.Raycast( Position.WithZ( 50f ), Position.WithZ( 50f ) + Rotation.Forward * dist, RaycastMode.Sight, out _, out _, out _, ignoreStartGridPos: true) )
+							if ( !AftermathGame.Instance.GridManager.Raycast( Position.WithZ( 50f ), Position.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( FacingDirection ) ) * dist, RaycastMode.Sight, out _, out _, out _, ignoreStartGridPos: true) )
 							{
 								AftermathGame.Instance.SpawnFloater( Position, $"{p.PersonName}", new Color( 1f, 0f, 0.8f, 1f ) );
 								return true;
 							}
 						}
-							
-
-						// didHitPerson = true;
-						// hitPerson = p;
-						// hitPosPerson = trace.EndPos;
-						// hitNormalPerson = trace.Normal;
 					}
 				}
 
-				// DebugOverlay.Line( Position.WithZ( 50f ), Position.WithZ( 50f ) + Rotation.Forward * 400f, Color.Blue );
+				// DebugOverlay.Line( Position.WithZ( 50f ), Position.WithZ( 50f ) + Rotation.Forward * 400f, Color.Blue, 0.2f );
 			}
-
-			
-
-			// var ray = new Ray( Gun.BarrelPos, Gun.Transform.Forward );
-			//
-			// Person hitPerson = null;
-			// foreach ( Person person in GameMode.PersonManager.TurretTargets )
-			// {
-			// 	if ( person == null || person.IsSpawning || person.IsDead )
-			// 		continue;
-			//
-			// 	// check if heading towards person
-			// 	float dot = Gun.Transform.Forward.Dot( person.Position2D - Position2D );
-			// 	if ( dot < 0f )
-			// 		continue;
-			//
-			// 	EntityRaycastHit hit;
-			// 	if ( person.AABBPhysics.Raycast( ray, MathF.Random( Gun.MinRange, Gun.MaxRange ), out hit ) )
-			// 	{
-			// 		hitPerson = person;
-			// 		break;
-			// 	}
-			// }
-			//
-			// if ( hitPerson != null )
-			// {
-			// 	GridPosition gridPos;
-			// 	Vector2D hitPos;
-			// 	Vector2D normal;
-			// 	if ( !GameMode.GridManager.Raycast( Utils.GetVector2D( Gun.BarrelPos ), hitPerson.Position2D, RaycastMode.Sight, out gridPos, out hitPos, out normal ) )
-			// 	{
-			// 		return true;
-			// 	}
-			// }
 
 			return false;
 		}
@@ -261,8 +224,12 @@ namespace aftermath
 
 		public void PutGunInSlot( Gun gun )
 		{
-			gun.Rotation = Rotation.Identity;
-			gun.Rotation.RotateAroundAxis( Vector3.OneZ, Utils.GetDegreesForDirection( FacingDirection ) );
+			AftermathGame.Instance.SpawnFloater( Position, $"FacingDirection: {FacingDirection}", Color.Yellow );
+
+			gun.Rotation = Rotation.LookAt( Utils.GetVector3( Utils.GetVectorFromDirection( FacingDirection ) ) ); 
+
+			// gun.Rotation = Rotation.Identity;
+			// gun.Rotation.RotateAroundAxis( Vector3.OneZ, Utils.GetDegreesForDirection( FacingDirection ) );
 
 			gun.Position = GetGunSlotPos( gun );
 		}

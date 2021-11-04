@@ -321,6 +321,11 @@ namespace aftermath
 			return new Vector2( vector.x, vector.y );
 		}
 
+		public static Vector3 GetVector3( Vector2 vector )
+		{
+			return new Vector3( vector.x, vector.y, 0f );
+		}
+
 		public static Vector3 GetRandomVector()
 		{
 			return new Vector3( Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ) ).Normal;
@@ -334,6 +339,21 @@ namespace aftermath
 		public static float GetDegreesForDirection( Direction direction )
 		{
 			return ((int)direction - 1) * 90f;
+		}
+
+		public static Vector2 GetVectorFromDirection( Direction direction )
+		{
+			Vector2 dir = Vector2.Zero;
+
+			switch ( direction )
+			{
+				case Direction.Left: dir = new Vector2( -1f, 0f ); break;
+				case Direction.Right: dir = new Vector2( 1f, 0f ); break;
+				case Direction.Down: dir = new Vector2( 0f, -1f ); break;
+				case Direction.Up: dir = new Vector2( 0f, 1f ); break;
+			}
+
+			return dir;
 		}
 
 		public static void DrawCircle( Vector2 pos, float height, float radius, int segments, Color color, float startingAngle = 0f, float time = 0f )

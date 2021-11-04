@@ -60,7 +60,7 @@ namespace aftermath
 			foreach ( BuildingButton button in _buildingButtons )
 			{
 				button.SetClass( "tooExpensive", button.Cost > player.ScrapAmount );
-				button.SetClass( "selected", player.IsBuildMode && player.BuildModeType == button.StructureType );
+				button.SetClass( "selected", player.IsBuildMode && player.BuildStructureType == button.StructureType );
 			}
 		}
 

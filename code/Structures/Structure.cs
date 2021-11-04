@@ -5,6 +5,7 @@ using Sandbox;
 namespace aftermath
 {
 	public enum StructureType { None, Wall, Fence, Factory, AmmoCacheBullets, AmmoCacheShells, AmmoCacheHPBullets, Turret }
+	public enum BuildPhase { None, Structure, Direction }
 
 	public partial class Structure : ModelEntity
 	{

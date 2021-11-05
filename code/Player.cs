@@ -30,6 +30,7 @@ namespace aftermath
 		public Structure HitStructure { get; private set; } = null;
 
 		private BuildingIndicator _buildingIndicator;
+		private IndicatorArrow _arrowIndicator;
 
 		public override void Spawn()
 		{
@@ -218,11 +219,18 @@ namespace aftermath
 											{
 												BuildPhase = BuildPhase.Direction;
 												BuildGridPos = gridPos;
+
+												_arrowIndicator?.Delete();
+												_arrowIndicator = null;
+												_arrowIndicator = new IndicatorArrow();
 											} 
 											else if ( BuildPhase == BuildPhase.Direction )
 											{
 												Person.MoveToBuild( AftermathGame.Instance.GridManager.GetWorldPosForGridPos( BuildGridPos ), BuildGridPos.X, BuildGridPos.Y, BuildStructureType, BuildDirection, Structure.GetCost( BuildStructureType ), survivor.NetworkIdent );
 												ToggleBuildMode();
+
+												_arrowIndicator?.Delete();
+												_arrowIndicator = null;
 											}
 										}
 										else
@@ -434,27 +442,41 @@ namespace aftermath
 
 			if ( IsBuildMode )
 			{
+				GridManager grid = AftermathGame.Instance.GridManager;
+
 				Plane plane = new Plane( Vector3.Zero, new Vector3( 0f, 0f, 1f ) );
 				Vector3? hitPos = plane.Trace( new Ray( Input.Cursor.Origin, Input.Cursor.Direction ), true, Double.PositiveInfinity );
 				Vector2 mouseWorldPos = hitPos == null ? Vector2.Zero : new Vector2( hitPos.Value.x, hitPos.Value.y );
-				GridPosition mouseGridPos = AftermathGame.Instance.GridManager.GetGridPosFor2DPos( mouseWorldPos );
-
-				if ( _buildingIndicator != null )
-					_buildingIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.4f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+				GridPosition mouseGridPos = grid.GetGridPosFor2DPos( mouseWorldPos );
 
 				if ( BuildPhase == BuildPhase.Structure )
 				{
 					if ( _buildingIndicator != null )
-						_buildingIndicator.Position = AftermathGame.Instance.GridManager.Get2DPosForGridPos( mouseGridPos );
+					{
+						_buildingIndicator.Position = grid.Get2DPosForGridPos( mouseGridPos );
+						_buildingIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.4f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+					}
 				} 
 				else if ( BuildPhase == BuildPhase.Direction )
 				{
-					Vector3 worldPos = AftermathGame.Instance.GridManager.GetWorldPosForGridPos( BuildGridPos );
+					if ( _buildingIndicator != null )
+						_buildingIndicator.RenderColor = new Color( 0.45f, 0.45f, 1f, 0.6f + MathF.Sin( Time.Now * 12f ) * 0.2f );
+
+					Vector3 worldPos = grid.GetWorldPosForGridPos( BuildGridPos );
 
 					Vector2 offset = mouseWorldPos - Utils.GetVector2( worldPos );
 					BuildDirection = (MathF.Abs( offset.x ) > MathF.Abs( offset.y )) ? (offset.x > 0f ? Direction.Right : Direction.Left) : (offset.y > 0f ? Direction.Up : Direction.Down);
 
-					DebugOverlay.Line( worldPos.WithZ( 50f ), worldPos.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) * 100f ), Color.Magenta );
+					// DebugOverlay.Line( worldPos.WithZ( 50f ), worldPos.WithZ( 50f ) + Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) * 100f ), Color.Magenta );
+
+					if ( _arrowIndicator != null )
+					{
+						_arrowIndicator.Scale = 1.5f * (1f + MathF.Sin( Time.Now * 4f ) * 0.1f);
+						_arrowIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.8f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+						// _arrowIndicator.Position = grid.GetWorldPosForGridPos( grid.GetGridPosInDirection( BuildGridPos, BuildDirection ) ).WithZ( 40f );
+						_arrowIndicator.Position = (worldPos + Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) * (120f * (1f + MathF.Sin( Time.Now * 3f ) * 0.05f)) )).WithZ( 40f );
+						_arrowIndicator.Rotation = Rotation.LookAt( Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) ) + new Vector3( 0f, 0f, 99f) ); 
+					}
 				}
 			} 
 		}

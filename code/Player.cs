@@ -38,6 +38,8 @@ namespace aftermath
 
 			Transmit = TransmitType.Always;
 			Tags.Add( "player", "pawn" );
+
+			ScrapAmount = 777;
 		}
 
 		// SERVER & CLIENT
@@ -314,6 +316,12 @@ namespace aftermath
 					HandleRightClick( hoveredEntity, mouseWorldPos );
 				}
 
+				if ( !IsBuildMode && _arrowIndicator != null )
+				{
+					_arrowIndicator.Delete();
+					_arrowIndicator = null;
+				}
+
 				if ( !showTooltip && !ItemTooltip.Instance.IsOnHud )
 					ItemTooltip.Instance.Hide();
 			}
@@ -341,6 +349,9 @@ namespace aftermath
 					}
 				}
 			}
+
+			if(IsBuildMode)
+				ToggleBuildMode();
 		}
 
 		void HandleMovement( float dt )
@@ -472,7 +483,7 @@ namespace aftermath
 					if ( _arrowIndicator != null )
 					{
 						_arrowIndicator.Scale = 1.5f * (1f + MathF.Sin( Time.Now * 4f ) * 0.1f);
-						_arrowIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.8f + MathF.Sin( Time.Now * 8f ) * 0.2f );
+						_arrowIndicator.RenderColor = new Color( 0.85f, 0.85f, 1f, 0.5f + MathF.Sin( Time.Now * 14f ) * 0.2f );
 						// _arrowIndicator.Position = grid.GetWorldPosForGridPos( grid.GetGridPosInDirection( BuildGridPos, BuildDirection ) ).WithZ( 40f );
 						_arrowIndicator.Position = (worldPos + Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) * (120f * (1f + MathF.Sin( Time.Now * 3f ) * 0.05f)) )).WithZ( 40f );
 						_arrowIndicator.Rotation = Rotation.LookAt( Utils.GetVector3( Utils.GetVectorFromDirection( BuildDirection ) ) + new Vector3( 0f, 0f, 99f) ); 

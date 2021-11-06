@@ -294,6 +294,8 @@ namespace aftermath
 
 		public virtual void PlaceItem( Vector3 targetPos, float peakHeight, float airTimeTotal, int numFlips )
 		{
+			SetPosition2D( new Vector2( Position.x, Position.y ) );
+
 			UseHorizontalTargetPos( Utils.GetVector2( targetPos ) );
 
 			_startingHeight = Position.z;

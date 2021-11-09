@@ -11,7 +11,7 @@
         display: none;
 
         &.open {
-            display: inline;
+            display: flex;
             pointer-events: auto;
             padding-left: 4px;
         }
@@ -36,7 +36,7 @@
         padding: 0 5px;
         cursor: pointer;
         //background-color: #ffffff11;
-        display: inline;
+        display: flex;
 
         &.tooExpensive {
             color: #ff6666;
@@ -65,7 +65,7 @@
         //background-color: #ffffff11;
 
         &.open {
-            display: inline;
+            display: flex;
             pointer-events: auto;
             padding-left: 4px;
         }

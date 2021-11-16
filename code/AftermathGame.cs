@@ -135,41 +135,42 @@ namespace aftermath
 			}
 		}
 
-		public async Task StartSecondTimer()
-		{
-			while ( true )
-			{
-				await Task.DelaySeconds( 1 );
-				OnSecond();
-			}
-		}
+		// public async Task StartSecondTimer()
+		// {
+		// 	while ( true )
+		// 	{
+		// 		await Task.DelaySeconds( 1 );
+		// 		OnSecond();
+		// 	}
+		// }
 
 		public override void PostLevelLoaded()
 		{
-			_ = StartSecondTimer();
+			// _ = StartSecondTimer();
+			Rounds.Change( new LobbyRound() );
 
 			base.PostLevelLoaded();
 		}
 
-		private void OnSecond()
-		{
-			CheckMinimumPlayers();
-		}
-
-		private void CheckMinimumPlayers()
-		{
-			if ( Client.All.Count >= 2 )
-			{
-				if ( Rounds.Current is LobbyRound || Rounds.Current == null )
-				{
-					Rounds.Change( new PlayRound() );
-				}
-			}
-			else if ( Rounds.Current is not LobbyRound )
-			{
-				Rounds.Change( new LobbyRound() );
-			}
-		}
+		// private void OnSecond()
+		// {
+		// 	CheckMinimumPlayers();
+		// }
+		//
+		// private void CheckMinimumPlayers()
+		// {
+		// 	if ( Client.All.Count >= 2 )
+		// 	{
+		// 		if ( Rounds.Current is LobbyRound || Rounds.Current == null )
+		// 		{
+		// 			Rounds.Change( new PlayRound() );
+		// 		}
+		// 	}
+		// 	else if ( Rounds.Current is not LobbyRound )
+		// 	{
+		// 		Rounds.Change( new LobbyRound() );
+		// 	}
+		// }
 
 		[ClientRpc]
 		public void SpawnFloater( Vector3 pos, string text, Color color )

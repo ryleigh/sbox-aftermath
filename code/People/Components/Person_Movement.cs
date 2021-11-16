@@ -101,10 +101,9 @@ namespace aftermath
 				}
 			}
 
-			var animHelper = new CitizenAnimationHelper( Person );
+			// var animHelper = new CitizenAnimationHelper( Person );
 			
-			animHelper.WithVelocity( Velocity );
-			// animHelper.WithWishVelocity( dir );
+			// animHelper.WithVelocity( Velocity );
 
 			Person.SetPosition2D( newPos );
 

@@ -83,6 +83,18 @@ namespace aftermath
 					TimeLeftSeconds = TimeLeft.CeilToInt();
 				}
 			}
+
+			if ( Client.All.Count >= 2 )
+			{
+				if ( Rounds.Current is LobbyRound || Rounds.Current == null )
+				{
+					Rounds.Change( new PlayRound() );
+				}
+			}
+			else if ( Rounds.Current is not LobbyRound )
+			{
+				Rounds.Change( new LobbyRound() );
+			}
 		}
 
 		protected virtual void OnStart() { }

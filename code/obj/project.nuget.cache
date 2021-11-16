@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OF1Ib8ZA7xKcMMbm3Z+5TzWJYRj7pB0Vj8nY1PcRl1+czdDxk4Yv3g9RUMybFH5D6oeDaJQ0LXHtvR41Sd3PYg==",
+  "dgSpecHash": "MwodPwLrAEDJHJ8X1xtyhc3/wggl6Cwn3dnGJ7BmOZsiYZ6T+jsDt2UYGX9j+Y6UWZVJrLMg5Q3YFcwySXAxEw==",
   "success": true,
-  "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\aftermath\\code\\aftermath.csproj",
+  "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\aftermath\\code\\aftermath.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

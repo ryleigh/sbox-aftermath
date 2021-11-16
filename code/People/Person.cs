@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using Entity = Sandbox.Entity;
 
 namespace aftermath
@@ -28,27 +29,6 @@ namespace aftermath
 			DebugOverlay.Text( Position, 2, DebugText, color.WithAlpha( 0.5f ), duration, dist );
 		}
 
-		private struct AnimationValues
-		{
-			private float Speed;
-			private bool Attacking;
-			private int HoldType;
-
-			public void Start()
-			{
-				Speed = 0f;
-				HoldType = 0;
-				Attacking = false;
-			}
-
-			public void Finish( AnimEntity entity )
-			{
-				entity.SetAnimInt( "holdtype", HoldType );
-				entity.SetAnimBool( "attacking", Attacking );
-				entity.SetAnimFloat( "speed", entity.GetAnimFloat( "speed" ).LerpTo( Speed, Time.Delta * 10f ) );
-			}
-		}
-
 		[Net] public PersonType PersonType { get; protected set; }
 		[Net] public bool IsMale { get; private set; }
 		[Net] public string PersonName { get; protected set; }
@@ -60,6 +40,8 @@ namespace aftermath
 		public Person_Aiming Aiming { get; private set; }
 		public Person_GunHandler GunHandler { get; private set; }
 		public Person_AmmoHandler AmmoHandler { get; private set; }
+
+		public virtual UnitAnimator Animator => new SimpleTerryAnimator();
 
 		[Net] public Player Player { get; private set; }
 		[Net] public int PlayerNum { get; private set; }
@@ -129,6 +111,10 @@ namespace aftermath
 		protected const float RISE_DEPTH = -90f;
 		protected const float FALL_HEIGHT = 700f;
 
+		[Net] public float Speed { get; protected set; }
+		[Net] public bool Attacking { get; protected set; }
+		[Net] public int HoldType { get; protected set; }
+
 		public void SetPosition2D( Vector2 pos )
 		{
 			if ( IsServer )
@@ -145,7 +131,10 @@ namespace aftermath
 
 		public override void Spawn()
 		{
-			SetModel( "models/citizen/citizen.vmdl" );
+			SetModel( "models/simpleterry.vmdl" );
+			// SetModel( "models/citizen/citizen.vmdl" );
+
+			UseAnimGraph = false;
 
 			Movement = new Person_Movement { Person = this }; 
 			Pathfinding = new Person_Pathfinding { Person = this };
@@ -160,8 +149,6 @@ namespace aftermath
 			CollisionGroup = CollisionGroup.Player;
 			SetupPhysicsFromCapsule( PhysicsMotionType.Static, Capsule.FromHeightAndRadius( 64f, 10f ) ); // 8 radius default
 			EnableHitboxes = true;
-
-			// UseAnimGraph = false;
 
 			Scale = 1.25f;
 
@@ -227,12 +214,16 @@ namespace aftermath
 				Aiming.Update( dt );
 			}
 
+			HandleAnimation();
+
+			DebugText = $"{Movement.Velocity.Length}\nSpeed: {Speed}\nVel: {Velocity.Length}\nIsServer: {IsServer}";
+
 			// DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			// foreach ( var command in CommandHandler.CommandList )
 			// {
 			// 	DebugText += $"\n{command.ToString()}";
 			// }
-			
+
 			// DebugText += $"\nHP:{Hp.FloorToInt()}";
 			// DebugText += $"\nSelected:{IsSelected}";
 			// DebugText += $"\nAmmo:{AmmoHandler.AmmoAmount}/{AmmoHandler.MaxExtraAmmo} ({AmmoHandler.AmmoType})";
@@ -242,6 +233,7 @@ namespace aftermath
 		protected virtual void ClientTick()
 		{
 			float dt = Time.Delta;
+
 
 			if ( IsSelected && IsLocalPlayers )
 			{
@@ -256,6 +248,28 @@ namespace aftermath
 			// if(Rand.Float( 0f, 1f ) < 0.1f)
 			// 	AftermathGame.Instance.SpawnFloater( Position, $"Selected (Client): {IsSelected}!", IsSelected ? new Color( 0f, 0.4f, 0.8f, 0.8f ) : new Color( 1f, 0.4f, 0.8f, 0.5f ) );
 		}
+
+		void HandleAnimation()
+		{
+			// Host.AssertServer();
+
+			// if(Animator == null)
+			// 	return;
+
+			Speed = 0f;
+			HoldType = 0;
+			Attacking = false;
+
+			// Animator.Reset();
+
+			if ( Movement.Velocity.LengthSquared > 0.01f )
+			{
+				Speed = Movement.Velocity.Length > 100f ? 1f : 0.1f;
+			}
+
+			Animator.Apply( this );
+		}
+
 
 		// CLIENT
 		public virtual void Select()

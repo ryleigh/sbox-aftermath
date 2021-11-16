@@ -38,5 +38,15 @@ namespace aftermath
 
 			base.OnPlayerJoin( player );
 		}
+
+		public override void OnSecond()
+		{
+			// if ( AllPlayersReady && StartGameTime )
+			// {
+			// 	Rounds.Change( new PlayRound() );
+			// }
+
+			base.OnSecond();
+		}
 	}
 }

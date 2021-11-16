@@ -72,6 +72,8 @@ namespace aftermath
 
 		public float MovementSpeedModifier { get; protected set; }
 
+		public TimeSince LastAttack { get; set; }
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -122,6 +124,8 @@ namespace aftermath
 			ApplyShootForce();
 
 			AftermathGame.Instance.MakeNoise( Utils.GetVector2( BarrelPos ), loudness: 1f, noiseType: PersonHolding?.PersonType ?? PersonType.None );
+
+			LastAttack = 0f;
 
 			return true;
 		}

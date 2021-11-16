@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\aftermath\\code\\aftermath.csproj",
+      "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\aftermath\\code\\aftermath.csproj",
       "projectName": "aftermath",
-      "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\aftermath\\code\\aftermath.csproj",
+      "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\aftermath\\code\\aftermath.csproj",
       "packagesPath": "C:\\Users\\rylei\\.nuget\\packages\\",
-      "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\aftermath\\code\\obj\\",
+      "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\aftermath\\code\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rylei\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -53,8 +53,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\base\\code\\base.csproj": {
-              "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\Addons\\base\\code\\base.csproj"
+            "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\base\\code\\base.csproj": {
+              "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sandbox Game\\addons\\base\\code\\base.csproj"
             }
           }
         }

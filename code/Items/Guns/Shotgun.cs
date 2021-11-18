@@ -9,6 +9,8 @@ namespace aftermath
 {
 	public partial class Shotgun : Gun
 	{
+		public override int HoldType => 3;
+
 		public Shotgun()
 		{
 			GunName = "Shotgun";

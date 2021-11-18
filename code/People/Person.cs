@@ -82,7 +82,7 @@ namespace aftermath
 		[Net] public bool IsDead { get; private set; }
 		[Net] public bool IsSpawning { get; protected set; }
 
-		private bool _shouldDrawPath;
+        private bool _shouldDrawPath;
 		private List<Vector2> _path;
 
 		public virtual List<Person> GetValidTargets() { return new List<Person>(); }
@@ -112,8 +112,10 @@ namespace aftermath
 		protected const float FALL_HEIGHT = 700f;
 
 		[Net] public float Speed { get; protected set; }
-		[Net] public bool Attacking { get; protected set; }
+		[Net] public bool IsAttacking { get; protected set; }
+		[Net] public bool IsAiming { get; protected set; }
 		[Net] public int HoldType { get; protected set; }
+		public TimeSince LastAim { get; set; }
 
 		public void SetPosition2D( Vector2 pos )
 		{
@@ -216,7 +218,8 @@ namespace aftermath
 
 			HandleAnimation();
 
-			DebugText = $"{Movement.Velocity.Length}\nSpeed: {Speed}\nVel: {Velocity.Length}\nIsServer: {IsServer}";
+			//DebugText = $"{Movement.Velocity.Length}\nSpeed: {Speed}\nVel: {Velocity.Length}\nIsServer: {IsServer}";
+			DebugText = $"IsAiming: {IsAiming}\nname: {CurrentSequence.Name}\nspeed: {Speed}\nholdType: {HoldType}";
 
 			// DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			// foreach ( var command in CommandHandler.CommandList )
@@ -258,14 +261,26 @@ namespace aftermath
 
 			Speed = 0f;
 			HoldType = 0;
-			Attacking = false;
+			IsAttacking = false;
 
 			// Animator.Reset();
 
 			if ( Movement.Velocity.LengthSquared > 0.01f )
-			{
 				Speed = Movement.Velocity.Length > 100f ? 1f : 0.1f;
+
+			if (GunHandler.HasGun)
+            {
+				HoldType = GunHandler.Gun.HoldType;
+				IsAttacking = GunHandler.Gun.LastAttack < 0.1f;
 			}
+
+			if(CommandHandler.CurrentCommandType is PersonCommandType.AimAtTarget or PersonCommandType.Shoot)
+            {
+				LastAim = 0f;
+			}
+
+
+			IsAiming = LastAim < 1f;
 
 			Animator.Apply( this );
 		}

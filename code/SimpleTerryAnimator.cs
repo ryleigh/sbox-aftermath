@@ -37,19 +37,23 @@ namespace aftermath
 
 		public override void Apply( Person person )
 		{
-			if ( !person.Attacking )
+			int holdType = person.IsAiming ? person.HoldType : 0;
+
+			if ( !person.IsAttacking )
 			{
 				if ( person.Speed >= 0.5f )
-					person.CurrentSequence.Name = Lookup[person.HoldType].Run;
+					person.CurrentSequence.Name = Lookup[holdType].Run;
 				else if ( person.Speed > 0f )
-					person.CurrentSequence.Name = Lookup[person.HoldType].Walk;
+					person.CurrentSequence.Name = Lookup[holdType].Walk;
 				else
-					person.CurrentSequence.Name = Lookup[person.HoldType].Idle;
+					person.CurrentSequence.Name = Lookup[holdType].Idle;
 			}
 			else
 			{
-				person.CurrentSequence.Name = Lookup[person.HoldType].Attack;
+				person.CurrentSequence.Name = Lookup[holdType].Attack;
 			}
+
+			//person.CurrentSequence.Name = person.IsAiming ? "Idle_Pistol" : "Idle";
 		}
 	}
 

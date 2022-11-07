@@ -8,6 +8,7 @@
 		<LangVersion>10</LangVersion>
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<DefineConstants>SANDBOX;ADDON;DEBUG</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,6 +26,8 @@
   <PropertyGroup>
 	<OutputPath>../.vs/output/</OutputPath>
 	<DocumentationFile>../.vs/output/aftermath.xml</DocumentationFile>
+	<RootNamespace>Sandbox</RootNamespace>
+	<Nullable>disable</Nullable>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -33,10 +36,12 @@
 		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Event.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Bind.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Reflection.dll" />
 	</ItemGroup>
 
   <ItemGroup>
-<ProjectReference Include="..\..\..\addons\base\code\base.csproj" />
+<ProjectReference Include="C:\Program Files (x86)\Steam\steamapps\common\Sandbox Game\addons\base\code\base.csproj" />
   </ItemGroup>
 
 </Project>

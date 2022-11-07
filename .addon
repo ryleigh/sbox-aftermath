@@ -1,3 +1,18 @@
 {
-    "sharedassets": "*.*"
+  "Title": "Aftermath",
+  "Type": "game",
+  "Org": "ryleigh",
+  "Ident": "aftermath",
+  "Schema": 1,
+  "HasAssets": true,
+  "AssetsPath": "",
+  "ResourcePaths": null,
+  "HasCode": true,
+  "CodePath": "code",
+  "RootNamespace": "Sandbox",
+  "Metadata": {
+    "MapList": [
+      "facepunch.construct"
+    ]
+  }
 }

@@ -88,7 +88,7 @@ namespace aftermath
 			// DebugText = AmmoAmount > 0 ? $"{AmmoAmount}/{MaxAmmoAmount} {Person_AmmoHandler.GetDisplayName( AmmoType, AmmoAmount != 1 )}" : "";
 			// DebugText += $"\nIsHeld: {IsHeld}, IsServer: {IsServer}, ammo: {AmmoAmount}/{MaxAmmoAmount}";
 
-			DebugText = $"holdType: {HoldType}";
+			//DebugText = $"holdType: {HoldType}";
 
 			if ( IsReloading && PersonHolding != null )
 				HandleReloading( dt );

@@ -18,7 +18,7 @@ namespace aftermath
 			var player = Local.Pawn as Player;
 			if ( player == null ) return;
 
-			Label.Text = $"{player.Client.Name} (id: {player.Client.NetworkIdent}) - steam: {player.Client.SteamId}, playerNum: {player.PlayerNum}";
+			Label.Text = $"{player.Client.Name} (id: {player.Client.NetworkIdent}) - steam: {player.Client.PlayerId}, playerNum: {player.PlayerNum}";
 			// Label.Style.FontColor = AftermathGame.Instance?.PlayerManager?.GetPlayerData( player.GetClientOwner().NetworkIdent )?.Color ?? Color.Black;
 			Label.Style.FontColor = player.TeamColor;
 			Label.Style.Dirty();

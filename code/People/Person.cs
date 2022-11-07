@@ -116,6 +116,7 @@ namespace aftermath
 		[Net] public bool IsAiming { get; protected set; }
 		[Net] public int HoldType { get; protected set; }
 		public TimeSince LastAim { get; set; }
+		[Net] public float AimHoldTime { get; protected set; }
 
 		public void SetPosition2D( Vector2 pos )
 		{
@@ -129,6 +130,7 @@ namespace aftermath
 		public Person()
 		{
 			Transmit = TransmitType.Always;
+			AimHoldTime = Rand.Float(0.5f, 1.25f);
 		}
 
 		public override void Spawn()
@@ -219,7 +221,7 @@ namespace aftermath
 			HandleAnimation();
 
 			//DebugText = $"{Movement.Velocity.Length}\nSpeed: {Speed}\nVel: {Velocity.Length}\nIsServer: {IsServer}";
-			DebugText = $"IsAiming: {IsAiming}\nname: {CurrentSequence.Name}\nspeed: {Speed}\nholdType: {HoldType}";
+			//DebugText = $"IsAiming: {IsAiming}\nname: {CurrentSequence.Name}\nspeed: {Speed}\nholdType: {HoldType}";
 
 			// DebugText = $"Commands: {CommandHandler.CommandList.Count}";
 			// foreach ( var command in CommandHandler.CommandList )
@@ -279,12 +281,10 @@ namespace aftermath
 				LastAim = 0f;
 			}
 
-
-			IsAiming = LastAim < 1f;
+			IsAiming = LastAim < AimHoldTime;
 
 			Animator.Apply( this );
 		}
-
 
 		// CLIENT
 		public virtual void Select()
@@ -538,5 +538,11 @@ namespace aftermath
 		{
 
 		}
+
+		//[ClientRpc]
+		//private void BecomeRagdoll(Vector3 velocity, DamageFlags damageFlags, Vector3 forcePos, Vector3 force, int bone)
+		//{
+		//	Ragdoll.From(this, velocity, damageFlags, forcePos, force, bone).FadeOut(10f);
+		//}
 	}
 }
